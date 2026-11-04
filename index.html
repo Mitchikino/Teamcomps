@@ -33,11 +33,11 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.4 "Barlow Semi Condensed",system-ui,sans-serif}
-.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+.wrap{max-width:1240px;margin:0 auto;padding:20px 16px 48px}
 h1{font:400 30px/1.1 Marcellus,Georgia,serif;margin:0 0 4px;letter-spacing:.01em}
 .intro{color:var(--muted);margin:0 0 18px;font-size:15px}
 
-.board{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:10px}
+.board{display:grid;grid-template-columns:200px 1fr 1fr;gap:14px;margin-bottom:10px;align-items:start}
 .side{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:8px;padding:12px 14px 14px}
 .side.them{border-top-color:var(--red)}
 .side h2{font:400 20px/1.1 Marcellus,Georgia,serif;margin:0 0 10px;color:var(--blue)}
@@ -49,13 +49,23 @@ h1{font:400 30px/1.1 Marcellus,Georgia,serif;margin:0 0 4px;letter-spacing:.01em
 .bt button{font:inherit;font-size:13px;line-height:1.15;text-align:left;border:1px dashed var(--red);background:var(--red-soft);color:var(--ink);border-radius:4px;padding:3px 7px;cursor:pointer}
 .bt button small{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .bt button{min-width:0}
-.us .pick{grid-template-columns:104px 46px 1fr}
-.tp{display:flex;flex-direction:column;gap:2px;margin-right:6px;min-width:0}
-.tp button{font:inherit;font-size:12px;line-height:1;height:19px;padding:0 5px;border:1px dashed var(--line);background:var(--panel);color:var(--muted);border-radius:3px;cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tp button:hover,.tp button:focus-visible{border-color:var(--blue);color:var(--ink);outline:none}
-.tp button.tg{border-color:var(--blue);color:var(--ink);background:var(--blue-soft)}
+.us .pick{grid-template-columns:40px 46px 1fr}
+.tp{position:relative;margin-right:6px;min-width:0}
+.tph{width:34px;height:34px;margin-top:3px;font:inherit;font-size:10px;font-weight:700;line-height:1.05;letter-spacing:.02em;border:1px solid var(--line);background:var(--blue-soft);color:var(--blue);border-radius:4px;cursor:pointer;padding:0;opacity:.85}
+.tph:hover,.tp:focus-within .tph,.tp.open .tph{opacity:1;border-color:var(--blue)}
+.tpm{display:none;position:absolute;left:0;top:100%;z-index:30;width:270px;background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--blue);border-radius:6px;padding:4px;box-shadow:0 10px 24px rgba(0,0,0,.3)}
+.tp:hover .tpm,.tp:focus-within .tpm,.tp.open .tpm{display:block}
+.tpt{font-size:11.5px;color:var(--muted);padding:3px 6px 5px}
+.tpi{display:flex;gap:8px;width:100%;text-align:left;font:inherit;border:0;border-radius:4px;background:none;color:var(--ink);padding:5px 6px;cursor:pointer;align-items:flex-start}
+.tpi:hover,.tpi:focus-visible{background:var(--bg);outline:none}
+.tpi .n{font:400 17px/1.1 Marcellus,serif;color:var(--gold);width:16px;flex:none}
+.tpi .t{min-width:0}
+.tpi b{display:block;font-size:14.5px}
+.tpi small{display:block;font-size:12px;color:var(--muted);line-height:1.25}
+.tpi.tg b{color:var(--blue)} .tpi.ctr b{color:var(--gold)}
+.tpi small.w{color:var(--red)}
+.tpi small::first-letter{text-transform:uppercase}
 .nx button small.pl{color:var(--ink);font-weight:600}
-.tp button.ctr{border-color:var(--gold);color:var(--ink);background:var(--gold-soft)}
 .pickrow{display:grid;gap:6px}
 .slot{position:relative}
 .slot input{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px}
@@ -144,19 +154,179 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
   .line{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 @media (prefers-reduced-motion:no-preference){ .comp{transition:opacity .15s} }
+
+
+/* ---- flikar & spelarprofiler ---- */
+.tabs{display:flex;gap:4px;margin:4px 0 16px;border-bottom:1px solid var(--line)}
+.tabs a{font:600 15px "Barlow Semi Condensed",sans-serif;color:var(--muted);text-decoration:none;padding:7px 14px;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tabs a.on{color:var(--ink);border-bottom-color:var(--gold)}
+.pcard{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;margin-bottom:14px}
+.pcard h2{font:400 20px/1.1 Marcellus,Georgia,serif;margin:0 0 10px}
+.lineup{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.lineup label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:3px}
+.lineup select,.pedit input[type=text]{width:100%;font:inherit;font-size:15px;padding:7px 8px;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--ink)}
+.profs{display:grid;grid-template-columns:180px 1fr;gap:14px}
+.plist{display:flex;flex-direction:column;gap:5px}
+.plist button{font:inherit;text-align:left;font-size:15px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:5px;padding:7px 10px;cursor:pointer}
+.plist button.on{border-color:var(--blue);background:var(--blue-soft);font-weight:700}
+.plist button.add{border-style:dashed;color:var(--muted)}
+.plist button small{display:block;color:var(--muted);font-size:12px;font-weight:500}
+.pedit .top{display:flex;gap:8px;align-items:center;margin-bottom:10px}
+.pedit .top input{flex:1}
+.pedit .top button,.ptools button,.prole .add button{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:5px;padding:6px 11px;cursor:pointer}
+.pedit .top button.del{color:var(--red);border-color:var(--red)}
+.prole{border-top:1px solid var(--line);padding:8px 0}
+.prole h3{font:700 14px "Barlow Semi Condensed",sans-serif;margin:0 0 6px;color:var(--muted)}
+.prole h3 b{color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.chip{font-size:14px;border:1px solid var(--line);border-radius:4px;padding:2px 4px 2px 8px;display:inline-flex;align-items:center;gap:3px;background:var(--bg)}
+.chip button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:15px;padding:0 3px}
+.chip button:hover{color:var(--red)}
+.prole .add{display:flex;gap:6px}
+.prole .add input{flex:1;font-size:14px;padding:5px 8px}
+.ptools{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.ch.np{border-style:dashed;opacity:.7}
+@media (max-width:720px){ .lineup{grid-template-columns:repeat(2,minmax(0,1fr))} .profs{grid-template-columns:1fr} }
+
+/* ==== Champion select-stil för draften ==== */
+.board .side{--ink:#e8e2d0;--muted:#8d9aa8;--line:#2b3746;--bg:#0c121a;--panel:#131b26;--blue:#5b9be0;--blue-soft:#13283f;--red:#e06b6b;--red-soft:#351a1c;--gold:#c8aa6e;--gold-soft:#2a2414;
+  color:var(--ink);background:radial-gradient(120% 70% at 50% 0%,#1a2536 0%,#0b1119 70%);border:1px solid #3a3326;border-top:3px solid var(--blue);box-shadow:inset 0 0 0 1px rgba(200,170,110,.06),0 6px 18px rgba(0,0,0,.25)}
+.board .side.them{border-top-color:var(--red)}
+.board .side h2{letter-spacing:.04em;text-transform:uppercase;font-size:17px}
+.board .grp{text-transform:uppercase;letter-spacing:.08em;font-size:11.5px;color:#a08a5c;border-bottom:1px solid #2a3442;padding-bottom:4px;margin-bottom:7px}
+.ic{position:relative;display:inline-flex;align-items:center;justify-content:center;flex:none;overflow:hidden;background:#05080c;color:#9aa6b2;font-weight:700;border:1px solid #4a5260;vertical-align:middle}
+.ic::before{content:attr(data-i);font-size:.42em;letter-spacing:.02em}
+.ic img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(1.1)}
+.ic.xs{width:18px;height:18px;border-radius:3px;margin-right:4px;font-size:18px}
+.ic.sm{width:28px;height:28px;border-radius:4px;font-size:28px}
+.ic.big{width:100%;height:100%;border:0;font-size:40px}
+/* porträttram */
+.pf{display:block;width:42px;height:42px;border:2px solid #5d6470;background:#000;box-shadow:inset 0 0 0 1px #000,0 0 0 1px #1d242e;position:relative;overflow:hidden}
+.slot.filled .pf{border-color:var(--gold)}
+.us .slot.filled .pf{box-shadow:0 0 0 1px #000,0 0 8px rgba(91,155,224,.55)}
+.them .slot.filled .pf{box-shadow:0 0 0 1px #000,0 0 8px rgba(224,107,107,.55)}
+/* pick-rader som i klienten */
+.board .pick{grid-template-columns:48px 42px 1fr;gap:0 8px;align-items:center;padding:6px 8px;background:linear-gradient(180deg,#1c2531,#0d1219);border:1px solid #2c3746;border-radius:4px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 -3px 8px rgba(0,0,0,.45)}
+.board .us .pick{grid-template-columns:34px 48px 42px 1fr}
+.board .pick .pf{width:46px;height:46px}
+.board .pick .rl{height:auto;line-height:1.1;border:0;background:none;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#a08a5c;text-align:left;padding:0}
+.board .pick input{height:36px;background:transparent;border:1px solid transparent;border-radius:3px;font-size:16px;color:var(--ink)}
+.board .pick input:hover{border-color:#2f3b4a}
+.board .pick input:focus{background:#0a0f15;border-color:var(--gold);outline:none}
+.board .us .pick.filled input,.board .them .pick.filled input{background:transparent;border-color:transparent;font-weight:700;color:#fff}
+.board .us .pick.filled{border-color:#2f4a6a;background:linear-gradient(90deg,rgba(91,155,224,.16),transparent 70%),linear-gradient(180deg,#1c2531,#0d1219)}
+.board .them .pick.filled{border-color:#5a3236;background:linear-gradient(90deg,rgba(224,107,107,.16),transparent 70%),linear-gradient(180deg,#1c2531,#0d1219)}
+.board .pick .x{color:#8d9aa8}
+.board .pickrow{gap:5px}
+.board .tph{margin-top:0}
+/* bans: porträtt med rött kryss */
+.board .banrow{gap:6px;margin-bottom:10px}
+.board .ban{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 3px 4px;background:linear-gradient(180deg,#171f2a,#0b1016);border:1px solid #2a3442;border-radius:4px}
+.board .ban::before{content:none}
+.board .ban .pf{width:40px;height:40px}
+.board .ban .pf:empty::after{content:"⊘";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#3c4654;font-size:18px}
+.board .ban.filled .pf{border-color:#7a2c2c}
+.board .ban.filled .pf .ic img{filter:grayscale(1) brightness(.7)}
+.board .ban.filled .pf::after{content:"";position:absolute;left:-20%;top:50%;width:140%;height:3px;background:#d44;transform:rotate(-45deg);box-shadow:0 0 4px rgba(0,0,0,.8)}
+.board .ban input{height:22px;width:100%;padding:0 2px;font-size:11.5px;text-align:center;background:transparent;border:1px solid transparent;color:var(--ink);text-decoration:none!important}
+.board .ban input::placeholder{color:#5b6573}
+.board .ban input:focus{background:#0a0f15;border-color:var(--gold);outline:none}
+.board .ban.filled input,.board .us .ban.filled input,.board .them .ban.filled input{color:#c9a3a3;padding:0 2px;background:transparent;border-color:transparent}
+.board .ban .x{top:4px;right:2px;transform:none;font-size:13px}
+/* ban-tips & pick-tips med ikoner */
+.bt button{display:flex;gap:6px;align-items:center}
+.bt button>span:last-child{min-width:0}
+.tpi{align-items:center}
+@media (max-width:720px){ .board .us .pick{grid-template-columns:34px 44px 38px 1fr} }
+
+/* ban-tips-kolumn */
+.btcol{--ink:#e8e2d0;--muted:#8d9aa8;--line:#2b3746;--red:#e06b6b;--red-soft:#351a1c;color:var(--ink);background:radial-gradient(120% 70% at 50% 0%,#1a2536 0%,#0b1119 70%);border:1px solid #3a3326;border-top:3px solid var(--red);border-radius:8px;padding:10px;position:sticky;top:calc(10px + env(safe-area-inset-top,0px))}
+.btcol .bt{display:flex;flex-direction:column;gap:5px;margin:0}
+.btcol .btl{font:400 15px/1.2 Marcellus,Georgia,serif;letter-spacing:.06em;text-transform:uppercase;color:var(--red);margin-bottom:4px}
+.btcol .bt button{background:linear-gradient(180deg,#1c2531,#0d1219);border:1px solid #2c3746;border-left:3px solid #6a2c30;color:var(--ink);padding:5px 7px;width:100%}
+.btcol .bt button:hover,.btcol .bt button:focus-visible{border-color:var(--red);outline:none}
+.btcol .bt button b{font-size:13.5px}
+.btcol .bt button small{color:var(--muted);font-size:11px}
+.btcol .bn{font:400 15px/1 Marcellus,serif;color:#a08a5c;width:16px;flex:none;text-align:center}
+@media (max-width:980px){ .board{grid-template-columns:1fr 1fr} .btcol{grid-column:1/-1;position:static} .btcol .bt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))} .btcol .btl{grid-column:1/-1} }
+@media (max-width:720px){ .board{grid-template-columns:1fr} }
+
+.board .slot{cursor:pointer}
+.board .slot input{cursor:pointer}
+.board .slot.filled input{cursor:default}
+.board .ban:hover:not(.filled),.board .pick:hover:not(.filled){border-color:#4a5a70}
+.board .pick .rl{pointer-events:none;user-select:none;min-width:0}
+.board .pick .rl b{display:block;color:var(--ink);font-size:13px;font-weight:700;text-transform:none;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px}
+.board .us .pick{grid-template-columns:34px 48px 76px 1fr}
+@media (max-width:720px){ .board .us .pick{grid-template-columns:34px 44px 66px 1fr} }
+
+/* nästa pick i samma champion select-stil */
+.next{--ink:#e8e2d0;--muted:#8d9aa8;--line:#2b3746;--bg:#0c121a;--blue:#5b9be0;--red:#e06b6b;--gold:#c8aa6e;
+  color:var(--ink);background:radial-gradient(120% 80% at 50% 0%,#1a2536 0%,#0b1119 75%);border:1px solid #3a3326;border-top:3px solid var(--gold);border-left:1px solid #3a3326;border-radius:8px;padding:10px 12px 12px}
+.next h3{font:400 15px/1.2 Marcellus,Georgia,serif;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin:0 0 8px}
+.next h3 span{font:500 12.5px "Barlow Semi Condensed",sans-serif;text-transform:none;letter-spacing:0;color:var(--muted)}
+.next h3 span b{color:var(--ink)}
+.nx button{display:flex;gap:8px;align-items:center;background:linear-gradient(180deg,#1c2531,#0d1219);border:1px solid #2c3746;border-radius:4px;color:var(--ink);padding:6px 9px;box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.nx button:hover,.nx button:focus-visible{border-color:var(--gold);outline:none}
+.nx button .nt{min-width:0}
+.nx button em{font-style:normal;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#a08a5c;margin-left:3px}
+.nx button small{color:var(--muted)}
+.nx button small.pl{color:#d8d2c0}
+.nx button small.k{color:#7fb3ea}
+.nx button small.w{color:#e88a8a}
+.nx button.n{border-style:dashed;border-color:#6a5a36}
+.next .nxh{color:var(--gold);text-transform:uppercase;letter-spacing:.06em;font-size:11.5px}
+.next .last{color:var(--muted)}
+.next .last b{color:var(--red)}
+.board .slot.filled input{pointer-events:none}
+
+/* större ta-bort-knappar */
+.board .slot .x{width:30px;height:30px;display:none;align-items:center;justify-content:center;padding:0;font-size:22px;line-height:1;border-radius:50%;background:rgba(0,0,0,.45);border:1px solid #3a4656;color:#c9d1da;cursor:pointer}
+.board .slot.filled .x{display:flex}
+.board .slot .x:hover,.board .slot .x:focus-visible{background:#5a1f22;border-color:var(--red);color:#fff;outline:none}
+.board .pick .x{right:8px}
+.board .ban .x{width:24px;height:24px;font-size:17px;top:3px;right:3px;opacity:1}
+.board .ban.filled .x{display:flex}
+
+/* ta bort: inget kryss förrän man hoverar, klick var som helst tar bort */
+.board .slot .x,.board .slot.filled .x,.board .ban.filled .x{display:none!important}
+.board .slot.filled{cursor:pointer}
+.board .ban.filled:hover::after{content:"×";position:absolute;inset:0;display:flex;align-items:flex-start;padding-top:6px;justify-content:center;font-size:42px;line-height:40px;font-weight:300;color:#fff;background:rgba(110,18,24,.62);border:1px solid var(--red);border-radius:4px;pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,.6)}
+.board .ban{position:relative}
+.board .pick.filled:hover .pf::after{content:"×";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:1;font-weight:300;color:#fff;background:rgba(110,18,24,.66);pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,.6);z-index:2}
+.board .pick.filled:hover{border-color:var(--red)!important}
+/* ---- musikspelare ---- */
+.mp-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+.mp-btn.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft),0 4px 14px rgba(0,0,0,.3)}
+.mp{position:fixed;right:16px;bottom:calc(72px + env(safe-area-inset-bottom,0px));z-index:50;width:min(260px,calc(100vw - 32px));background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:8px;padding:10px 12px;box-shadow:0 8px 24px rgba(0,0,0,.35);display:none}
+.mp.open{display:block}
+.mp h4{font:400 15px/1.2 Marcellus,Georgia,serif;margin:0 0 8px}
+.mp .row{display:flex;gap:6px;align-items:center}
+.mp button{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:5px;padding:5px 10px;cursor:pointer;min-width:40px}
+.mp button:hover,.mp button:focus-visible{border-color:var(--gold);outline:none}
+.mp input[type=range]{flex:1;min-width:0;accent-color:var(--gold)}
+.mpl{position:relative}
+.mplm{display:none;position:absolute;left:0;bottom:100%;min-width:170px;background:var(--panel);border:1px solid var(--line);border-bottom:3px solid var(--gold);border-radius:6px;padding:4px;box-shadow:0 -8px 20px rgba(0,0,0,.3);z-index:2}
+.mpl:hover .mplm,.mpl:focus-within .mplm,.mpl.open .mplm{display:block}
+.mplm button{display:block;width:100%;text-align:left;border:0!important;background:none!important;padding:6px 8px!important;font-weight:500!important;border-radius:4px}
+.mplm button:hover{background:var(--bg)!important}
+.mplm button.on{font-weight:700!important;color:var(--gold)}
+.mp .vl{font-size:12.5px;color:var(--muted);width:32px;text-align:right;font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Teamcomps</h1>
+  <nav class="tabs" aria-label="Flikar"><a href="#draft" data-tab="draft">Draft</a><a href="#spelare" data-tab="spelare">Spelare</a></nav>
+  <div id="tab-draft">
   <p class="intro">Skriv in bans och picks. Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
 
   <section class="board" aria-label="Draft">
+    <aside class="btcol" aria-label="Ban-tips"><div class="bt" id="bantips"></div></aside>
     <div class="side us">
-      <h2>Vi</h2>
+      <h2>GD</h2>
       <p class="grp">Bans</p>
       <div class="banrow" data-base="0"></div>
-      <div class="bt" id="bantips"></div>
       <p class="grp">Picks</p>
       <div class="pickrow" data-base="10"></div>
     </div>
@@ -176,9 +346,32 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
   <div class="next" aria-live="polite"><h3>Tips: nästa pick<span id="nxsub">klicka för att låsa · tar hänsyn till fiendens picks</span></h3><div class="nx" id="nx"></div><p class="nxh" id="nicheh" style="display:none">Nisch / counterpicks mot deras picks</p><div class="nx" id="niche"></div><p class="last" id="last"></p></div>
   <ol class="comps" id="list"></ol>
   <p class="legend" id="datasrc">Ingen data.json hittad – sidan använder inbyggd data.</p>
-  <p class="legend">Små rutor till vänster om era roller = 2 tips per roll (blå = passar den comp ni ser ut att gå mot, guld = counterpick). Ban-tips under era bans väger fiendens synergier och vad som kontrar er bästa comp. Fiendens picks justerar poängen: compen får plus om den kontrar deras stil (dive, poke, engage …) och minus om den kontras. Blå champ = er låsta pick. Röd streckad = er pick finns inte i compens plan (avdrag). Under varje pick visas de två närmaste alternativen som inte är bannade. Guldmarkerad champ = alternativ som ersätter en bannad champ (överstruket namn). Poäng = meta-vikt minus avdrag för varje byte; byte i bot-paret drar extra eftersom synergin sitter i paret.</p>
+  <p class="legend">Pick-Tips till vänster om era roller: håll musen över för 6 förslag rankade efter comp, lagkamrater och motståndare (blått namn = passar er mål-comp, guld = counterpick). Ban-tips under era bans väger fiendens synergier och vad som kontrar er bästa comp. Fiendens picks justerar poängen: compen får plus om den kontrar deras stil (dive, poke, engage …) och minus om den kontras. Blå champ = er låsta pick. Röd streckad = er pick finns inte i compens plan (avdrag). Under varje pick visas de två närmaste alternativen som inte är bannade. Guldmarkerad champ = alternativ som ersätter en bannad champ (överstruket namn). Poäng = meta-vikt minus avdrag för varje byte; byte i bot-paret drar extra eftersom synergin sitter i paret.</p>
+  </div>
+  <div id="tab-spelare" hidden>
+    <p class="intro">Välj vem som spelar vilken roll. Draft-fliken använder sedan spelarens champs för just den rollen. Profilerna sparas i din webbläsare.</p>
+    <section class="pcard"><h2>Lineup</h2><div class="lineup" id="lineup"></div></section>
+    <section class="pcard"><h2>Profiler</h2>
+      <div class="profs"><div class="plist" id="plist"></div><div class="pedit" id="pedit"></div></div>
+      <div class="ptools"><button type="button" id="pExport">Kopiera profiler</button><button type="button" id="pImport">Klistra in profiler</button><button type="button" id="pReset">Återställ standard</button><span class="note" id="pMsg"></span></div>
+    </section>
+  </div>
+  <datalist id="champlist"></datalist>
 </div>
 
+
+<button class="mp-btn" id="mpBtn" type="button" title="Musik" aria-label="Öppna musikspelare">🎵</button>
+<div class="mp" id="mp" role="dialog" aria-label="Musikspelare">
+  <h4 id="mpTitle">Champion Select</h4>
+  <div class="row">
+    <div class="mpl"><button type="button" id="mpListBtn" aria-haspopup="true" aria-label="Välj låt" title="Välj låt">♫ ▴</button><div class="mplm" id="mpList" role="menu"></div></div>
+    <button type="button" id="mpToggle" aria-label="Spela">▶</button>
+    <button type="button" id="mpRestart" title="Spela från början" aria-label="Spela från början">⏮</button>
+    <input type="range" id="mpVol" min="0" max="100" value="30" aria-label="Volym">
+    <span class="vl" id="mpVl">30 %</span>
+  </div>
+</div>
+<audio id="mpAudio" src="music.mp3" preload="none" loop></audio>
 <script>
 let DATA=null; // fylls från data.json om den finns
 const CHAMPS=["Aatrox","Ahri","Akali","Akshan","Alistar","Ambessa","Amumu","Anivia","Annie","Aphelios","Ashe","Aurelion Sol","Aurora","Azir","Bard","Bel'Veth","Blitzcrank","Brand","Braum","Briar","Caitlyn","Camille","Cassiopeia","Cho'Gath","Corki","Darius","Diana","Dr. Mundo","Draven","Ekko","Elise","Evelynn","Ezreal","Fiddlesticks","Fiora","Fizz","Galio","Gangplank","Garen","Gnar","Gragas","Graves","Gwen","Hecarim","Heimerdinger","Hwei","Illaoi","Irelia","Ivern","Janna","Jarvan IV","Jax","Jayce","Jhin","Jinx","K'Sante","Kai'Sa","Kalista","Karma","Karthus","Kassadin","Katarina","Kayle","Kayn","Kennen","Kha'Zix","Kindred","Kled","Kog'Maw","LeBlanc","Lee Sin","Leona","Lillia","Lissandra","Locke","Lucian","Lulu","Lux","Malphite","Malzahar","Maokai","Master Yi","Mel","Milio","Miss Fortune","Mordekaiser","Morgana","Naafiri","Nami","Nasus","Nautilus","Neeko","Nidalee","Nilah","Nocturne","Nunu & Willump","Olaf","Orianna","Ornn","Pantheon","Poppy","Pyke","Qiyana","Quinn","Rakan","Rammus","Rek'Sai","Rell","Renata Glasc","Renekton","Rengar","Riven","Rumble","Ryze","Samira","Sejuani","Senna","Seraphine","Sett","Shaco","Shen","Shyvana","Singed","Sion","Sivir","Skarner","Smolder","Sona","Soraka","Swain","Sylas","Syndra","Tahm Kench","Taliyah","Talon","Taric","Teemo","Thresh","Tristana","Trundle","Tryndamere","Twisted Fate","Twitch","Udyr","Urgot","Varus","Vayne","Veigar","Vel'Koz","Vex","Vi","Viego","Viktor","Vladimir","Volibear","Warwick","Wukong","Xayah","Xerath","Xin Zhao","Yasuo","Yone","Yorick","Yunara","Yuumi","Zaahen","Zac","Zed","Zeri","Ziggs","Zilean","Zoe","Zyra"];
@@ -212,7 +405,7 @@ function search(q,self){
   const nq=norm(q); const taken=new Set(bans.filter((b,i)=>b&&i!==self));
   const ri=ourRole(self);
   if(!nq){
-    const base=ri>=0?ROLEPOOL[ri]:CHAMPS.filter(c=>POOL.has(c));
+    const base=ri>=0?[...new Set([...(POOLS[ri]||[]),...ROLEPOOL[ri]])]:CHAMPS.filter(c=>POOL.has(c)||POOLSET.has(c));
     return base.filter(c=>!taken.has(c)).slice(0,8);
   }
   const list=CHAMPS.filter(c=>!taken.has(c));
@@ -233,7 +426,7 @@ function build(){
       const who=(base===0||base===10)?"Vår":"Fiendens";
       const ph=isPick?"Välj champ":"Ban";
       const slot=document.createElement("div"); slot.className="slot "+(isPick?"pick":"ban");
-      slot.innerHTML=`${ourPick?`<span class="tp" aria-label="Tips för ${R[k]}"></span>`:""}${isPick?`<span class="rl">${ourPick?R[k]:k+1}</span>`:""}<input type="text" autocomplete="off" spellcheck="false" placeholder="${ph}" aria-label="${who} ${isPick?'pick':'ban'} ${ourPick?R[k]:k+1}"><button class="x" type="button" aria-label="Ta bort">×</button>`;
+      slot.innerHTML=`${ourPick?`<span class="tp" aria-label="Tips för ${R[k]}"></span>`:""}<span class="pf" aria-hidden="true"></span>${isPick?`<span class="rl">${ourPick?R[k]:k+1}</span>`:""}<input type="text" autocomplete="off" spellcheck="false" placeholder="${ph}" aria-label="${who} ${isPick?'pick':'ban'} ${ourPick?R[k]:k+1}"><button class="x" type="button" aria-label="Ta bort">×</button>`;
       row.appendChild(slot);
       const inp=slot.querySelector("input"); inp.dataset.idx=idx; slot.dataset.idx=idx; let dd=null, hi=0, opts=[];
       const close=()=>{if(dd){dd.remove();dd=null}};
@@ -241,13 +434,13 @@ function build(){
         opts=search(bans[idx]?"":inp.value,idx); hi=0; close();
         if(!opts.length) return;
         dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
-        opts.forEach((c,i)=>{const li=document.createElement("li"); li.innerHTML=c+(POOL.has(c)?'<span class="pool">i er pool</span>':''); if(i===hi) li.className="on";
+        opts.forEach((c,i)=>{const li=document.createElement("li"); li.innerHTML=c+(POOLSET.has(c)?'<span class="pool">i er pool</span>':''); if(i===hi) li.className="on";
           li.addEventListener("mousedown",e=>{e.preventDefault(); pick(c)}); dd.appendChild(li)});
         slot.appendChild(dd);
       };
       const paint=()=>{ if(!dd) return; [...dd.children].forEach((li,i)=>li.classList.toggle("on",i===hi)); dd.children[hi]?.scrollIntoView({block:"nearest"}) };
-      const pick=c=>{bans[idx]=c; inp.value=c; slot.classList.add("filled"); close(); save(); render(); const nx=document.querySelector(`[data-idx="${idx+1}"]`); if(nx&&!bans[idx+1]&&(idx+1)%5!==0) nx.focus(); else inp.blur()};
-      const clear=()=>{bans[idx]=null; inp.value=""; slot.classList.remove("filled"); save(); render()};
+      const pick=c=>{bans[idx]=c; inp.value=c; inp.readOnly=true; slot.classList.add("filled"); close(); inp.blur(); save(); render();};
+      const clear=()=>{bans[idx]=null; inp.value=""; inp.readOnly=false; slot.classList.remove("filled"); save(); render()};
       inp.addEventListener("focus",()=>{ if(!bans[idx]) open() });
       inp.addEventListener("input",()=>{ if(bans[idx]){bans[idx]=null; slot.classList.remove("filled"); render(); save()} open() });
       inp.addEventListener("keydown",e=>{
@@ -255,11 +448,14 @@ function build(){
         else if(e.key==="ArrowUp"){e.preventDefault(); hi=Math.max(hi-1,0); paint()}
         else if(e.key==="Enter"){ if(dd&&opts[hi]){e.preventDefault(); pick(opts[hi])} }
         else if(e.key==="Escape"){close()}
-        else if(e.key==="Backspace"&&bans[idx]){e.preventDefault(); clear(); open()}
       });
       inp.addEventListener("blur",()=>{ setTimeout(close,80); if(!bans[idx]) inp.value="" });
-      slot.querySelector(".x").addEventListener("click",()=>{clear(); inp.focus()});
-      slot._set=c=>{ if(c){bans[idx]=c; inp.value=c; slot.classList.add("filled")} };
+      slot.addEventListener("click",e=>{ if(e.target.closest(".tp")||e.target.closest(".dd")) return;
+        if(bans[idx]){ e.preventDefault(); clear(); close(); inp.blur(); return; }
+        if(e.target!==inp) inp.focus(); });
+      slot.querySelector(".x").addEventListener("mousedown",e=>e.preventDefault());
+      slot.querySelector(".x").addEventListener("click",e=>{e.preventDefault(); e.stopPropagation(); clear(); close(); inp.blur();});
+      slot._set=c=>{ if(c){bans[idx]=c; inp.value=c; inp.readOnly=true; inp.blur(); slot.classList.add("filled")} };
     }
   });
 }
@@ -287,7 +483,7 @@ const CNT={
 "Akali":{c:3,p:3},"Naafiri":{c:3,p:2},"Sylas":{e:2,p:1},"Yone":{c:2,p:2},"Ryze":{t:2},"Xerath":{c:3},"Ziggs":{c:2},
 "Rakan":{p:3,c:3},"Pyke":{c:3,p:2},"Thresh":{c:3,p:2},"Bard":{c:3,p:2},"Nami":{d:2,s:2},"Karma":{d:3,e:2}};
 // Era fulla pooler per roll
-const POOLS=[
+let POOLS=[
  ["Sion","Zaahen","Ambessa","Pantheon","Maokai","Dr. Mundo"],
  ["Jarvan IV","Elise","Warwick","Sejuani","Cho'Gath","Kha'Zix","Udyr","Nocturne","Vi"],
  ["Orianna","Swain","Sylas","Ryze","Syndra","Akali","Lissandra","Yone","Ziggs","Naafiri","Vex","Taliyah","Mel","Aurora","Xerath","Galio","Cassiopeia","Viktor"],
@@ -343,17 +539,45 @@ function evalComp(c,gone,ours,enemy=[]){
       lineup.push({r:R[ri],c:mine,lock:j>=0,off:j<0,alts});
       return;
     }
-    const avail=x=>!gone.has(x)&&!oursSet.has(x);
-    const i=opts.findIndex(avail);
+    const rp=(typeof POOLS!=="undefined"&&POOLS[ri])||[];
+    const free=x=>!gone.has(x)&&!oursSet.has(x), inP=x=>!rp.length||rp.includes(x);
+    let i=opts.findIndex(x=>free(x)&&inP(x)), np=false;
+    if(i<0&&rp.length){ // ingen av compens champs finns i spelarens pool – ta bästa champ ur poolen
+      const own=rp.filter(free).sort((a,b)=>(TIER[b]||0)-(TIER[a]||0));
+      if(own.length){ score-=8; lineup.push({r:R[ri],c:own[0],sub:true,was:opts[0],alts:own.slice(1,3),pool:true}); return; }
+    }
+    if(i<0){ i=opts.findIndex(free); np=i>=0; }
     if(i<0){ dead=dead||R[ri]; lineup.push({r:R[ri],c:"–",alts:[]}); return; }
     if(i>0){ score-=4+i*3; if(ri>=3) score-=4; }
-    const alts=opts.slice(i+1).filter(avail).slice(0,2);
-    lineup.push({r:R[ri],c:opts[i],sub:i>0,was:opts[0],alts});
+    if(np) score-=12;
+    let alts=opts.slice(i+1).filter(x=>free(x)&&inP(x));
+    if(alts.length<2) rp.filter(x=>free(x)&&x!==opts[i]&&!alts.includes(x)).sort((a,b)=>(TIER[b]||0)-(TIER[a]||0)).forEach(x=>alts.push(x));
+    lineup.push({r:R[ri],c:opts[i],sub:i>0,was:opts[0],alts:alts.slice(0,2),np});
   });
   const vs=compVs(c,enemy); score+=vs.adj;
   return {c,score:Math.max(0,Math.min(100,score)),raw:score,lineup,dead,match,picked,vs};
 }
 
+
+// ---- champ-ikoner från Data Dragon ----
+const DD_FIX={"Wukong":"MonkeyKing","Nunu & Willump":"Nunu","Renata Glasc":"Renata","LeBlanc":"Leblanc","Kai'Sa":"Kaisa","Kha'Zix":"Khazix","Cho'Gath":"Chogath","Vel'Koz":"Velkoz","Bel'Veth":"Belveth","Dr. Mundo":"DrMundo"};
+let DDV=null, DDMAP={};  // version + namn -> {id,key} från Data Dragon
+function ddId(c){ return (DDMAP[c]&&DDMAP[c].id)||((typeof DATA!=="undefined"&&DATA&&DATA.champions&&DATA.champions[c]&&DATA.champions[c].id))||DD_FIX[c]||c.replace(/[^A-Za-z0-9]/g,""); }
+const CD_KEY={"Annie": 1, "Olaf": 2, "Galio": 3, "Twisted Fate": 4, "Xin Zhao": 5, "Urgot": 6, "LeBlanc": 7, "Vladimir": 8, "Fiddlesticks": 9, "Kayle": 10, "Master Yi": 11, "Alistar": 12, "Ryze": 13, "Sion": 14, "Sivir": 15, "Soraka": 16, "Teemo": 17, "Tristana": 18, "Warwick": 19, "Nunu & Willump": 20, "Miss Fortune": 21, "Ashe": 22, "Tryndamere": 23, "Jax": 24, "Morgana": 25, "Zilean": 26, "Singed": 27, "Evelynn": 28, "Twitch": 29, "Karthus": 30, "Cho'Gath": 31, "Amumu": 32, "Rammus": 33, "Anivia": 34, "Shaco": 35, "Dr. Mundo": 36, "Sona": 37, "Kassadin": 38, "Irelia": 39, "Janna": 40, "Gangplank": 41, "Corki": 42, "Karma": 43, "Taric": 44, "Veigar": 45, "Trundle": 48, "Swain": 50, "Caitlyn": 51, "Blitzcrank": 53, "Malphite": 54, "Katarina": 55, "Nocturne": 56, "Maokai": 57, "Renekton": 58, "Jarvan IV": 59, "Elise": 60, "Orianna": 61, "Wukong": 62, "Brand": 63, "Lee Sin": 64, "Vayne": 67, "Rumble": 68, "Cassiopeia": 69, "Skarner": 72, "Heimerdinger": 74, "Nasus": 75, "Nidalee": 76, "Udyr": 77, "Poppy": 78, "Gragas": 79, "Pantheon": 80, "Ezreal": 81, "Mordekaiser": 82, "Yorick": 83, "Akali": 84, "Kennen": 85, "Garen": 86, "Leona": 89, "Malzahar": 90, "Talon": 91, "Riven": 92, "Kog'Maw": 96, "Shen": 98, "Lux": 99, "Xerath": 101, "Shyvana": 102, "Ahri": 103, "Graves": 104, "Fizz": 105, "Volibear": 106, "Rengar": 107, "Varus": 110, "Nautilus": 111, "Viktor": 112, "Sejuani": 113, "Fiora": 114, "Ziggs": 115, "Lulu": 117, "Draven": 119, "Hecarim": 120, "Kha'Zix": 121, "Darius": 122, "Jayce": 126, "Lissandra": 127, "Diana": 131, "Quinn": 133, "Syndra": 134, "Aurelion Sol": 136, "Kayn": 141, "Zoe": 142, "Zyra": 143, "Kai'Sa": 145, "Seraphine": 147, "Gnar": 150, "Zac": 154, "Yasuo": 157, "Vel'Koz": 161, "Taliyah": 163, "Camille": 164, "Akshan": 166, "Bel'Veth": 200, "Braum": 201, "Jhin": 202, "Kindred": 203, "Zeri": 221, "Jinx": 222, "Tahm Kench": 223, "Briar": 233, "Viego": 234, "Senna": 235, "Lucian": 236, "Zed": 238, "Kled": 240, "Ekko": 245, "Qiyana": 246, "Vi": 254, "Aatrox": 266, "Nami": 267, "Azir": 268, "Yuumi": 350, "Samira": 360, "Thresh": 412, "Illaoi": 420, "Rek'Sai": 421, "Ivern": 427, "Kalista": 429, "Bard": 432, "Rakan": 497, "Xayah": 498, "Ornn": 516, "Sylas": 517, "Neeko": 518, "Aphelios": 523, "Rell": 526, "Pyke": 555, "Vex": 711, "Yone": 777, "Ambessa": 799, "Mel": 800, "Yunara": 804, "Locke": 805, "Sett": 875, "Lillia": 876, "Gwen": 887, "Renata Glasc": 888, "Aurora": 893, "Nilah": 895, "K'Sante": 897, "Smolder": 901, "Milio": 902, "Zaahen": 904, "Hwei": 910, "Naafiri": 950};
+function iconCD(c){ const k=CD_KEY[c]||(DDMAP[c]&&DDMAP[c].key); return k?`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${k}.png`:""; }
+function iconUrl(c){ const v=DDV||(typeof DATA!=="undefined"&&DATA&&DATA.ddragon)||"16.22.1"; return `https://ddragon.leagueoflegends.com/cdn/${v}/img/champion/${ddId(c)}.png`; }
+function iconAlt(c){ const k=DDMAP[c]&&DDMAP[c].key; return k?`https://raw.communitydragon.org/latest/plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/${k}.png`:""; }
+function icErr(img){ const alt=img.dataset.alt; if(alt&&!img.dataset.tried){ img.dataset.tried="1"; img.src=alt; } else img.remove(); }
+(async()=>{ try{
+  const v=(await (await fetch("https://ddragon.leagueoflegends.com/api/versions.json")).json())[0];
+  const d=(await (await fetch(`https://ddragon.leagueoflegends.com/cdn/${v}/data/en_US/champion.json`)).json()).data;
+  DDV=v; Object.values(d).forEach(x=>{ DDMAP[x.name]={id:x.id,key:x.key}; });
+  document.querySelectorAll(".pf").forEach(pf=>pf.dataset.c="__"); render();
+}catch(e){} })();
+const ini=c=>c.replace(/[^A-Za-z ]/g,"").split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase()||c.slice(0,2);
+function icon(c,cls){ return `<span class="ic ${cls||""}" data-i="${ini(c)}"><img src="${iconCD(c)||iconUrl(c)}" data-alt="${iconCD(c)?iconUrl(c):""}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="icErr(this)"></span>`; }
+function paintPortraits(){ document.querySelectorAll(".slot").forEach(sl=>{ const pf=sl.querySelector(".pf"); if(!pf) return; const c=bans[+sl.dataset.idx]; sl.title=c?`Klicka för att ta bort ${c}`:"";
+  if(pf.dataset.c===(c||"")) return; pf.dataset.c=c||""; pf.innerHTML=c?icon(c,"big"):""; }); }
 function render(){
   const gone=new Set([...bans.slice(0,10),...bans.slice(15,20)].filter(Boolean));
   const ours=bans.slice(10,15);
@@ -363,6 +587,7 @@ function render(){
   const eR=enemyRoles(enemy);
   for(let k=0;k<5;k++){ const rl=document.querySelector(`.slot[data-idx="${15+k}"] .rl`); if(!rl) continue; const c=bans[15+k]; rl.textContent=(c&&eR[c]!==undefined)?R[eR[c]]:String(k+1); rl.title=c?"Trolig roll":""; }
   const res=COMPS.map(c=>evalComp(c,gone,ours,enemy)).sort((a,b)=>(!!a.dead-!!b.dead)||(b.raw-a.raw)||(b.c.s-a.c.s));
+  paintPortraits();
   renderNext(res,gone,ours);
   const list=document.getElementById("list"); list.innerHTML="";
   let rank=0;
@@ -376,9 +601,9 @@ function render(){
       <div class="head"><span class="name">${r.c.n}</span><span class="type">${meta.join(" · ")}</span>
       ${alive?`<span class="score"><span class="bar"><i style="width:${r.score}%"></i></span>${r.score}</span>`:""}</div>
       <div class="line">${r.lineup.map(x=>{
-        const cls="ch"+(x.sub?" sub":"")+(x.lock?" lock":"")+(x.off?" off":"");
-        const tip=x.lock?`${x.c} – er pick`:x.off?`${x.c} – er pick, finns inte i compens plan`:x.sub?`${x.c} ersätter ${x.was}`:x.c;
-        return `<div class="col"><span class="${cls}" title="${tip}"><b>${x.r}</b>${x.c}${x.sub?`<s>${x.was}</s>`:""}</span><div class="alts">${[0,1].map(k=>x.alts[k]?`<span class="alt" title="Alternativ: ${x.alts[k]}">${x.alts[k]}</span>`:`<span class="alt none">–</span>`).join("")}</div></div>`}).join("")}</div>
+        const cls="ch"+(x.sub?" sub":"")+(x.lock?" lock":"")+(x.off?" off":"")+(x.np?" np":"");
+        const tip=x.lock?`${x.c} – er pick`:x.off?`${x.c} – er pick, finns inte i compens plan`:x.np?`${x.c} – finns inte i spelarens pool`:x.pool?`${x.c} – ur spelarens pool (compen vill ha ${x.was})`:x.sub?`${x.c} ersätter ${x.was}`:x.c;
+        return `<div class="col"><span class="${cls}" title="${tip}"><b>${x.r}</b>${x.c!=="–"?icon(x.c,"xs"):""}${x.c}${x.sub?`<s>${x.was}</s>`:""}</span><div class="alts">${[0,1].map(k=>x.alts[k]?`<span class="alt" title="Alternativ: ${x.alts[k]}">${x.alts[k]}</span>`:`<span class="alt none">–</span>`).join("")}</div></div>`}).join("")}</div>
       ${alive&&enemy.length&&(r.vs.g||r.vs.b)?`<p class="vs"><b class="${r.vs.adj>0?"up":r.vs.adj<0?"down":""}">${r.vs.adj>0?"+":""}${r.vs.adj}</b> mot deras picks${r.vs.g?` – bra mot ${r.vs.g}`:""}${r.vs.b?`${r.vs.g?";":" –"} svag mot ${r.vs.b}`:""}</p>`:""}
       ${alive?`<p class="win">${r.c.w}</p>`:`<p class="why">Går inte att spela: alla alternativ för ${r.dead} är bannade eller tagna.</p>`}
     </div>`;
@@ -431,7 +656,7 @@ const synW=(a,b)=>{ let w=(SYNW[a]&&SYNW[a][b])||0;
     const z=f(a,b)||f(b,a); if(z&&z.wr!=null){ w=Math.max(w, z.wr>=53?2:z.wr>=51?1:0); } }
   return w; };
 const META=new Set(["Nocturne","Vi","Cassiopeia","Renata Glasc","Qiyana","Olaf","Syndra","Ezreal","Lee Sin","Jarvan IV","Rumble","Orianna","Akali","Jayce","K'Sante","Nautilus","Locke","Seraphine","Lulu","Jhin","Ambessa","Galio","Wukong","Viktor","Alistar","Gnar","Renekton","Yunara","Kalista"]);
-const POOLSET=new Set(POOLS.flat());
+let POOLSET=new Set(POOLS.flat());
 // Troliga roller per champ (T=Top J=Jgl M=Mid A=ADC S=Sup)
 const ROLE_RAW={T:"Aatrox Ambessa Camille Cho'Gath Darius Dr._Mundo Fiora Gangplank Garen Gnar Gwen Illaoi Irelia Jax Jayce K'Sante Kayle Kennen Kled Malphite Maokai Mordekaiser Nasus Olaf Ornn Pantheon Poppy Quinn Renekton Riven Rumble Sett Shen Singed Sion Teemo Trundle Tryndamere Urgot Volibear Yorick Zaahen Galio Yone Yasuo Akali Sylas Gragas Vladimir Aurora Vayne Heimerdinger Tahm_Kench Ryze Swain Varus",
 J:"Bel'Veth Briar Diana Ekko Elise Evelynn Fiddlesticks Graves Hecarim Ivern Jarvan_IV Karthus Kayn Kha'Zix Kindred Lee_Sin Lillia Master_Yi Naafiri Nidalee Nocturne Nunu_&_Willump Qiyana Rammus Rek'Sai Rengar Sejuani Shaco Shyvana Skarner Udyr Vi Viego Warwick Wukong Xin_Zhao Zac Amumu Gragas Volibear Trundle Pantheon Maokai Talon Taliyah Zed Cho'Gath Poppy Jax Olaf Sylas Gwen Mordekaiser Brand Zyra Jayce",
@@ -484,8 +709,8 @@ function banTips(res,taken,ours){
   const free=[0,1,2,3,4].filter(i=>!bans[i]);
   if(!free.length){ box.style.display="none"; return; } box.style.display="";
   const lab=document.createElement("span"); lab.className="btl"; lab.textContent=enemy.length?"Ban-tips":"Ban-tips (meta)"; box.appendChild(lab);
-  out.slice(0,4).forEach(o=>{const b=document.createElement("button"); b.type="button";
-    b.innerHTML=`<b>${o.C}</b><small>${o.why[0]}</small>`; b.title=o.why.join(" · ");
+  out.slice(0,10).forEach((o,k)=>{const b=document.createElement("button"); b.type="button";
+    b.innerHTML=`${icon(o.C,"sm")}<span><b>${o.C}</b><small>${o.why[0]}</small></span>`; b.title=o.why.join(" · ");
     b.addEventListener("click",()=>{const i=[0,1,2,3,4].find(j=>!bans[j]); if(i===undefined) return; document.querySelector(`.slot[data-idx="${i}"]`)._set(o.C); save(); render();});
     box.appendChild(b)});
 }
@@ -527,7 +752,7 @@ function renderNext(res,gone,ours){
   const niche=enemy.length?all.filter(o=>!top.includes(o)&&o.cv.v>=5).sort((a,b)=>b.cv.v-a.cv.v).slice(0,4):[];
   const btn=(o,isN)=>{const b=document.createElement("button"); b.type="button"; if(isN) b.className="n";
     const meta=isN?`${o.n?o.n+" comps":"utanför compsen"} · ${TL[TIER[o.ch]||0]||"nisch i pro"}`:`${o.n} comps · ${TL[TIER[o.ch]||0]||"nisch"} · ${o.risk===2?"lätt":o.risk?"medel":"svår"} att countra`;
-    b.innerHTML=`<b>${o.ch}</b> ${R[o.ri]}<small>${meta}</small>${o.plan.map(t=>`<small class="pl">${t}</small>`).join("")}${o.cv.reasons.map(t=>`<small class="k">${t}</small>`).join("")}${o.cv.hurt.length?`<small class="w">Svag mot ${o.cv.hurt.join(", ")}</small>`:""}`;
+    b.innerHTML=`${icon(o.ch,"sm")}<span class="nt"><b>${o.ch}</b> <em>${R[o.ri]}</em><small>${meta}</small>${o.plan.map(t=>`<small class="pl">${t}</small>`).join("")}${o.cv.reasons.map(t=>`<small class="k">${t}</small>`).join("")}${o.cv.hurt.length?`<small class="w">Svag mot ${o.cv.hurt.join(", ")}</small>`:""}</span>`;
     b.title=`Lås ${o.ch} som ${R[o.ri]}`;
     b.addEventListener("click",()=>{const sl=document.querySelector(`.slot[data-idx="${10+o.ri}"]`); if(!sl) return; sl._set(o.ch); save(); render();});
     return b;};
@@ -538,17 +763,28 @@ function renderNext(res,gone,ours){
   nh.style.display=niche.length?"":"none"; niche.forEach(o=>ni.appendChild(btn(o,true)));
   const late=lastPick?[]:all.filter(o=>o.n>0&&o.risk===2&&!top.includes(o)&&!niche.includes(o)&&o.cv.v<3).slice(0,4).map(o=>o.ch);
   document.getElementById("last").innerHTML=late.length?`<b>Pickas sist</b> (lätta att countra): ${late.join(", ")}`:"";
-  // 2 tips per roll bredvid era pick-rutor
+  // Pick-Tips: liten ruta med dropdown, 6 förslag per roll
   for(let ri=0;ri<5;ri++){
     const tp=document.querySelector(`.slot[data-idx="${10+ri}"] .tp`); if(!tp) continue; tp.innerHTML="";
     if(ours[ri]) continue;
-    cands.filter(o=>o.ri===ri).sort((a,b)=>b.v-a.v).slice(0,2).forEach(o=>{
-      const b=document.createElement("button"); b.type="button";
-      const why=[...o.plan,...o.cv.reasons].join(" · ")||(o.n?`${o.n} comps`:"");
-      b.innerHTML=`${o.ch}`; b.title=`${o.ch}${why?" – "+why:""}${o.cv.hurt.length?" · svag mot "+o.cv.hurt.join(", "):""}`;
-      if(o.cv.v>=5) b.className="ctr"; else if(o.tg>=18) b.className="tg";
-      b.addEventListener("click",()=>{document.querySelector(`.slot[data-idx="${10+ri}"]`)._set(o.ch); save(); render();});
-      tp.appendChild(b)});
+    const list=cands.filter(o=>o.ri===ri).sort((a,b)=>b.v-a.v).slice(0,6);
+    if(!list.length) continue;
+    const head=document.createElement("button"); head.type="button"; head.className="tph";
+    head.innerHTML=`Pick<br>Tips`; head.setAttribute("aria-label",`Pick-tips för ${R[ri]}`); head.setAttribute("aria-haspopup","true");
+    head.title=`Bäst nu: ${list[0].ch}`;
+    head.addEventListener("click",()=>tp.classList.toggle("open"));
+    const menu=document.createElement("div"); menu.className="tpm"; menu.setAttribute("role","menu");
+    menu.innerHTML=`<div class="tpt">${R[ri]} – rankat efter comp, lagkamrater och motståndare</div>`;
+    list.forEach((o,k)=>{
+      const why=[...o.plan,...o.cv.reasons].slice(0,2);
+      if(!why.length) why.push(o.n?`Passar ${o.n} comps`:"Ur spelarens pool");
+      const b=document.createElement("button"); b.type="button"; b.setAttribute("role","menuitem");
+      b.className="tpi"+(o.cv.v>=5?" ctr":o.tg>=18?" tg":"");
+      b.innerHTML=`<span class="n">${k+1}</span>${icon(o.ch,"sm")}<span class="t"><b>${o.ch}</b>${why.map(w=>`<small>${w}</small>`).join("")}${o.cv.hurt.length?`<small class="w">Svag mot ${o.cv.hurt.join(", ")}</small>`:""}</span>`;
+      b.addEventListener("click",()=>{ tp.classList.remove("open"); document.querySelector(`.slot[data-idx="${10+ri}"]`)._set(o.ch); save(); render(); });
+      menu.appendChild(b);
+    });
+    tp.appendChild(head); tp.appendChild(menu);
   }
   banTips(res,new Set([...taken,...enemy]),ours);
 }
@@ -556,7 +792,7 @@ function save(){ try{ localStorage.setItem("comp-draft",JSON.stringify(bans)) }c
 function load(){ try{ const s=JSON.parse(localStorage.getItem("comp-draft")||localStorage.getItem("comp-bans")||"null"); if(Array.isArray(s)){ s.forEach((c,i)=>{ const sl=document.querySelector(`.slot[data-idx="${i}"]`); if(c&&CHAMPS.includes(c)&&sl) sl._set(c) }) } }catch(e){} }
 
 document.getElementById("reset").addEventListener("click",()=>{
-  document.querySelectorAll(".slot").forEach(s=>{bans[+s.dataset.idx]=null; s.querySelector("input").value=""; s.classList.remove("filled")});
+  document.querySelectorAll(".slot").forEach(s=>{bans[+s.dataset.idx]=null; const i_=s.querySelector("input"); i_.value=""; i_.readOnly=false; s.classList.remove("filled")});
   save(); render();
 });
 
@@ -571,7 +807,99 @@ function applyData(){
   const src=Object.entries(DATA.sources||{}).map(([k,v])=>`${k}: ${v==="ok"?"✓":v}`).join(" · ");
   document.getElementById("datasrc").textContent=`Data: patch ${DATA.patch||"?"}, uppdaterad ${(DATA.updated||"").replace("T"," ").replace("Z"," UTC")} – ${src}`;
 }
-fetch("data.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.champions){ DATA=d; applyData(); render(); } }).catch(()=>{});
+
+// ---- spelarprofiler ----
+const PKEY="tc-profiles-v1";
+const DEF_POOLS=POOLS.map(a=>[...a]);
+// Lagets standardprofiler – det alla ser första gången de öppnar sidan
+const TEAM_DEFAULT={"profiles": [{"id": "thomas", "name": "Thomas", "pools": [["Sion", "Zaahen", "Ambessa", "Pantheon", "Maokai", "Dr. Mundo"], [], [], [], []]}, {"id": "elliot", "name": "Elliot", "pools": [[], ["Jarvan IV", "Elise", "Warwick", "Cho'Gath", "Kha'Zix", "Nocturne", "Vi"], [], [], []]}, {"id": "anders", "name": "Anders", "pools": [[], ["Sejuani", "Cho'Gath", "Udyr", "Nocturne", "Vi"], [], [], []]}, {"id": "anton", "name": "Anton", "pools": [[], [], ["Orianna", "Swain", "Sylas", "Ryze", "Syndra", "Akali", "Lissandra", "Yone", "Ziggs", "Naafiri", "Vex", "Taliyah", "Mel", "Aurora", "Xerath", "Galio", "Cassiopeia", "Viktor"], [], []]}, {"id": "carl", "name": "Carl Johan", "pools": [[], [], [], ["Ashe", "Caitlyn", "Corki", "Draven", "Ezreal", "Jhin", "Jinx", "Kai'Sa", "Kalista", "Kog'Maw", "Lucian", "Miss Fortune", "Nilah", "Samira", "Senna", "Sivir", "Smolder", "Tristana", "Twitch", "Varus", "Vayne", "Xayah", "Yunara", "Zeri"], []]}, {"id": "simon", "name": "Simon", "pools": [[], [], [], [], ["Bard", "Thresh", "Poppy", "Pyke", "Milio", "Lulu", "Rakan", "Karma", "Renata Glasc", "Soraka", "Nami"]]}], "lineup": ["thomas", "elliot", "anton", "carl", "simon"]};
+function defaultProfiles(){ return JSON.parse(JSON.stringify(TEAM_DEFAULT)); }
+let PROF=(()=>{ try{ const d=JSON.parse(localStorage.getItem(PKEY)||"null"); if(d&&Array.isArray(d.profiles)&&d.profiles.length) return d; }catch(e){} return defaultProfiles(); })();
+let PSEL=PROF.profiles[0].id;
+const saveProf=()=>{ try{ localStorage.setItem(PKEY,JSON.stringify(PROF)) }catch(e){} };
+const prof=id=>PROF.profiles.find(p=>p.id===id);
+function applyProfiles(){
+  POOLS=[0,1,2,3,4].map(ri=>{ const p=prof(PROF.lineup[ri]); return p?[...p.pools[ri]]:[]; });
+  POOLSET=new Set(POOLS.flat());
+  for(let k=0;k<5;k++){ const inp=document.querySelector(`input[data-idx="${10+k}"]`); const p=prof(PROF.lineup[k]);
+    if(inp) inp.placeholder=POOLS[k].length?"Välj champ":"Välj champ (tom pool)";
+    const rl=document.querySelector(`.slot[data-idx="${10+k}"] .rl`); if(rl) rl.innerHTML=`${R[k]}<b>${p?p.name:"–"}</b>`; }
+}
+function findChamp(q){ const n=norm(q); if(!n) return null; if(ALIAS[n]) return ALIAS[n]; return CHAMPS.find(c=>norm(c)===n)||CHAMPS.find(c=>norm(c).startsWith(n))||null; }
+function renderPlayers(){
+  const lu=document.getElementById("lineup"); lu.innerHTML="";
+  R.forEach((r,ri)=>{ const w=document.createElement("div"); const id="lu"+ri;
+    w.innerHTML=`<label for="${id}">${r}</label><select id="${id}">${PROF.profiles.map(p=>`<option value="${p.id}"${PROF.lineup[ri]===p.id?" selected":""}>${p.name} (${p.pools[ri].length})</option>`).join("")}</select>`;
+    w.querySelector("select").addEventListener("change",e=>{ PROF.lineup[ri]=e.target.value; saveProf(); applyProfiles(); renderPlayers(); render(); });
+    lu.appendChild(w); });
+  const pl=document.getElementById("plist"); pl.innerHTML="";
+  PROF.profiles.forEach(p=>{ const b=document.createElement("button"); b.type="button"; b.className=p.id===PSEL?"on":"";
+    const roles=R.filter((_,ri)=>p.pools[ri].length).join(", ")||"inga champs än";
+    b.innerHTML=`${p.name}<small>${roles}</small>`; b.addEventListener("click",()=>{PSEL=p.id; renderPlayers();}); pl.appendChild(b); });
+  const add=document.createElement("button"); add.type="button"; add.className="add"; add.textContent="+ Ny profil";
+  add.addEventListener("click",()=>{ const id="p"+Date.now().toString(36); PROF.profiles.push({id,name:"Ny spelare",pools:[[],[],[],[],[]]}); PSEL=id; saveProf(); renderPlayers(); setTimeout(()=>document.querySelector("#pedit .top input")?.select(),0); });
+  pl.appendChild(add);
+  const p=prof(PSEL)||PROF.profiles[0]; const ed=document.getElementById("pedit"); ed.innerHTML="";
+  if(!p) return;
+  const top=document.createElement("div"); top.className="top";
+  top.innerHTML=`<input type="text" aria-label="Namn" value="${p.name.replace(/"/g,"&quot;")}"><button type="button" class="del">Ta bort</button>`;
+  top.querySelector("input").addEventListener("change",e=>{ p.name=e.target.value.trim()||"Namnlös"; saveProf(); applyProfiles(); renderPlayers(); });
+  top.querySelector(".del").addEventListener("click",()=>{ if(PROF.profiles.length<=1) return; if(!confirm(`Ta bort ${p.name}?`)) return;
+    PROF.profiles=PROF.profiles.filter(x=>x!==p); PROF.lineup=PROF.lineup.map(id=>prof(id)?id:PROF.profiles[0].id); PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); });
+  ed.appendChild(top);
+  R.forEach((r,ri)=>{ const box=document.createElement("div"); box.className="prole";
+    const who=R.filter((_,k)=>PROF.lineup[k]===p.id);
+    box.innerHTML=`<h3><b>${r}</b> · ${p.pools[ri].length} champs${PROF.lineup[ri]===p.id?" · spelar denna roll nu":""}</h3><div class="chips"></div><div class="add"><input type="text" list="champlist" placeholder="Lägg till champ (Enter)" aria-label="Lägg till champ som ${r}"><button type="button">Lägg till</button></div>`;
+    const chips=box.querySelector(".chips");
+    p.pools[ri].forEach(c=>{ const ch=document.createElement("span"); ch.className="chip"; ch.innerHTML=`${c}<button type="button" aria-label="Ta bort ${c}">×</button>`;
+      ch.querySelector("button").addEventListener("click",()=>{ p.pools[ri]=p.pools[ri].filter(x=>x!==c); saveProf(); applyProfiles(); renderPlayers(); render(); });
+      chips.appendChild(ch); });
+    const inp=box.querySelector("input"); const go=()=>{ const c=findChamp(inp.value); if(!c){inp.select(); return;} if(!p.pools[ri].includes(c)) p.pools[ri].push(c);
+      saveProf(); applyProfiles(); renderPlayers(); render(); setTimeout(()=>{ const ni=document.querySelectorAll("#pedit .prole input")[ri]; ni&&ni.focus(); },0); };
+    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); go(); } });
+    box.querySelector(".add button").addEventListener("click",go);
+    ed.appendChild(box); });
+}
+document.getElementById("champlist").innerHTML=CHAMPS.map(c=>`<option value="${c.replace(/"/g,"&quot;")}">`).join("");
+const pMsg=t=>{ const m=document.getElementById("pMsg"); m.textContent=t; setTimeout(()=>{ if(m.textContent===t) m.textContent=""; },3000); };
+document.getElementById("pExport").addEventListener("click",()=>{ const t=JSON.stringify(PROF);
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>pMsg("Kopierat – skicka texten till laget")).catch(()=>prompt("Kopiera texten:",t)); });
+document.getElementById("pImport").addEventListener("click",()=>{ const t=prompt("Klistra in profiltext:"); if(!t) return;
+  try{ const d=JSON.parse(t); if(!Array.isArray(d.profiles)||!Array.isArray(d.lineup)) throw 0; PROF=d; PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); pMsg("Profiler inlästa"); }catch(e){ pMsg("Kunde inte läsa texten"); } });
+document.getElementById("pReset").addEventListener("click",()=>{ if(!confirm("Återställ alla profiler till standard?")) return; PROF=defaultProfiles(); PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); });
+// flikar
+function showTab(){ const t=location.hash==="#spelare"?"spelare":"draft";
+  document.getElementById("tab-draft").hidden=t!=="draft"; document.getElementById("tab-spelare").hidden=t!=="spelare";
+  document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.tab===t)); }
+window.addEventListener("hashchange",showTab);
+applyProfiles(); renderPlayers(); render(); showTab();
+
+// ---- musikspelare: en låt, loop, start/paus, från början, volym ----
+(function(){
+  const $=id=>document.getElementById(id);
+  const box=$("mp"), btn=$("mpBtn"), audio=$("mpAudio"), tog=$("mpToggle"), vol=$("mpVol"), vl=$("mpVl");
+  let v=30; try{ const sv=localStorage.getItem("mp-vol"); if(sv!==null) v=+sv; }catch(e){}
+  vol.value=v; vl.textContent=v+" %"; audio.volume=v/100;
+  const paint=()=>{ const on=!audio.paused; tog.textContent=on?"⏸":"▶"; tog.setAttribute("aria-label",on?"Pausa":"Spela"); btn.classList.toggle("on",on); };
+  btn.addEventListener("click",()=>box.classList.toggle("open"));
+  const TRACKS=[{n:"Champion Select",src:audio.dataset.a||"music.mp3"},{n:"Silver Scrapes",src:audio.dataset.b||"silver-scrapes.mp3"}];
+  let cur=0; try{ cur=+(localStorage.getItem("mp-track")||0)||0; }catch(e){} if(!TRACKS[cur]) cur=0;
+  const list=$("mpList"), title=$("mpTitle");
+  function setTrack(k,play){ cur=k; audio.src=TRACKS[k].src; title.textContent=TRACKS[k].n; try{localStorage.setItem("mp-track",k)}catch(e){}
+    [...list.children].forEach((b,i)=>b.classList.toggle("on",i===k));
+    if(play){ audio.currentTime=0; audio.volume=vol.value/100; audio.play().catch(()=>{}); } }
+  TRACKS.forEach((t,k)=>{ const b=document.createElement("button"); b.type="button"; b.setAttribute("role","menuitem"); b.textContent=t.n;
+    b.addEventListener("click",()=>{ list.parentElement.classList.remove("open"); setTrack(k,!audio.paused||true); }); list.appendChild(b); });
+  $("mpListBtn").addEventListener("click",()=>list.parentElement.classList.toggle("open"));
+  setTrack(cur,false);
+  tog.addEventListener("click",()=>{ if(audio.paused){ audio.volume=vol.value/100; audio.play().catch(()=>{}); } else audio.pause(); });
+  $("mpRestart").addEventListener("click",()=>{ audio.currentTime=0; audio.play().catch(()=>{}); });
+  audio.addEventListener("ended",()=>{ audio.currentTime=0; audio.play().catch(()=>{}); }); // reserv om loop inte stöds
+  audio.addEventListener("play",paint); audio.addEventListener("pause",paint);
+  vol.addEventListener("input",()=>{ audio.volume=vol.value/100; vl.textContent=vol.value+" %"; try{localStorage.setItem("mp-vol",vol.value)}catch(e){} });
+})();
+
+fetch("data.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.champions){ DATA=d; applyData(); document.querySelectorAll(".pf").forEach(pf=>pf.dataset.c="__"); render(); } }).catch(()=>{});
 </script>
 </body>
 </html>
