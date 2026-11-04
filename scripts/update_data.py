@@ -34,7 +34,7 @@ def ddragon():
 def name_index(champs):
     idx = {}
     for name, c in champs.items():
-        for k in (name, c["id"]): idx[norm(k)] = name
+        for k in (name, c["id"], c["key"]): idx[norm(k)] = name
     idx.update({"monkeyking": "Wukong", "nunu": "Nunu & Willump", "renata": "Renata Glasc", "wukong": "Wukong"})
     return idx
 
@@ -95,6 +95,75 @@ def leaguepedia(days, idx):
     if games == 0: raise RuntimeError("0 matcher – se 'Leaguepedia svar' i loggen")
     return stats
 
+# ---------- OP.GG:s textformat ----------
+# Svaren ser ut som:
+#   class Top: champion,is_rip,play,win,...
+#   LolListLaneMetaChampions("en_US","top",Data(Positions([Top("Malphite",false,840,...), ...])))
+# parse_opgg() gör om det till vanliga dicts/listor.
+def parse_opgg(text):
+    schemas, body = {}, []
+    for line in text.split("\n"):
+        m_ = re.match(r"\s*class\s+(\w+)\s*:\s*(.*)$", line)
+        if m_:
+            schemas.setdefault(m_.group(1), [f.strip() for f in m_.group(2).split(",") if f.strip()])
+        else:
+            body.append(line)
+    src = "\n".join(body).strip()
+    pos = [0]
+    def ws():
+        while pos[0] < len(src) and src[pos[0]] in " \t\r\n": pos[0] += 1
+    def value():
+        ws(); c = src[pos[0]]
+        if c == '"':
+            j = pos[0] + 1
+            while src[j] != '"':
+                j += 2 if src[j] == "\\" else 1
+            s_ = json.loads(src[pos[0]:j + 1]); pos[0] = j + 1; return s_
+        if c == "[":
+            pos[0] += 1; out = seq("]"); return out
+        if c == "{":
+            pos[0] += 1; out = {}
+            ws()
+            while src[pos[0]] != "}":
+                k = value(); ws(); pos[0] += 1  # ':'
+                out[str(k)] = value(); ws()
+                if src[pos[0]] == ",": pos[0] += 1; ws()
+            pos[0] += 1; return out
+        m_ = re.compile(r"-?\d+(?:\.\d+)?(?:[eE][-+]?\d+)?").match(src, pos[0])
+        if m_:
+            pos[0] = m_.end(); t = m_.group(0)
+            return float(t) if any(x in t for x in ".eE") else int(t)
+        m_ = re.compile(r"[A-Za-z_]\w*").match(src, pos[0])
+        if m_:
+            name = m_.group(0); pos[0] = m_.end(); ws()
+            if pos[0] < len(src) and src[pos[0]] == "(":
+                pos[0] += 1; args = seq(")")
+                fields = schemas.get(name, [])
+                d = {f: args[i] for i, f in enumerate(fields) if i < len(args)}
+                for i in range(len(fields), len(args)): d[f"_{i}"] = args[i]
+                d["_type"] = name
+                return d
+            return {"true": True, "false": False, "null": None, "None": None, "True": True, "False": False}.get(name, name)
+        raise ValueError(f"oväntat tecken {c!r} vid {pos[0]}")
+    def seq(end):
+        out = []; ws()
+        while pos[0] < len(src) and src[pos[0]] != end:
+            out.append(value()); ws()
+            if pos[0] < len(src) and src[pos[0]] == ",": pos[0] += 1; ws()
+        pos[0] += 1
+        return out
+    return value() if src else {}
+
+def all_dict_lists(obj):
+    """Alla listor av dicts, var som helst i strukturen."""
+    out = []
+    if isinstance(obj, dict):
+        for v in obj.values(): out += all_dict_lists(v)
+    elif isinstance(obj, list):
+        if obj and isinstance(obj[0], dict): out.append(obj)
+        for v in obj: out += all_dict_lists(v)
+    return out
+
 # ---------- 3. OP.GG MCP ----------
 class MCP:
     URL = "https://mcp-api.op.gg/mcp"
@@ -122,9 +191,13 @@ class MCP:
     def call(self, name, args):
         res = self.req("tools/call", {"name": name, "arguments": args})
         out = []
+        if (res or {}).get("isError"):
+            raise RuntimeError(" ".join(c.get("text", "") for c in res.get("content", []))[:300])
         for c in (res or {}).get("content", []):
             t = c.get("text", "")
-            try: out.append(json.loads(t))
+            try: out.append(json.loads(t)); continue
+            except Exception: pass
+            try: out.append(parse_opgg(t))
             except Exception: out.append(t)
         return out[0] if len(out) == 1 else out
 
@@ -169,7 +242,7 @@ def find_lists(obj, keys):
 def entry_name_wr(e, idx):
     if not isinstance(e, dict): return None
     name = None
-    for k in ("champion_name", "championName", "name", "champion", "champion_id", "championId"):
+    for k in ("champion_name", "championName", "name", "champion", "champion_id", "championId", "key"):
         v = e.get(k)
         if isinstance(v, dict): v = v.get("name")
         if v is not None and idx.get(norm(str(v))): name = idx[norm(str(v))]; break
@@ -183,57 +256,92 @@ def first_text(d, n=600):
     t = d if isinstance(d, str) else json.dumps(d, ensure_ascii=False)
     return t[:n].replace("\n", " ")
 
+OP_LANE = {"top": "top", "jungle": "jungle", "middle": "mid", "bottom": "adc", "support": "support"}
+# vilken lagkamrat vi vill ha synergier för, per roll
+SYN_WITH = {"adc": "support", "support": "adc", "jungle": "mid", "mid": "jungle", "top": "jungle"}
+
+def opgg_names(name, cid):
+    """OP.GG vill ha UPPER_SNAKE_CASE – prova några varianter."""
+    a = re.sub(r"[^A-Za-z0-9 ]", "", name).strip().upper().replace(" ", "_")
+    b = re.sub(r"(?<=[a-z])(?=[A-Z])", "_", cid).upper()
+    c = cid.upper()
+    special = {"Nunu & Willump": ["NUNU", "NUNU_WILLUMP"], "Wukong": ["WUKONG", "MONKEY_KING"], "Renata Glasc": ["RENATA", "RENATA_GLASC"]}
+    out = special.get(name, []) + [a, b, c]
+    return list(dict.fromkeys(out))
+
 def opgg(champs, idx, delay):
     m = MCP(); tools = m.start()
     log("OP.GG verktyg:", ", ".join(tools))
-    meta_tool = next((t for t in tools if t == "lol_list_lane_meta_champions"), None) or next((t for t in tools if "lane_meta" in t), None)
-    ana_tool = next((t for t in tools if t == "lol_get_champion_analysis"), None) or next((t for t in tools if "champion_analysis" in t or "champion-analysis" in t), None)
-    syn_tool = next((t for t in tools if t == "lol_get_champion_synergies"), None) or next((t for t in tools if "synerg" in t), None)
-    for t in (meta_tool, ana_tool, syn_tool):
-        if t: log(f"OP.GG schema {t}:", json.dumps(tools[t].get("inputSchema", {}), ensure_ascii=False)[:800])
-    soloq, counters = {}, {}
-    if meta_tool:
-        for k, lane in enumerate(LANES):
+    meta_tool, ana_tool, syn_tool = "lol_list_lane_meta_champions", "lol_get_champion_analysis", "lol_get_champion_synergies"
+    soloq, counters, beats, synergies, main = {}, {}, {}, {}, {}
+    # 1) WR/pick/ban per roll + huvudroll per champ
+    if meta_tool in tools:
+        for lane in LANES:
+            pos = OP_LANE[lane]
             try:
-                d = m.call(meta_tool, fill_args(tools[meta_tool]["inputSchema"], lane=lane))
-                if k == 0: log("OP.GG exempel-svar (meta):", first_text(d))
-                found = 0
-                for lst in find_lists(d, ["champion", "data", "position", "lane", "list"]):
+                d = m.call(meta_tool, {"position": pos, "lang": "en_US"})
+                n_found = 0
+                for lst in all_dict_lists(d):
                     for e in lst:
-                        nw = entry_name_wr(e, idx)
-                        if nw:
-                            found += 1
-                            soloq.setdefault(nw[0], {})[lane] = {"wr": nw[1],
-                                "pick": e.get("pick_rate") or e.get("pickRate"), "ban": e.get("ban_rate") or e.get("banRate")}
-                if found == 0 and isinstance(d, str): soloq_text(d, lane, soloq, idx)
+                        n = idx.get(norm(str(e.get("champion", ""))))
+                        if not n: continue
+                        n_found += 1
+                        wr = e.get("win_rate"); wr = wr * 100 if isinstance(wr, (int, float)) and wr <= 1 else wr
+                        rr = e.get("role_rate") or 0
+                        soloq.setdefault(n, {})[lane] = {"wr": wr, "pick": e.get("pick_rate"), "ban": e.get("ban_rate"),
+                                                         "games": e.get("play"), "role_rate": rr, "tier": e.get("tier")}
+                        if rr > main.get(n, ("", -1))[1]: main[n] = (pos, rr)
+                log(f"OP.GG meta {lane}: {n_found} champs")
             except Exception as ex: log("OP.GG meta", lane, "fel:", ex)
             time.sleep(delay)
-    if ana_tool:
-        for i, name in enumerate(champs):
+    # 2) counters + synergier per champ i dess huvudroll
+    first = True
+    for name in champs:
+        if name not in main: continue
+        pos = main[name][0]
+        d = None
+        for cname in opgg_names(name, champs[name]["id"]):
             try:
-                d = m.call(ana_tool, fill_args(tools[ana_tool]["inputSchema"], champ=champs[name]["id"], lane=None))
-                if i == 0: log("OP.GG exempel-svar (analysis):", first_text(d))
-                lst = [x for l in find_lists(d, ["weakcounter", "weak_counter", "counter"]) for x in l]
-                cs = [nw for e in lst if (nw := entry_name_wr(e, idx))]
-                if cs: counters[name] = [{"ch": c, "wr": w, "src": "opgg"} for c, w in cs if c != name and w is not None][:10]
+                d = m.call(ana_tool, {"champion": cname, "position": pos, "game_mode": "ranked", "lang": "en_US"}); break
             except Exception as ex:
-                if i < 3: log("OP.GG analysis", name, "fel:", ex)
-            time.sleep(delay)
-    synergies = {}
-    if syn_tool:
-        for i, name in enumerate(champs):
+                err = str(ex)
+            time.sleep(0.3)
+        if d is None:
+            if first: log("OP.GG analysis", name, "fel:", err[:200])
+            time.sleep(delay); continue
+        if first:
+            log("OP.GG exempel (analysis):", json.dumps(d, ensure_ascii=False)[:700]); first = False
+        def grab(keys):
+            out = []
+            for lst in find_lists(d, keys):
+                for e in lst:
+                    nw = entry_name_wr(e, idx)
+                    if nw and nw[0] != name and nw[1] is not None:
+                        out.append({"ch": nw[0], "wr": round(nw[1], 2), "games": e.get("play"), "src": "opgg"})
+            return out
+        weak, strong = grab(["weak_counter"]), grab(["strong_counter"])
+        # "counters" = champs som slår denna champ, wr = denna champs WR mot dem (lågt = stark counter)
+        if weak:
+            if sum(x["wr"] for x in weak) / len(weak) > 50:  # svaret anger motståndarens WR – vänd
+                for x in weak: x["wr"] = round(100 - x["wr"], 2)
+            counters[name] = weak[:10]
+        if strong: beats[name] = strong[:10]
+        time.sleep(delay)
+        # synergier
+        if syn_tool in tools:
             try:
-                d = m.call(syn_tool, fill_args(tools[syn_tool]["inputSchema"], champ=champs[name]["id"], lane=None))
-                if i == 0: log("OP.GG exempel-svar (synergies):", first_text(d))
-                lst = [x for l in find_lists(d, ["synerg", "duo", "partner", "data"]) for x in l]
+                sd = m.call(syn_tool, {"champion": opgg_names(name, champs[name]["id"])[0], "my_position": pos,
+                                       "synergy_position": SYN_WITH[pos], "lang": "en_US"})
+                lst = [x for l in all_dict_lists(sd) for x in l]
                 cs = [nw for e in lst if (nw := entry_name_wr(e, idx))]
-                if cs: synergies[name] = [{"ch": c, "wr": w, "src": "opgg"} for c, w in cs if c != name and w is not None][:12]
+                if cs: synergies[name] = [{"ch": c, "wr": round(w, 2), "with": SYN_WITH[pos], "src": "opgg"} for c, w in cs if c != name and w is not None][:12]
+                if name == next(iter(main)): log("OP.GG exempel (synergies):", json.dumps(sd, ensure_ascii=False)[:500])
             except Exception as ex:
-                if i < 3: log("OP.GG synergies", name, "fel:", ex)
+                if len(synergies) == 0: log("OP.GG synergies", name, "fel:", str(ex)[:200])
             time.sleep(delay)
-    log(f"OP.GG: soloQ för {len(soloq)} champs, counters för {len(counters)}, synergier för {len(synergies)}")
-    if not soloq and not counters and not synergies: raise RuntimeError("tomt svar – se 'exempel-svar' i loggen")
-    return soloq, counters, synergies
+    log(f"OP.GG: soloQ {len(soloq)} champs, counters {len(counters)}, slår {len(beats)}, synergier {len(synergies)}")
+    if not soloq and not counters: raise RuntimeError("tomt svar – se exempel i loggen")
+    return soloq, counters, synergies, beats, {n: v[0] for n, v in main.items()}
 
 def soloq_text(text, lane, soloq, idx):
     """Reservtolkning om OP.GG svarar med text: rad med champnamn + första procenttal = WR."""
@@ -322,6 +430,8 @@ def main():
         cs = (og[1].get(n, []) if og else []) + (ll[1].get(n, []) if ll else [])
         C[n]["counters"] = cs or prev.get("counters", [])
         C[n]["synergies"] = (og[2].get(n, []) if og else []) or prev.get("synergies", [])
+        C[n]["beats"] = (og[3].get(n, []) if og else []) or prev.get("beats", [])
+        C[n]["main_role"] = (og[4].get(n) if og else None) or prev.get("main_role")
         C[n] = {k: v for k, v in C[n].items() if v}
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1))
     log(f"Skrev {OUT} – patch {out['patch']}, källor: {out['sources']}")
