@@ -20,6 +20,7 @@ OUT = ROOT / "data.json"
 UA = {"User-Agent": "teamcomps-personal/1.0 (private team tool)"}
 S = requests.Session(); S.headers.update(UA)
 LANES = ["top", "jungle", "middle", "bottom", "support"]
+MIN_GAMES = 15  # minsta antal matcher för att en counter/synergi ska räknas
 
 def log(*a): print("[data]", *a, flush=True)
 def norm(s): return re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFD", s.lower()))
@@ -250,6 +251,9 @@ def entry_name_wr(e, idx, keys=None):
     for k in ("win_rate", "winRate", "winrate", "wr"):
         if e.get(k) is not None:
             wr = float(e[k]); wr = wr * 100 if wr <= 1 else wr; break
+    if wr is None and isinstance(e.get("win"), (int, float)) and isinstance(e.get("play"), (int, float)) and e["play"] > 0:
+        if e["play"] < MIN_GAMES: return None  # för få matcher = brus
+        wr = 100.0 * e["win"] / e["play"]
     return (name, wr) if name else None
 
 def first_text(d, n=600):
