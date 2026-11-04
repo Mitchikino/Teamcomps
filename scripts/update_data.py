@@ -40,14 +40,20 @@ def name_index(champs):
 
 # ---------- 2. Leaguepedia (pro) ----------
 def leaguepedia(days, idx):
-    since = (dt.datetime.utcnow() - dt.timedelta(days=days)).strftime("%Y-%m-%d")
+    since = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=days)).strftime("%Y-%m-%d")
     stats, games, off = {}, 0, 0
     while True:
         r = S.get("https://lol.fandom.com/api.php", params={
             "action": "cargoquery", "format": "json", "tables": "ScoreboardGames",
             "fields": "Team1,Team2,WinTeam,Team1Picks,Team2Picks,Team1Bans,Team2Bans,Patch",
-            "where": f'DateTime_UTC >= "{since}"', "limit": 500, "offset": off}, timeout=30)
-        rows = r.json().get("cargoquery", [])
+            "where": f'DateTime_UTC >= "{since} 00:00:00"', "limit": 500, "offset": off}, timeout=30)
+        j = r.json() if r.headers.get("Content-Type", "").startswith("application/json") else {}
+        if "error" in j or r.status_code != 200:
+            log("Leaguepedia svar:", r.status_code, str(j.get("error") or r.text[:300]))
+            if off == 0 and "ratelimit" in str(j).lower():
+                time.sleep(30); continue
+            break
+        rows = j.get("cargoquery", [])
         if not rows: break
         for row in rows:
             g = row["title"]; games += 1
@@ -69,6 +75,7 @@ def leaguepedia(days, idx):
         s["wr"] = round(s["wins"] / s["picks"], 4) if s["picks"] else None
         s["games"] = games
     log(f"Leaguepedia: {games} pro-matcher sedan {since}")
+    if games == 0: raise RuntimeError("0 matcher – se 'Leaguepedia svar' i loggen")
     return stats
 
 # ---------- 3. OP.GG MCP ----------
@@ -116,11 +123,15 @@ def fill_args(schema, champ=None, lane=None):
             return None
         if "champion" in lk and champ:
             args[k] = pick(champ) or champ.upper().replace(" ", "_").replace("'", "").replace(".", "")
-        elif lk in ("position", "lane", "role") and lane:
+        elif any(x in lk for x in ("position", "lane", "role")) and lane:
             alias = {"middle": ["mid", "middle"], "bottom": ["adc", "bottom", "bot"], "support": ["support", "sup"], "jungle": ["jungle"], "top": ["top"]}[lane]
             args[k] = next((x for a in alias if (x := pick(a))), alias[0].upper())
         elif "mode" in lk:
             args[k] = pick("ranked") or (enum[0] if enum else "RANKED")
+        elif "region" in lk:
+            args[k] = pick("global") or pick("euw") or (enum[0] if enum else "global")
+        elif "tier" in lk:
+            args[k] = pick("emerald_plus") or pick("platinum_plus") or (enum[0] if enum else "emerald_plus")
         elif "lang" in lk or "locale" in lk:
             args[k] = pick("en_US") or "en_US"
         elif k in req and enum:
@@ -151,36 +162,58 @@ def entry_name_wr(e, idx):
             wr = float(e[k]); wr = wr * 100 if wr <= 1 else wr; break
     return (name, wr) if name else None
 
+def first_text(d, n=600):
+    t = d if isinstance(d, str) else json.dumps(d, ensure_ascii=False)
+    return t[:n].replace("\n", " ")
+
 def opgg(champs, idx, delay):
     m = MCP(); tools = m.start()
     log("OP.GG verktyg:", ", ".join(tools))
-    pos_tool = next((t for t in tools if "position" in t), None)
-    ana_tool = next((t for t in tools if "champion-analysis" in t), None)
+    meta_tool = next((t for t in tools if t == "lol_list_lane_meta_champions"), None) or next((t for t in tools if "lane_meta" in t), None)
+    ana_tool = next((t for t in tools if t == "lol_get_champion_analysis"), None) or next((t for t in tools if "champion_analysis" in t or "champion-analysis" in t), None)
+    for t in (meta_tool, ana_tool):
+        if t: log(f"OP.GG schema {t}:", json.dumps(tools[t].get("inputSchema", {}), ensure_ascii=False)[:800])
     soloq, counters = {}, {}
-    if pos_tool:
-        for lane in LANES:
+    if meta_tool:
+        for k, lane in enumerate(LANES):
             try:
-                d = m.call(pos_tool, fill_args(tools[pos_tool]["inputSchema"], lane=lane))
-                for lst in find_lists(d, ["champion", "data", "position"]):
+                d = m.call(meta_tool, fill_args(tools[meta_tool]["inputSchema"], lane=lane))
+                if k == 0: log("OP.GG exempel-svar (meta):", first_text(d))
+                found = 0
+                for lst in find_lists(d, ["champion", "data", "position", "lane", "list"]):
                     for e in lst:
                         nw = entry_name_wr(e, idx)
                         if nw:
+                            found += 1
                             soloq.setdefault(nw[0], {})[lane] = {"wr": nw[1],
                                 "pick": e.get("pick_rate") or e.get("pickRate"), "ban": e.get("ban_rate") or e.get("banRate")}
-            except Exception as ex: log("OP.GG positions", lane, "fel:", ex)
+                if found == 0 and isinstance(d, str): soloq_text(d, lane, soloq, idx)
+            except Exception as ex: log("OP.GG meta", lane, "fel:", ex)
             time.sleep(delay)
     if ana_tool:
         for i, name in enumerate(champs):
             try:
                 d = m.call(ana_tool, fill_args(tools[ana_tool]["inputSchema"], champ=champs[name]["id"], lane=None))
-                lst = [x for l in find_lists(d, ["weakcounter", "counter"]) for x in l]
+                if i == 0: log("OP.GG exempel-svar (analysis):", first_text(d))
+                lst = [x for l in find_lists(d, ["weakcounter", "weak_counter", "counter"]) for x in l]
                 cs = [nw for e in lst if (nw := entry_name_wr(e, idx))]
-                if cs: counters[name] = [{"ch": c, "wr": w, "src": "opgg"} for c, w in cs if c != name][:10]
+                if cs: counters[name] = [{"ch": c, "wr": w, "src": "opgg"} for c, w in cs if c != name and w is not None][:10]
             except Exception as ex:
                 if i < 3: log("OP.GG analysis", name, "fel:", ex)
             time.sleep(delay)
     log(f"OP.GG: soloQ för {len(soloq)} champs, counters för {len(counters)}")
+    if not soloq and not counters: raise RuntimeError("tomt svar – se 'exempel-svar' i loggen")
     return soloq, counters
+
+def soloq_text(text, lane, soloq, idx):
+    """Reservtolkning om OP.GG svarar med text: rad med champnamn + första procenttal = WR."""
+    names = sorted(set(idx.values()), key=len, reverse=True)
+    for line in text.splitlines():
+        pct = re.search(r"(\d{1,2}\.\d+)\s*%", line)
+        if not pct: continue
+        low = line.lower()
+        n = next((x for x in names if x.lower() in low), None)
+        if n and lane not in soloq.get(n, {}): soloq.setdefault(n, {})[lane] = {"wr": float(pct.group(1))}
 
 # ---------- 4. Lolalytics (scraping) ----------
 def lol_slug(name, cid):
@@ -215,6 +248,7 @@ def lolalytics(champs, idx, rank, delay):
             if fails <= 3: log("Lolalytics counters", name, "fel:", ex)
         time.sleep(delay)
     log(f"Lolalytics: tierlist för {len(tiers)} champs, counters för {len(counters)} ({fails} fel)")
+    if not tiers and not counters: raise RuntimeError(f"tomt svar ({fails} fel)")
     return tiers, counters
 
 # ---------- main ----------
@@ -222,13 +256,16 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--only", default="ddragon,pro,opgg,lolalytics")
     ap.add_argument("--pro-days", type=int, default=60)
-    ap.add_argument("--rank", default="emerald_plus")
+    ap.add_argument("--rank", default="", help="lolalytics-rank, t.ex. diamond_plus. Tomt = sajtens standard")
     ap.add_argument("--delay", type=float, default=1.0, help="sekunder mellan anrop (var snäll mot sajterna)")
     a = ap.parse_args(); only = set(a.only.split(","))
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
-    out = {"updated": dt.datetime.utcnow().isoformat(timespec="minutes") + "Z", "sources": {}, "champions": {}}
+    out = {"updated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "sources": {}, "champions": {}}
     ver, champs = ddragon()
-    idx = name_index(champs); out["patch"] = ver; out["sources"]["ddragon"] = "ok"
+    idx = name_index(champs)
+    mj, mn = (ver.split(".") + ["0"])[:2]
+    out["patch"] = f"{int(mj) + 10}.{mn}" if mj.isdigit() and int(mj) < 20 else ver
+    out["ddragon"] = ver; out["sources"]["ddragon"] = "ok"
     C = out["champions"]
     for n in champs: C[n] = {"id": champs[n]["id"]}
 
@@ -256,7 +293,7 @@ def main():
         C[n]["counters"] = cs or prev.get("counters", [])
         C[n] = {k: v for k, v in C[n].items() if v}
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1))
-    log(f"Skrev {OUT} – patch {ver}, källor: {out['sources']}")
+    log(f"Skrev {OUT} – patch {out['patch']}, källor: {out['sources']}")
 
 if __name__ == "__main__":
     main()
