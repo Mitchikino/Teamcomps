@@ -1,531 +1,4979 @@
 {
- "updated": "2026-11-04T10:04Z",
+ "updated": "2026-11-04T10:38Z",
  "sources": {
   "ddragon": "ok",
-  "pro": "ok",
   "opgg": "ok",
-  "lolalytics": "ok"
+  "lolalytics": "ok",
+  "pro": "ok"
  },
  "champions": {
   "Aatrox": {
-   "id": "Aatrox"
+   "id": "Aatrox",
+   "pro": {
+    "picks": 31,
+    "bans": 6,
+    "wins": 14,
+    "presence": 0.074,
+    "wr": 0.4516,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.08,
+     "ban": 0.06,
+     "games": 1191,
+     "role_rate": 0.87,
+     "tier": 1
+    },
+    "opgg_jungle": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 117,
+     "role_rate": 0.09,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Ahri": {
-   "id": "Ahri"
+   "id": "Ahri",
+   "pro": {
+    "picks": 63,
+    "bans": 48,
+    "wins": 36,
+    "presence": 0.222,
+    "wr": 0.5714,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 50.0,
+     "pick": 0.08,
+     "ban": 0.02,
+     "games": 1285,
+     "role_rate": 0.95,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Akali": {
-   "id": "Akali"
+   "id": "Akali",
+   "pro": {
+    "picks": 69,
+    "bans": 131,
+    "wins": 38,
+    "presence": 0.4,
+    "wr": 0.5507,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 49.0,
+     "pick": 0.03,
+     "ban": 0.17,
+     "games": 475,
+     "role_rate": 0.31,
+     "tier": 3
+    },
+    "opgg_middle": {
+     "wr": 50.0,
+     "pick": 0.07,
+     "ban": 0.17,
+     "games": 1046,
+     "role_rate": 0.69,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Akshan": {
-   "id": "Akshan"
+   "id": "Akshan",
+   "pro": {
+    "picks": 1,
+    "bans": 9,
+    "wins": 1,
+    "presence": 0.02,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 53.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 316,
+     "role_rate": 0.85,
+     "tier": 3
+    }
+   },
+   "main_role": "mid"
   },
   "Alistar": {
-   "id": "Alistar"
+   "id": "Alistar",
+   "pro": {
+    "picks": 50,
+    "bans": 22,
+    "wins": 25,
+    "presence": 0.144,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.09,
+     "ban": 0.03,
+     "games": 1323,
+     "role_rate": 0.99,
+     "tier": 2
+    }
+   },
+   "beats": [
+    {
+     "ch": "Nautilus",
+     "wr": 52.0,
+     "games": 103,
+     "src": "opgg"
+    },
+    {
+     "ch": "Thresh",
+     "wr": 51.0,
+     "games": 107,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "support"
   },
   "Ambessa": {
-   "id": "Ambessa"
+   "id": "Ambessa",
+   "pro": {
+    "picks": 89,
+    "bans": 59,
+    "wins": 40,
+    "presence": 0.296,
+    "wr": 0.4494,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.06,
+     "ban": 0.04,
+     "games": 866,
+     "role_rate": 0.83,
+     "tier": 2
+    },
+    "opgg_jungle": {
+     "wr": 31.0,
+     "pick": 0.01,
+     "ban": 0.03,
+     "games": 103,
+     "role_rate": 0.1,
+     "tier": 5
+    }
+   },
+   "main_role": "top"
   },
   "Amumu": {
-   "id": "Amumu"
+   "id": "Amumu",
+   "pro": {
+    "picks": 3,
+    "bans": 1,
+    "wins": 0,
+    "presence": 0.008,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 42.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 154,
+     "role_rate": 0.56,
+     "tier": 4
+    },
+    "opgg_support": {
+     "wr": 55.00000000000001,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 120,
+     "role_rate": 0.43,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Anivia": {
-   "id": "Anivia"
+   "id": "Anivia",
+   "pro": {
+    "picks": 41,
+    "bans": 30,
+    "wins": 15,
+    "presence": 0.142,
+    "wr": 0.3659,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 50.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 117,
+     "role_rate": 0.22,
+     "tier": 4
+    },
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 328,
+     "role_rate": 0.63,
+     "tier": 3
+    }
+   },
+   "main_role": "mid"
   },
   "Annie": {
-   "id": "Annie"
+   "id": "Annie",
+   "pro": {
+    "picks": 21,
+    "bans": 34,
+    "wins": 14,
+    "presence": 0.11,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 54.0,
+     "pick": 0.02,
+     "ban": 0,
+     "games": 241,
+     "role_rate": 0.77,
+     "tier": 2
+    }
+   },
+   "main_role": "mid"
   },
   "Aphelios": {
-   "id": "Aphelios"
+   "id": "Aphelios",
+   "pro": {
+    "picks": 20,
+    "bans": 10,
+    "wins": 13,
+    "presence": 0.06,
+    "wr": 0.65,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 48.0,
+     "pick": 0.09,
+     "ban": 0.05,
+     "games": 1376,
+     "role_rate": 0.99,
+     "tier": 5
+    }
+   },
+   "counters": [
+    {
+     "ch": "Jhin",
+     "wr": 44.0,
+     "games": 130,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 51.0,
+     "games": 181,
+     "src": "opgg"
+    },
+    {
+     "ch": "Jinx",
+     "wr": 50.0,
+     "games": 113,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Ashe": {
-   "id": "Ashe"
+   "id": "Ashe",
+   "pro": {
+    "picks": 64,
+    "bans": 14,
+    "wins": 32,
+    "presence": 0.156,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.05,
+     "ban": 0.02,
+     "games": 706,
+     "role_rate": 0.87,
+     "tier": 4
+    },
+    "opgg_support": {
+     "wr": 47.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 85,
+     "role_rate": 0.1,
+     "tier": 5
+    }
+   },
+   "main_role": "adc"
   },
   "Aurelion Sol": {
-   "id": "AurelionSol"
+   "id": "AurelionSol",
+   "pro": {
+    "picks": 3,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.008,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 306,
+     "role_rate": 0.67,
+     "tier": 3
+    },
+    "opgg_bottom": {
+     "wr": 59.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 78,
+     "role_rate": 0.17,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Aurora": {
-   "id": "Aurora"
+   "id": "Aurora",
+   "pro": {
+    "picks": 38,
+    "bans": 20,
+    "wins": 18,
+    "presence": 0.116,
+    "wr": 0.4737,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 51.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 369,
+     "role_rate": 0.82,
+     "tier": 3
+    }
+   },
+   "main_role": "mid"
   },
   "Azir": {
-   "id": "Azir"
+   "id": "Azir",
+   "pro": {
+    "picks": 13,
+    "bans": 9,
+    "wins": 7,
+    "presence": 0.044,
+    "wr": 0.5385,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 47.0,
+     "pick": 0.02,
+     "ban": 0,
+     "games": 251,
+     "role_rate": 0.93,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Bard": {
-   "id": "Bard"
+   "id": "Bard",
+   "pro": {
+    "picks": 76,
+    "bans": 80,
+    "wins": 33,
+    "presence": 0.312,
+    "wr": 0.4342,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 51.0,
+     "pick": 0.05,
+     "ban": 0.02,
+     "games": 784,
+     "role_rate": 1,
+     "tier": 2
+    }
+   },
+   "main_role": "support"
   },
   "Bel'Veth": {
-   "id": "Belveth"
+   "id": "Belveth",
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 49.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 258,
+     "role_rate": 0.99,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Blitzcrank": {
-   "id": "Blitzcrank"
+   "id": "Blitzcrank",
+   "pro": {
+    "picks": 11,
+    "bans": 8,
+    "wins": 7,
+    "presence": 0.038,
+    "wr": 0.6364,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 54.0,
+     "pick": 0.09,
+     "ban": 0.22,
+     "games": 1331,
+     "role_rate": 1,
+     "tier": 1
+    }
+   },
+   "beats": [
+    {
+     "ch": "Thresh",
+     "wr": 53.0,
+     "games": 129,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "support"
   },
   "Brand": {
-   "id": "Brand"
+   "id": "Brand",
+   "pro": {
+    "picks": 1,
+    "bans": 0,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 271,
+     "role_rate": 0.63,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Braum": {
-   "id": "Braum"
+   "id": "Braum",
+   "pro": {
+    "picks": 13,
+    "bans": 8,
+    "wins": 4,
+    "presence": 0.042,
+    "wr": 0.3077,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.05,
+     "ban": 0.07,
+     "games": 758,
+     "role_rate": 1,
+     "tier": 3
+    }
+   },
+   "counters": [
+    {
+     "ch": "Nautilus",
+     "wr": 49.0,
+     "games": 102,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "support"
   },
   "Briar": {
-   "id": "Briar"
+   "id": "Briar",
+   "pro": {
+    "picks": 0,
+    "bans": 1,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": null,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.03,
+     "ban": 0.04,
+     "games": 502,
+     "role_rate": 0.84,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Caitlyn": {
-   "id": "Caitlyn"
+   "id": "Caitlyn",
+   "pro": {
+    "picks": 86,
+    "bans": 85,
+    "wins": 39,
+    "presence": 0.342,
+    "wr": 0.4535,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 48.0,
+     "pick": 0.11,
+     "ban": 0.16,
+     "games": 1746,
+     "role_rate": 0.99,
+     "tier": 4
+    }
+   },
+   "counters": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 43.0,
+     "games": 216,
+     "src": "opgg"
+    },
+    {
+     "ch": "Ezreal",
+     "wr": 47.0,
+     "games": 145,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Jhin",
+     "wr": 52.0,
+     "games": 223,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Camille": {
-   "id": "Camille"
+   "id": "Camille",
+   "pro": {
+    "picks": 55,
+    "bans": 36,
+    "wins": 33,
+    "presence": 0.182,
+    "wr": 0.6,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.05,
+     "ban": 0.01,
+     "games": 697,
+     "role_rate": 0.74,
+     "tier": 2
+    },
+    "opgg_support": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 208,
+     "role_rate": 0.22,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Cassiopeia": {
-   "id": "Cassiopeia"
+   "id": "Cassiopeia",
+   "pro": {
+    "picks": 70,
+    "bans": 231,
+    "wins": 45,
+    "presence": 0.602,
+    "wr": 0.6429,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 80,
+     "role_rate": 0.25,
+     "tier": 4
+    },
+    "opgg_middle": {
+     "wr": 41.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 181,
+     "role_rate": 0.57,
+     "tier": 5
+    }
+   },
+   "main_role": "mid"
   },
   "Cho'Gath": {
-   "id": "Chogath"
+   "id": "Chogath",
+   "pro": {
+    "picks": 48,
+    "bans": 22,
+    "wins": 23,
+    "presence": 0.14,
+    "wr": 0.4792,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 44.0,
+     "pick": 0.02,
+     "ban": 0.05,
+     "games": 325,
+     "role_rate": 0.3,
+     "tier": 4
+    },
+    "opgg_jungle": {
+     "wr": 52.0,
+     "pick": 0.04,
+     "ban": 0.05,
+     "games": 633,
+     "role_rate": 0.59,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Corki": {
-   "id": "Corki"
+   "id": "Corki",
+   "pro": {
+    "picks": 30,
+    "bans": 7,
+    "wins": 7,
+    "presence": 0.074,
+    "wr": 0.2333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 108,
+     "role_rate": 0.12,
+     "tier": 4
+    },
+    "opgg_middle": {
+     "wr": 43.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 113,
+     "role_rate": 0.12,
+     "tier": 5
+    },
+    "opgg_bottom": {
+     "wr": 49.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 689,
+     "role_rate": 0.76,
+     "tier": 5
+    }
+   },
+   "beats": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 54.0,
+     "games": 108,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Darius": {
-   "id": "Darius"
+   "id": "Darius",
+   "pro": {
+    "picks": 4,
+    "bans": 4,
+    "wins": 1,
+    "presence": 0.016,
+    "wr": 0.25,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.06,
+     "ban": 0.1,
+     "games": 891,
+     "role_rate": 0.87,
+     "tier": 2
+    },
+    "opgg_jungle": {
+     "wr": 56.99999999999999,
+     "pick": 0.01,
+     "ban": 0.08,
+     "games": 117,
+     "role_rate": 0.11,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Diana": {
-   "id": "Diana"
+   "id": "Diana",
+   "pro": {
+    "picks": 9,
+    "bans": 4,
+    "wins": 4,
+    "presence": 0.026,
+    "wr": 0.4444,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 370,
+     "role_rate": 0.4,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.03,
+     "ban": 0.02,
+     "games": 508,
+     "role_rate": 0.55,
+     "tier": 2
+    }
+   },
+   "main_role": "mid"
   },
   "Draven": {
-   "id": "Draven"
+   "id": "Draven",
+   "pro": {
+    "picks": 4,
+    "bans": 17,
+    "wins": 2,
+    "presence": 0.042,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.03,
+     "ban": 0.1,
+     "games": 464,
+     "role_rate": 0.95,
+     "tier": 4
+    }
+   },
+   "main_role": "adc"
   },
   "Dr. Mundo": {
-   "id": "DrMundo"
+   "id": "DrMundo",
+   "pro": {
+    "picks": 21,
+    "bans": 4,
+    "wins": 14,
+    "presence": 0.05,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 47.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 451,
+     "role_rate": 0.82,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Ekko": {
-   "id": "Ekko"
+   "id": "Ekko",
+   "pro": {
+    "picks": 3,
+    "bans": 3,
+    "wins": 0,
+    "presence": 0.012,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 550,
+     "role_rate": 0.48,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 536,
+     "role_rate": 0.47,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Elise": {
-   "id": "Elise"
+   "id": "Elise",
+   "pro": {
+    "picks": 2,
+    "bans": 6,
+    "wins": 1,
+    "presence": 0.016,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 52.0,
+     "pick": 0.03,
+     "ban": 0.05,
+     "games": 533,
+     "role_rate": 0.71,
+     "tier": 2
+    },
+    "opgg_support": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 189,
+     "role_rate": 0.25,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Evelynn": {
-   "id": "Evelynn"
+   "id": "Evelynn",
+   "pro": {
+    "picks": 0,
+    "bans": 4,
+    "wins": 0,
+    "presence": 0.008,
+    "wr": null,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 54.0,
+     "pick": 0.03,
+     "ban": 0.02,
+     "games": 396,
+     "role_rate": 0.94,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Ezreal": {
-   "id": "Ezreal"
+   "id": "Ezreal",
+   "pro": {
+    "picks": 105,
+    "bans": 81,
+    "wins": 49,
+    "presence": 0.372,
+    "wr": 0.4667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 48.0,
+     "pick": 0.17,
+     "ban": 0.05,
+     "games": 2583,
+     "role_rate": 0.95,
+     "tier": 4
+    }
+   },
+   "counters": [
+    {
+     "ch": "Jhin",
+     "wr": 44.0,
+     "games": 317,
+     "src": "opgg"
+    },
+    {
+     "ch": "Kai'Sa",
+     "wr": 45.0,
+     "games": 426,
+     "src": "opgg"
+    },
+    {
+     "ch": "Lucian",
+     "wr": 47.0,
+     "games": 133,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Caitlyn",
+     "wr": 53.0,
+     "games": 145,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Fiddlesticks": {
-   "id": "Fiddlesticks"
+   "id": "Fiddlesticks",
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 46.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 227,
+     "role_rate": 0.54,
+     "tier": 4
+    },
+    "opgg_support": {
+     "wr": 48.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 124,
+     "role_rate": 0.29,
+     "tier": 4
+    }
+   },
+   "main_role": "jungle"
   },
   "Fiora": {
-   "id": "Fiora"
+   "id": "Fiora",
+   "pro": {
+    "picks": 6,
+    "bans": 13,
+    "wins": 2,
+    "presence": 0.038,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 50.0,
+     "pick": 0.04,
+     "ban": 0.05,
+     "games": 684,
+     "role_rate": 0.96,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Fizz": {
-   "id": "Fizz"
+   "id": "Fizz",
+   "pro": {
+    "picks": 4,
+    "bans": 3,
+    "wins": 2,
+    "presence": 0.014,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 49.0,
+     "pick": 0.01,
+     "ban": 0.03,
+     "games": 120,
+     "role_rate": 0.15,
+     "tier": 3
+    },
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.04,
+     "ban": 0.04,
+     "games": 672,
+     "role_rate": 0.82,
+     "tier": 2
+    }
+   },
+   "main_role": "mid"
   },
   "Galio": {
-   "id": "Galio"
+   "id": "Galio",
+   "pro": {
+    "picks": 43,
+    "bans": 33,
+    "wins": 18,
+    "presence": 0.152,
+    "wr": 0.4186,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.03,
+     "games": 799,
+     "role_rate": 0.76,
+     "tier": 2
+    },
+    "opgg_support": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 174,
+     "role_rate": 0.17,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Gangplank": {
-   "id": "Gangplank"
+   "id": "Gangplank",
+   "pro": {
+    "picks": 4,
+    "bans": 4,
+    "wins": 1,
+    "presence": 0.016,
+    "wr": 0.25,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.05,
+     "ban": 0.17,
+     "games": 798,
+     "role_rate": 0.93,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Garen": {
-   "id": "Garen"
+   "id": "Garen",
+   "pro": {
+    "picks": 1,
+    "bans": 7,
+    "wins": 1,
+    "presence": 0.016,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 47.0,
+     "pick": 0.04,
+     "ban": 0.02,
+     "games": 679,
+     "role_rate": 0.9,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Gnar": {
-   "id": "Gnar"
+   "id": "Gnar",
+   "pro": {
+    "picks": 75,
+    "bans": 37,
+    "wins": 37,
+    "presence": 0.224,
+    "wr": 0.4933,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.04,
+     "ban": 0.02,
+     "games": 560,
+     "role_rate": 0.99,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Gragas": {
-   "id": "Gragas"
+   "id": "Gragas",
+   "pro": {
+    "picks": 20,
+    "bans": 2,
+    "wins": 10,
+    "presence": 0.044,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 421,
+     "role_rate": 0.64,
+     "tier": 3
+    },
+    "opgg_jungle": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 128,
+     "role_rate": 0.19,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Graves": {
-   "id": "Graves"
+   "id": "Graves",
+   "pro": {
+    "picks": 2,
+    "bans": 6,
+    "wins": 0,
+    "presence": 0.016,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.08,
+     "ban": 0.09,
+     "games": 1198,
+     "role_rate": 0.98,
+     "tier": 2
+    }
+   },
+   "counters": [
+    {
+     "ch": "Lee Sin",
+     "wr": 49.0,
+     "games": 155,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "jungle"
   },
   "Gwen": {
-   "id": "Gwen"
+   "id": "Gwen",
+   "pro": {
+    "picks": 17,
+    "bans": 18,
+    "wins": 11,
+    "presence": 0.07,
+    "wr": 0.6471,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 302,
+     "role_rate": 0.72,
+     "tier": 3
+    },
+    "opgg_jungle": {
+     "wr": 46.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 92,
+     "role_rate": 0.22,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Hecarim": {
-   "id": "Hecarim"
+   "id": "Hecarim",
+   "pro": {
+    "picks": 8,
+    "bans": 7,
+    "wins": 1,
+    "presence": 0.03,
+    "wr": 0.125,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 52.0,
+     "pick": 0.05,
+     "ban": 0.06,
+     "games": 819,
+     "role_rate": 1,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Heimerdinger": {
-   "id": "Heimerdinger"
+   "id": "Heimerdinger",
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 159,
+     "role_rate": 0.58,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Hwei": {
-   "id": "Hwei"
+   "id": "Hwei",
+   "pro": {
+    "picks": 14,
+    "bans": 16,
+    "wins": 6,
+    "presence": 0.06,
+    "wr": 0.4286,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 56.00000000000001,
+     "pick": 0.03,
+     "ban": 0.02,
+     "games": 533,
+     "role_rate": 0.69,
+     "tier": 1
+    },
+    "opgg_bottom": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 111,
+     "role_rate": 0.14,
+     "tier": 4
+    },
+    "opgg_support": {
+     "wr": 43.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 99,
+     "role_rate": 0.13,
+     "tier": 5
+    }
+   },
+   "main_role": "mid"
   },
   "Illaoi": {
-   "id": "Illaoi"
+   "id": "Illaoi",
+   "pro": {
+    "picks": 3,
+    "bans": 0,
+    "wins": 1,
+    "presence": 0.006,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 53.0,
+     "pick": 0.02,
+     "ban": 0.04,
+     "games": 347,
+     "role_rate": 0.97,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Irelia": {
-   "id": "Irelia"
+   "id": "Irelia",
+   "pro": {
+    "picks": 9,
+    "bans": 11,
+    "wins": 3,
+    "presence": 0.04,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.05,
+     "ban": 0.17,
+     "games": 826,
+     "role_rate": 0.61,
+     "tier": 1
+    },
+    "opgg_middle": {
+     "wr": 45.0,
+     "pick": 0.03,
+     "ban": 0.17,
+     "games": 512,
+     "role_rate": 0.38,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Ivern": {
-   "id": "Ivern"
+   "id": "Ivern",
+   "pro": {
+    "picks": 1,
+    "bans": 1,
+    "wins": 0,
+    "presence": 0.004,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 126,
+     "role_rate": 0.82,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Janna": {
-   "id": "Janna"
+   "id": "Janna",
+   "soloq": {
+    "opgg_support": {
+     "wr": 52.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 422,
+     "role_rate": 1,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Jarvan IV": {
-   "id": "JarvanIV"
+   "id": "JarvanIV",
+   "pro": {
+    "picks": 117,
+    "bans": 142,
+    "wins": 51,
+    "presence": 0.518,
+    "wr": 0.4359,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 46.0,
+     "pick": 0.09,
+     "ban": 0.02,
+     "games": 1318,
+     "role_rate": 0.91,
+     "tier": 3
+    },
+    "opgg_support": {
+     "wr": 59.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 111,
+     "role_rate": 0.08,
+     "tier": 1
+    }
+   },
+   "beats": [
+    {
+     "ch": "Lee Sin",
+     "wr": 52.0,
+     "games": 123,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "jungle"
   },
   "Jax": {
-   "id": "Jax"
+   "id": "Jax",
+   "pro": {
+    "picks": 27,
+    "bans": 25,
+    "wins": 17,
+    "presence": 0.104,
+    "wr": 0.6296,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 47.0,
+     "pick": 0.07,
+     "ban": 0.11,
+     "games": 1140,
+     "role_rate": 0.87,
+     "tier": 2
+    },
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.01,
+     "ban": 0.1,
+     "games": 119,
+     "role_rate": 0.09,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Jayce": {
-   "id": "Jayce"
+   "id": "Jayce",
+   "pro": {
+    "picks": 70,
+    "bans": 88,
+    "wins": 33,
+    "presence": 0.316,
+    "wr": 0.4714,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 49.0,
+     "pick": 0.09,
+     "ban": 0.14,
+     "games": 1416,
+     "role_rate": 0.59,
+     "tier": 1
+    },
+    "opgg_jungle": {
+     "wr": 45.0,
+     "pick": 0.05,
+     "ban": 0.14,
+     "games": 785,
+     "role_rate": 0.33,
+     "tier": 3
+    }
+   },
+   "counters": [
+    {
+     "ch": "Malphite",
+     "wr": 44.0,
+     "games": 102,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "top"
   },
   "Jhin": {
-   "id": "Jhin"
+   "id": "Jhin",
+   "pro": {
+    "picks": 83,
+    "bans": 39,
+    "wins": 38,
+    "presence": 0.244,
+    "wr": 0.4578,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.22,
+     "ban": 0.03,
+     "games": 3344,
+     "role_rate": 0.98,
+     "tier": 1
+    }
+   },
+   "counters": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 48.0,
+     "games": 569,
+     "src": "opgg"
+    },
+    {
+     "ch": "Caitlyn",
+     "wr": 48.0,
+     "games": 223,
+     "src": "opgg"
+    },
+    {
+     "ch": "Lucian",
+     "wr": 49.0,
+     "games": 116,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Ezreal",
+     "wr": 56.0,
+     "games": 317,
+     "src": "opgg"
+    },
+    {
+     "ch": "Aphelios",
+     "wr": 55.0,
+     "games": 130,
+     "src": "opgg"
+    },
+    {
+     "ch": "Miss Fortune",
+     "wr": 55.0,
+     "games": 125,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Jinx": {
-   "id": "Jinx"
+   "id": "Jinx",
+   "pro": {
+    "picks": 24,
+    "bans": 5,
+    "wins": 10,
+    "presence": 0.058,
+    "wr": 0.4167,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 50.0,
+     "pick": 0.1,
+     "ban": 0.05,
+     "games": 1610,
+     "role_rate": 1,
+     "tier": 3
+    }
+   },
+   "counters": [
+    {
+     "ch": "Ezreal",
+     "wr": 48.0,
+     "games": 122,
+     "src": "opgg"
+    },
+    {
+     "ch": "Jhin",
+     "wr": 49.0,
+     "games": 168,
+     "src": "opgg"
+    },
+    {
+     "ch": "Aphelios",
+     "wr": 49.0,
+     "games": 113,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 53.0,
+     "games": 190,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Kai'Sa": {
-   "id": "Kaisa"
+   "id": "Kaisa",
+   "pro": {
+    "picks": 53,
+    "bans": 24,
+    "wins": 29,
+    "presence": 0.154,
+    "wr": 0.5472,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 49.0,
+     "pick": 0.28,
+     "ban": 0.06,
+     "games": 4295,
+     "role_rate": 0.98,
+     "tier": 2
+    }
+   },
+   "counters": [
+    {
+     "ch": "Tristana",
+     "wr": 41.0,
+     "games": 128,
+     "src": "opgg"
+    },
+    {
+     "ch": "Jinx",
+     "wr": 45.0,
+     "games": 190,
+     "src": "opgg"
+    },
+    {
+     "ch": "Miss Fortune",
+     "wr": 45.0,
+     "games": 117,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Caitlyn",
+     "wr": 57.0,
+     "games": 216,
+     "src": "opgg"
+    },
+    {
+     "ch": "Ezreal",
+     "wr": 54.0,
+     "games": 426,
+     "src": "opgg"
+    },
+    {
+     "ch": "Yunara",
+     "wr": 54.0,
+     "games": 204,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Kalista": {
-   "id": "Kalista"
+   "id": "Kalista",
+   "pro": {
+    "picks": 76,
+    "bans": 67,
+    "wins": 49,
+    "presence": 0.286,
+    "wr": 0.6447,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 48.0,
+     "pick": 0.05,
+     "ban": 0.03,
+     "games": 785,
+     "role_rate": 0.91,
+     "tier": 5
+    }
+   },
+   "main_role": "adc"
   },
   "Karma": {
-   "id": "Karma"
+   "id": "Karma",
+   "pro": {
+    "picks": 88,
+    "bans": 70,
+    "wins": 42,
+    "presence": 0.316,
+    "wr": 0.4773,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.08,
+     "ban": 0.04,
+     "games": 1179,
+     "role_rate": 0.96,
+     "tier": 2
+    }
+   },
+   "main_role": "support"
   },
   "Karthus": {
-   "id": "Karthus"
+   "id": "Karthus",
+   "pro": {
+    "picks": 1,
+    "bans": 1,
+    "wins": 0,
+    "presence": 0.004,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 54.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 246,
+     "role_rate": 0.73,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Kassadin": {
-   "id": "Kassadin"
+   "id": "Kassadin",
+   "pro": {
+    "picks": 1,
+    "bans": 4,
+    "wins": 0,
+    "presence": 0.01,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 51.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 367,
+     "role_rate": 0.89,
+     "tier": 3
+    }
+   },
+   "main_role": "mid"
   },
   "Katarina": {
-   "id": "Katarina"
+   "id": "Katarina",
+   "pro": {
+    "picks": 1,
+    "bans": 2,
+    "wins": 1,
+    "presence": 0.006,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.06,
+     "ban": 0.08,
+     "games": 928,
+     "role_rate": 0.88,
+     "tier": 1
+    },
+    "opgg_bottom": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0.06,
+     "games": 95,
+     "role_rate": 0.09,
+     "tier": 5
+    }
+   },
+   "main_role": "mid"
   },
   "Kayle": {
-   "id": "Kayle"
+   "id": "Kayle",
+   "pro": {
+    "picks": 2,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.006,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 54.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 302,
+     "role_rate": 0.77,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 80,
+     "role_rate": 0.21,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Kayn": {
-   "id": "Kayn"
+   "id": "Kayn",
+   "pro": {
+    "picks": 3,
+    "bans": 0,
+    "wins": 2,
+    "presence": 0.006,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 48.0,
+     "pick": 0.05,
+     "ban": 0.02,
+     "games": 720,
+     "role_rate": 0.95,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Kennen": {
-   "id": "Kennen"
+   "id": "Kennen",
+   "pro": {
+    "picks": 10,
+    "bans": 3,
+    "wins": 5,
+    "presence": 0.026,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 54.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 345,
+     "role_rate": 0.84,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Kha'Zix": {
-   "id": "Khazix"
+   "id": "Khazix",
+   "pro": {
+    "picks": 10,
+    "bans": 4,
+    "wins": 6,
+    "presence": 0.028,
+    "wr": 0.6,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.03,
+     "games": 825,
+     "role_rate": 1,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Kindred": {
-   "id": "Kindred"
+   "id": "Kindred",
+   "pro": {
+    "picks": 3,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.008,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 53.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 382,
+     "role_rate": 0.92,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Kled": {
-   "id": "Kled"
+   "id": "Kled",
+   "pro": {
+    "picks": 6,
+    "bans": 3,
+    "wins": 2,
+    "presence": 0.018,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 54.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 257,
+     "role_rate": 0.9,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Kog'Maw": {
-   "id": "KogMaw"
+   "id": "KogMaw",
+   "pro": {
+    "picks": 4,
+    "bans": 3,
+    "wins": 2,
+    "presence": 0.014,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 105,
+     "role_rate": 0.25,
+     "tier": 4
+    },
+    "opgg_bottom": {
+     "wr": 53.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 264,
+     "role_rate": 0.63,
+     "tier": 3
+    }
+   },
+   "main_role": "adc"
   },
   "K'Sante": {
-   "id": "KSante"
+   "id": "KSante",
+   "pro": {
+    "picks": 99,
+    "bans": 53,
+    "wins": 38,
+    "presence": 0.304,
+    "wr": 0.3838,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 46.0,
+     "pick": 0.06,
+     "ban": 0.03,
+     "games": 925,
+     "role_rate": 0.95,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "LeBlanc": {
-   "id": "Leblanc"
+   "id": "Leblanc",
+   "pro": {
+    "picks": 21,
+    "bans": 30,
+    "wins": 12,
+    "presence": 0.102,
+    "wr": 0.5714,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 51.0,
+     "pick": 0.07,
+     "ban": 0.31,
+     "games": 1062,
+     "role_rate": 0.85,
+     "tier": 1
+    },
+    "opgg_support": {
+     "wr": 46.0,
+     "pick": 0.01,
+     "ban": 0.29,
+     "games": 174,
+     "role_rate": 0.14,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Lee Sin": {
-   "id": "LeeSin"
+   "id": "LeeSin",
+   "pro": {
+    "picks": 94,
+    "bans": 140,
+    "wins": 51,
+    "presence": 0.468,
+    "wr": 0.5426,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 49.0,
+     "pick": 0.19,
+     "ban": 0.31,
+     "games": 2932,
+     "role_rate": 0.97,
+     "tier": 1
+    }
+   },
+   "counters": [
+    {
+     "ch": "Jarvan IV",
+     "wr": 47.0,
+     "games": 123,
+     "src": "opgg"
+    },
+    {
+     "ch": "Viego",
+     "wr": 47.0,
+     "games": 123,
+     "src": "opgg"
+    },
+    {
+     "ch": "Sylas",
+     "wr": 47.0,
+     "games": 118,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Qiyana",
+     "wr": 58.0,
+     "games": 108,
+     "src": "opgg"
+    },
+    {
+     "ch": "Vi",
+     "wr": 56.0,
+     "games": 104,
+     "src": "opgg"
+    },
+    {
+     "ch": "Graves",
+     "wr": 50.0,
+     "games": 155,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "jungle"
   },
   "Leona": {
-   "id": "Leona"
+   "id": "Leona",
+   "pro": {
+    "picks": 43,
+    "bans": 17,
+    "wins": 23,
+    "presence": 0.12,
+    "wr": 0.5349,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 51.0,
+     "pick": 0.08,
+     "ban": 0.09,
+     "games": 1272,
+     "role_rate": 1,
+     "tier": 1
+    }
+   },
+   "main_role": "support"
   },
   "Lillia": {
-   "id": "Lillia"
+   "id": "Lillia",
+   "pro": {
+    "picks": 12,
+    "bans": 7,
+    "wins": 7,
+    "presence": 0.038,
+    "wr": 0.5833,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.05,
+     "games": 808,
+     "role_rate": 0.99,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Lissandra": {
-   "id": "Lissandra"
+   "id": "Lissandra",
+   "pro": {
+    "picks": 11,
+    "bans": 7,
+    "wins": 5,
+    "presence": 0.036,
+    "wr": 0.4545,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0.03,
+     "games": 91,
+     "role_rate": 0.09,
+     "tier": 4
+    },
+    "opgg_middle": {
+     "wr": 55.00000000000001,
+     "pick": 0.06,
+     "ban": 0.04,
+     "games": 882,
+     "role_rate": 0.88,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Locke": {
-   "id": "Locke"
+   "id": "Locke",
+   "pro": {
+    "picks": 58,
+    "bans": 104,
+    "wins": 34,
+    "presence": 0.324,
+    "wr": 0.5862,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 42.0,
+     "pick": 0.01,
+     "ban": 0.31,
+     "games": 128,
+     "role_rate": 0.11,
+     "tier": 4
+    },
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.06,
+     "ban": 0.36,
+     "games": 946,
+     "role_rate": 0.83,
+     "tier": 2
+    }
+   },
+   "main_role": "mid"
   },
   "Lucian": {
-   "id": "Lucian"
+   "id": "Lucian",
+   "pro": {
+    "picks": 102,
+    "bans": 110,
+    "wins": 50,
+    "presence": 0.424,
+    "wr": 0.4902,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 48.0,
+     "pick": 0.1,
+     "ban": 0.04,
+     "games": 1487,
+     "role_rate": 0.91,
+     "tier": 5
+    }
+   },
+   "beats": [
+    {
+     "ch": "Ezreal",
+     "wr": 53.0,
+     "games": 133,
+     "src": "opgg"
+    },
+    {
+     "ch": "Jhin",
+     "wr": 51.0,
+     "games": 116,
+     "src": "opgg"
+    },
+    {
+     "ch": "Kai'Sa",
+     "wr": 50.0,
+     "games": 228,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Lulu": {
-   "id": "Lulu"
+   "id": "Lulu",
+   "pro": {
+    "picks": 128,
+    "bans": 88,
+    "wins": 74,
+    "presence": 0.432,
+    "wr": 0.5781,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.12,
+     "ban": 0.16,
+     "games": 1882,
+     "role_rate": 0.99,
+     "tier": 2
+    }
+   },
+   "counters": [
+    {
+     "ch": "Thresh",
+     "wr": 47.0,
+     "games": 137,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Nautilus",
+     "wr": 56.0,
+     "games": 110,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "support"
   },
   "Lux": {
-   "id": "Lux"
+   "id": "Lux",
+   "pro": {
+    "picks": 4,
+    "bans": 1,
+    "wins": 3,
+    "presence": 0.01,
+    "wr": 0.75,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 54.0,
+     "pick": 0.03,
+     "ban": 0.03,
+     "games": 407,
+     "role_rate": 0.29,
+     "tier": 2
+    },
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.06,
+     "ban": 0.03,
+     "games": 912,
+     "role_rate": 0.66,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Malphite": {
-   "id": "Malphite"
+   "id": "Malphite",
+   "pro": {
+    "picks": 13,
+    "bans": 13,
+    "wins": 7,
+    "presence": 0.052,
+    "wr": 0.5385,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 55.00000000000001,
+     "pick": 0.07,
+     "ban": 0.17,
+     "games": 1084,
+     "role_rate": 0.78,
+     "tier": 1
+    },
+    "opgg_jungle": {
+     "wr": 45.0,
+     "pick": 0.01,
+     "ban": 0.14,
+     "games": 114,
+     "role_rate": 0.08,
+     "tier": 4
+    },
+    "opgg_middle": {
+     "wr": 46.0,
+     "pick": 0.01,
+     "ban": 0.15,
+     "games": 140,
+     "role_rate": 0.1,
+     "tier": 5
+    }
+   },
+   "beats": [
+    {
+     "ch": "Jayce",
+     "wr": 55.0,
+     "games": 101,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "top"
   },
   "Malzahar": {
-   "id": "Malzahar"
+   "id": "Malzahar",
+   "pro": {
+    "picks": 1,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.004,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 49.0,
+     "pick": 0.04,
+     "ban": 0.05,
+     "games": 645,
+     "role_rate": 0.88,
+     "tier": 3
+    }
+   },
+   "main_role": "mid"
   },
   "Maokai": {
-   "id": "Maokai"
+   "id": "Maokai",
+   "pro": {
+    "picks": 15,
+    "bans": 18,
+    "wins": 7,
+    "presence": 0.066,
+    "wr": 0.4667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 56.99999999999999,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 137,
+     "role_rate": 0.21,
+     "tier": 2
+    },
+    "opgg_jungle": {
+     "wr": 47.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 165,
+     "role_rate": 0.25,
+     "tier": 4
+    },
+    "opgg_support": {
+     "wr": 53.0,
+     "pick": 0.02,
+     "ban": 0,
+     "games": 353,
+     "role_rate": 0.54,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Master Yi": {
-   "id": "MasterYi"
+   "id": "MasterYi",
+   "soloq": {
+    "opgg_top": {
+     "wr": 44.0,
+     "pick": 0.01,
+     "ban": 0.06,
+     "games": 133,
+     "role_rate": 0.14,
+     "tier": 5
+    },
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.08,
+     "games": 788,
+     "role_rate": 0.81,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Mel": {
-   "id": "Mel"
+   "id": "Mel",
+   "pro": {
+    "picks": 16,
+    "bans": 5,
+    "wins": 7,
+    "presence": 0.042,
+    "wr": 0.4375,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 41.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 223,
+     "role_rate": 0.58,
+     "tier": 5
+    },
+    "opgg_support": {
+     "wr": 34.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 104,
+     "role_rate": 0.27,
+     "tier": 5
+    }
+   },
+   "main_role": "mid"
   },
   "Milio": {
-   "id": "Milio"
+   "id": "Milio",
+   "pro": {
+    "picks": 99,
+    "bans": 8,
+    "wins": 44,
+    "presence": 0.214,
+    "wr": 0.4444,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.02,
+     "games": 692,
+     "role_rate": 1,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Miss Fortune": {
-   "id": "MissFortune"
+   "id": "MissFortune",
+   "pro": {
+    "picks": 15,
+    "bans": 8,
+    "wins": 8,
+    "presence": 0.046,
+    "wr": 0.5333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.07,
+     "ban": 0.01,
+     "games": 1110,
+     "role_rate": 0.95,
+     "tier": 3
+    }
+   },
+   "counters": [
+    {
+     "ch": "Jhin",
+     "wr": 45.0,
+     "games": 125,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 52.0,
+     "games": 117,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Wukong": {
-   "id": "MonkeyKing"
+   "id": "MonkeyKing",
+   "pro": {
+    "picks": 92,
+    "bans": 84,
+    "wins": 45,
+    "presence": 0.352,
+    "wr": 0.4891,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0.04,
+     "games": 126,
+     "role_rate": 0.11,
+     "tier": 4
+    },
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.07,
+     "ban": 0.05,
+     "games": 1004,
+     "role_rate": 0.87,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Mordekaiser": {
-   "id": "Mordekaiser"
+   "id": "Mordekaiser",
+   "pro": {
+    "picks": 4,
+    "bans": 6,
+    "wins": 1,
+    "presence": 0.02,
+    "wr": 0.25,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.04,
+     "ban": 0.04,
+     "games": 625,
+     "role_rate": 0.92,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Morgana": {
-   "id": "Morgana"
+   "id": "Morgana",
+   "pro": {
+    "picks": 3,
+    "bans": 0,
+    "wins": 2,
+    "presence": 0.006,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 48.0,
+     "pick": 0.04,
+     "ban": 0.13,
+     "games": 575,
+     "role_rate": 0.84,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Naafiri": {
-   "id": "Naafiri"
+   "id": "Naafiri",
+   "pro": {
+    "picks": 53,
+    "bans": 54,
+    "wins": 21,
+    "presence": 0.214,
+    "wr": 0.3962,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 53.0,
+     "pick": 0.05,
+     "ban": 0.11,
+     "games": 789,
+     "role_rate": 0.81,
+     "tier": 1
+    },
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.01,
+     "ban": 0.1,
+     "games": 134,
+     "role_rate": 0.14,
+     "tier": 5
+    }
+   },
+   "main_role": "jungle"
   },
   "Nami": {
-   "id": "Nami"
+   "id": "Nami",
+   "pro": {
+    "picks": 10,
+    "bans": 2,
+    "wins": 6,
+    "presence": 0.024,
+    "wr": 0.6,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 47.0,
+     "pick": 0.05,
+     "ban": 0,
+     "games": 706,
+     "role_rate": 1,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Nasus": {
-   "id": "Nasus"
+   "id": "Nasus",
+   "pro": {
+    "picks": 8,
+    "bans": 7,
+    "wins": 3,
+    "presence": 0.03,
+    "wr": 0.375,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.03,
+     "ban": 0.08,
+     "games": 531,
+     "role_rate": 0.78,
+     "tier": 3
+    },
+    "opgg_middle": {
+     "wr": 43.0,
+     "pick": 0.01,
+     "ban": 0.06,
+     "games": 122,
+     "role_rate": 0.18,
+     "tier": 5
+    }
+   },
+   "main_role": "top"
   },
   "Nautilus": {
-   "id": "Nautilus"
+   "id": "Nautilus",
+   "pro": {
+    "picks": 95,
+    "bans": 75,
+    "wins": 39,
+    "presence": 0.34,
+    "wr": 0.4105,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.14,
+     "ban": 0.17,
+     "games": 2194,
+     "role_rate": 0.99,
+     "tier": 1
+    }
+   },
+   "counters": [
+    {
+     "ch": "Lulu",
+     "wr": 43.0,
+     "games": 110,
+     "src": "opgg"
+    },
+    {
+     "ch": "Alistar",
+     "wr": 48.0,
+     "games": 103,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Thresh",
+     "wr": 51.0,
+     "games": 169,
+     "src": "opgg"
+    },
+    {
+     "ch": "Braum",
+     "wr": 51.0,
+     "games": 102,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "support"
   },
   "Neeko": {
-   "id": "Neeko"
+   "id": "Neeko",
+   "pro": {
+    "picks": 24,
+    "bans": 14,
+    "wins": 12,
+    "presence": 0.076,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 51.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 358,
+     "role_rate": 0.83,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Nidalee": {
-   "id": "Nidalee"
+   "id": "Nidalee",
+   "pro": {
+    "picks": 5,
+    "bans": 8,
+    "wins": 3,
+    "presence": 0.026,
+    "wr": 0.6,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.07,
+     "games": 705,
+     "role_rate": 0.94,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Nilah": {
-   "id": "Nilah"
+   "id": "Nilah",
+   "pro": {
+    "picks": 0,
+    "bans": 1,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": null,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 50.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 123,
+     "role_rate": 0.95,
+     "tier": 5
+    }
+   },
+   "main_role": "adc"
   },
   "Nocturne": {
-   "id": "Nocturne"
+   "id": "Nocturne",
+   "pro": {
+    "picks": 41,
+    "bans": 300,
+    "wins": 24,
+    "presence": 0.682,
+    "wr": 0.5854,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 48.0,
+     "pick": 0.04,
+     "ban": 0.07,
+     "games": 617,
+     "role_rate": 0.94,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Nunu & Willump": {
-   "id": "Nunu"
+   "id": "Nunu",
+   "pro": {
+    "picks": 0,
+    "bans": 1,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": null,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 49.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 250,
+     "role_rate": 0.68,
+     "tier": 3
+    },
+    "opgg_middle": {
+     "wr": 47.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 93,
+     "role_rate": 0.25,
+     "tier": 5
+    }
+   },
+   "main_role": "jungle"
   },
   "Olaf": {
-   "id": "Olaf"
+   "id": "Olaf",
+   "pro": {
+    "picks": 76,
+    "bans": 139,
+    "wins": 45,
+    "presence": 0.43,
+    "wr": 0.5921,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.04,
+     "ban": 0.05,
+     "games": 547,
+     "role_rate": 0.9,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Orianna": {
-   "id": "Orianna"
+   "id": "Orianna",
+   "pro": {
+    "picks": 90,
+    "bans": 143,
+    "wins": 48,
+    "presence": 0.466,
+    "wr": 0.5333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.06,
+     "ban": 0.01,
+     "games": 963,
+     "role_rate": 0.98,
+     "tier": 3
+    }
+   },
+   "main_role": "mid"
   },
   "Ornn": {
-   "id": "Ornn"
+   "id": "Ornn",
+   "pro": {
+    "picks": 34,
+    "bans": 13,
+    "wins": 19,
+    "presence": 0.094,
+    "wr": 0.5588,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 46.0,
+     "pick": 0.03,
+     "ban": 0,
+     "games": 410,
+     "role_rate": 0.95,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Pantheon": {
-   "id": "Pantheon"
+   "id": "Pantheon",
+   "pro": {
+    "picks": 65,
+    "bans": 51,
+    "wins": 24,
+    "presence": 0.232,
+    "wr": 0.3692,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.04,
+     "ban": 0.05,
+     "games": 606,
+     "role_rate": 0.39,
+     "tier": 3
+    },
+    "opgg_jungle": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 157,
+     "role_rate": 0.1,
+     "tier": 3
+    },
+    "opgg_middle": {
+     "wr": 46.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 202,
+     "role_rate": 0.13,
+     "tier": 5
+    },
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.04,
+     "ban": 0.05,
+     "games": 574,
+     "role_rate": 0.37,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Poppy": {
-   "id": "Poppy"
+   "id": "Poppy",
+   "pro": {
+    "picks": 19,
+    "bans": 93,
+    "wins": 12,
+    "presence": 0.224,
+    "wr": 0.6316,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 50.0,
+     "pick": 0.01,
+     "ban": 0.06,
+     "games": 165,
+     "role_rate": 0.29,
+     "tier": 3
+    },
+    "opgg_support": {
+     "wr": 54.0,
+     "pick": 0.02,
+     "ban": 0.06,
+     "games": 344,
+     "role_rate": 0.61,
+     "tier": 2
+    }
+   },
+   "main_role": "support"
   },
   "Pyke": {
-   "id": "Pyke"
+   "id": "Pyke",
+   "pro": {
+    "picks": 6,
+    "bans": 7,
+    "wins": 4,
+    "presence": 0.026,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 52.0,
+     "pick": 0.06,
+     "ban": 0.3,
+     "games": 923,
+     "role_rate": 1,
+     "tier": 1
+    }
+   },
+   "main_role": "support"
   },
   "Qiyana": {
-   "id": "Qiyana"
+   "id": "Qiyana",
+   "pro": {
+    "picks": 75,
+    "bans": 115,
+    "wins": 45,
+    "presence": 0.38,
+    "wr": 0.6,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 48.0,
+     "pick": 0.07,
+     "ban": 0.16,
+     "games": 1066,
+     "role_rate": 0.73,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.02,
+     "ban": 0.15,
+     "games": 341,
+     "role_rate": 0.23,
+     "tier": 2
+    }
+   },
+   "counters": [
+    {
+     "ch": "Lee Sin",
+     "wr": 41.0,
+     "games": 108,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "jungle"
   },
   "Quinn": {
-   "id": "Quinn"
+   "id": "Quinn",
+   "pro": {
+    "picks": 1,
+    "bans": 0,
+    "wins": 1,
+    "presence": 0.002,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 113,
+     "role_rate": 0.49,
+     "tier": 4
+    },
+    "opgg_jungle": {
+     "wr": 44.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 85,
+     "role_rate": 0.37,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Rakan": {
-   "id": "Rakan"
+   "id": "Rakan",
+   "pro": {
+    "picks": 61,
+    "bans": 19,
+    "wins": 30,
+    "presence": 0.16,
+    "wr": 0.4918,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.01,
+     "games": 751,
+     "role_rate": 1,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Rammus": {
-   "id": "Rammus"
+   "id": "Rammus",
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 177,
+     "role_rate": 0.84,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Rek'Sai": {
-   "id": "RekSai"
+   "id": "RekSai",
+   "pro": {
+    "picks": 1,
+    "bans": 0,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 56.99999999999999,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 247,
+     "role_rate": 0.95,
+     "tier": 1
+    }
+   },
+   "main_role": "jungle"
   },
   "Rell": {
-   "id": "Rell"
+   "id": "Rell",
+   "pro": {
+    "picks": 45,
+    "bans": 9,
+    "wins": 24,
+    "presence": 0.108,
+    "wr": 0.5333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.05,
+     "ban": 0.02,
+     "games": 747,
+     "role_rate": 1,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Renata Glasc": {
-   "id": "Renata"
+   "id": "Renata",
+   "pro": {
+    "picks": 79,
+    "bans": 29,
+    "wins": 46,
+    "presence": 0.216,
+    "wr": 0.5823,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.02,
+     "ban": 0,
+     "games": 268,
+     "role_rate": 1,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Renekton": {
-   "id": "Renekton"
+   "id": "Renekton",
+   "pro": {
+    "picks": 46,
+    "bans": 50,
+    "wins": 26,
+    "presence": 0.192,
+    "wr": 0.5652,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 53.0,
+     "pick": 0.07,
+     "ban": 0.04,
+     "games": 1006,
+     "role_rate": 0.93,
+     "tier": 1
+    },
+    "opgg_middle": {
+     "wr": 47.0,
+     "pick": 0.01,
+     "ban": 0.03,
+     "games": 77,
+     "role_rate": 0.07,
+     "tier": 5
+    }
+   },
+   "main_role": "top"
   },
   "Rengar": {
-   "id": "Rengar"
+   "id": "Rengar",
+   "pro": {
+    "picks": 1,
+    "bans": 5,
+    "wins": 1,
+    "presence": 0.012,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 44.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 79,
+     "role_rate": 0.14,
+     "tier": 5
+    },
+    "opgg_jungle": {
+     "wr": 47.0,
+     "pick": 0.03,
+     "ban": 0.04,
+     "games": 447,
+     "role_rate": 0.8,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Riven": {
-   "id": "Riven"
+   "id": "Riven",
+   "pro": {
+    "picks": 0,
+    "bans": 5,
+    "wins": 0,
+    "presence": 0.01,
+    "wr": null,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 45.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 294,
+     "role_rate": 0.78,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Rumble": {
-   "id": "Rumble"
+   "id": "Rumble",
+   "pro": {
+    "picks": 116,
+    "bans": 63,
+    "wins": 66,
+    "presence": 0.358,
+    "wr": 0.569,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 46.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 345,
+     "role_rate": 0.84,
+     "tier": 4
+    }
+   },
+   "main_role": "top"
   },
   "Ryze": {
-   "id": "Ryze"
+   "id": "Ryze",
+   "pro": {
+    "picks": 110,
+    "bans": 72,
+    "wins": 43,
+    "presence": 0.364,
+    "wr": 0.3909,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 47.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 130,
+     "role_rate": 0.27,
+     "tier": 4
+    },
+    "opgg_middle": {
+     "wr": 43.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 335,
+     "role_rate": 0.71,
+     "tier": 5
+    }
+   },
+   "main_role": "mid"
   },
   "Samira": {
-   "id": "Samira"
+   "id": "Samira",
+   "pro": {
+    "picks": 3,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.008,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 52.0,
+     "pick": 0.03,
+     "ban": 0.02,
+     "games": 421,
+     "role_rate": 0.99,
+     "tier": 4
+    }
+   },
+   "main_role": "adc"
   },
   "Sejuani": {
-   "id": "Sejuani"
+   "id": "Sejuani",
+   "pro": {
+    "picks": 23,
+    "bans": 5,
+    "wins": 16,
+    "presence": 0.056,
+    "wr": 0.6957,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 49.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 227,
+     "role_rate": 0.77,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Senna": {
-   "id": "Senna"
+   "id": "Senna",
+   "pro": {
+    "picks": 1,
+    "bans": 0,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 51.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 675,
+     "role_rate": 0.92,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Seraphine": {
-   "id": "Seraphine"
+   "id": "Seraphine",
+   "pro": {
+    "picks": 84,
+    "bans": 80,
+    "wins": 44,
+    "presence": 0.328,
+    "wr": 0.5238,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.05,
+     "ban": 0.02,
+     "games": 749,
+     "role_rate": 0.92,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Sett": {
-   "id": "Sett"
+   "id": "Sett",
+   "pro": {
+    "picks": 1,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.004,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 53.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 599,
+     "role_rate": 0.88,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Shaco": {
-   "id": "Shaco"
+   "id": "Shaco",
+   "pro": {
+    "picks": 1,
+    "bans": 0,
+    "wins": 1,
+    "presence": 0.002,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.04,
+     "ban": 0.19,
+     "games": 587,
+     "role_rate": 0.71,
+     "tier": 2
+    },
+    "opgg_support": {
+     "wr": 48.0,
+     "pick": 0.01,
+     "ban": 0.18,
+     "games": 226,
+     "role_rate": 0.27,
+     "tier": 4
+    }
+   },
+   "main_role": "jungle"
   },
   "Shen": {
-   "id": "Shen"
+   "id": "Shen",
+   "pro": {
+    "picks": 30,
+    "bans": 12,
+    "wins": 16,
+    "presence": 0.084,
+    "wr": 0.5333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 56.00000000000001,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 417,
+     "role_rate": 0.57,
+     "tier": 1
+    },
+    "opgg_jungle": {
+     "wr": 45.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 157,
+     "role_rate": 0.22,
+     "tier": 4
+    },
+    "opgg_support": {
+     "wr": 45.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 142,
+     "role_rate": 0.2,
+     "tier": 5
+    }
+   },
+   "main_role": "top"
   },
   "Shyvana": {
-   "id": "Shyvana"
+   "id": "Shyvana",
+   "pro": {
+    "picks": 18,
+    "bans": 17,
+    "wins": 9,
+    "presence": 0.07,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 47.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 313,
+     "role_rate": 0.9,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Singed": {
-   "id": "Singed"
+   "id": "Singed",
+   "pro": {
+    "picks": 3,
+    "bans": 1,
+    "wins": 2,
+    "presence": 0.008,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 49.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 380,
+     "role_rate": 0.82,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Sion": {
-   "id": "Sion"
+   "id": "Sion",
+   "pro": {
+    "picks": 49,
+    "bans": 12,
+    "wins": 19,
+    "presence": 0.122,
+    "wr": 0.3878,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 558,
+     "role_rate": 0.68,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 55.00000000000001,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 152,
+     "role_rate": 0.19,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Sivir": {
-   "id": "Sivir"
+   "id": "Sivir",
+   "pro": {
+    "picks": 35,
+    "bans": 12,
+    "wins": 15,
+    "presence": 0.094,
+    "wr": 0.4286,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.04,
+     "ban": 0.02,
+     "games": 681,
+     "role_rate": 0.99,
+     "tier": 4
+    }
+   },
+   "main_role": "adc"
   },
   "Skarner": {
-   "id": "Skarner"
+   "id": "Skarner",
+   "pro": {
+    "picks": 55,
+    "bans": 48,
+    "wins": 26,
+    "presence": 0.206,
+    "wr": 0.4727,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 44.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 149,
+     "role_rate": 0.64,
+     "tier": 4
+    }
+   },
+   "main_role": "jungle"
   },
   "Smolder": {
-   "id": "Smolder"
+   "id": "Smolder",
+   "soloq": {
+    "opgg_middle": {
+     "wr": 43.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 80,
+     "role_rate": 0.11,
+     "tier": 5
+    },
+    "opgg_bottom": {
+     "wr": 49.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 610,
+     "role_rate": 0.81,
+     "tier": 5
+    }
+   },
+   "main_role": "adc"
   },
   "Sona": {
-   "id": "Sona"
+   "id": "Sona",
+   "pro": {
+    "picks": 1,
+    "bans": 0,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": 0.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 48.0,
+     "pick": 0.02,
+     "ban": 0,
+     "games": 251,
+     "role_rate": 0.98,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Soraka": {
-   "id": "Soraka"
+   "id": "Soraka",
+   "pro": {
+    "picks": 8,
+    "bans": 3,
+    "wins": 6,
+    "presence": 0.022,
+    "wr": 0.75,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 450,
+     "role_rate": 0.99,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Swain": {
-   "id": "Swain"
+   "id": "Swain",
+   "pro": {
+    "picks": 3,
+    "bans": 4,
+    "wins": 1,
+    "presence": 0.014,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 60.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 83,
+     "role_rate": 0.1,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 122,
+     "role_rate": 0.15,
+     "tier": 5
+    },
+    "opgg_bottom": {
+     "wr": 49.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 185,
+     "role_rate": 0.23,
+     "tier": 5
+    },
+    "opgg_support": {
+     "wr": 47.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 423,
+     "role_rate": 0.52,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Sylas": {
-   "id": "Sylas"
+   "id": "Sylas",
+   "pro": {
+    "picks": 37,
+    "bans": 34,
+    "wins": 21,
+    "presence": 0.142,
+    "wr": 0.5676,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 38.0,
+     "pick": 0.01,
+     "ban": 0.21,
+     "games": 221,
+     "role_rate": 0.07,
+     "tier": 5
+    },
+    "opgg_jungle": {
+     "wr": 52.0,
+     "pick": 0.08,
+     "ban": 0.23,
+     "games": 1158,
+     "role_rate": 0.38,
+     "tier": 1
+    },
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.09,
+     "ban": 0.23,
+     "games": 1339,
+     "role_rate": 0.44,
+     "tier": 2
+    },
+    "opgg_support": {
+     "wr": 46.0,
+     "pick": 0.02,
+     "ban": 0.22,
+     "games": 295,
+     "role_rate": 0.1,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Syndra": {
-   "id": "Syndra"
+   "id": "Syndra",
+   "pro": {
+    "picks": 111,
+    "bans": 141,
+    "wins": 51,
+    "presence": 0.504,
+    "wr": 0.4595,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 50.0,
+     "pick": 0.1,
+     "ban": 0.07,
+     "games": 1495,
+     "role_rate": 0.9,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Tahm Kench": {
-   "id": "TahmKench"
+   "id": "TahmKench",
+   "pro": {
+    "picks": 3,
+    "bans": 0,
+    "wins": 1,
+    "presence": 0.006,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 49.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 177,
+     "role_rate": 0.31,
+     "tier": 4
+    },
+    "opgg_support": {
+     "wr": 51.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 377,
+     "role_rate": 0.66,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Taliyah": {
-   "id": "Taliyah"
+   "id": "Taliyah",
+   "pro": {
+    "picks": 31,
+    "bans": 26,
+    "wins": 18,
+    "presence": 0.114,
+    "wr": 0.5806,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 55.00000000000001,
+     "pick": 0.05,
+     "ban": 0.02,
+     "games": 691,
+     "role_rate": 0.62,
+     "tier": 1
+    },
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 369,
+     "role_rate": 0.33,
+     "tier": 4
+    }
+   },
+   "main_role": "jungle"
   },
   "Talon": {
-   "id": "Talon"
+   "id": "Talon",
+   "pro": {
+    "picks": 1,
+    "bans": 3,
+    "wins": 1,
+    "presence": 0.008,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.05,
+     "ban": 0.07,
+     "games": 810,
+     "role_rate": 0.68,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 49.0,
+     "pick": 0.02,
+     "ban": 0.06,
+     "games": 373,
+     "role_rate": 0.31,
+     "tier": 4
+    }
+   },
+   "main_role": "jungle"
   },
   "Taric": {
-   "id": "Taric"
+   "id": "Taric",
+   "pro": {
+    "picks": 4,
+    "bans": 4,
+    "wins": 2,
+    "presence": 0.016,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 49.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 150,
+     "role_rate": 0.94,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Teemo": {
-   "id": "Teemo"
+   "id": "Teemo",
+   "pro": {
+    "picks": 0,
+    "bans": 1,
+    "wins": 0,
+    "presence": 0.002,
+    "wr": null,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.03,
+     "ban": 0.06,
+     "games": 515,
+     "role_rate": 0.71,
+     "tier": 2
+    },
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 84,
+     "role_rate": 0.12,
+     "tier": 3
+    },
+    "opgg_support": {
+     "wr": 44.0,
+     "pick": 0.01,
+     "ban": 0.04,
+     "games": 87,
+     "role_rate": 0.12,
+     "tier": 5
+    }
+   },
+   "main_role": "top"
   },
   "Thresh": {
-   "id": "Thresh"
+   "id": "Thresh",
+   "pro": {
+    "picks": 14,
+    "bans": 7,
+    "wins": 6,
+    "presence": 0.042,
+    "wr": 0.4286,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 51.0,
+     "pick": 0.15,
+     "ban": 0.15,
+     "games": 2302,
+     "role_rate": 1,
+     "tier": 1
+    }
+   },
+   "counters": [
+    {
+     "ch": "Blitzcrank",
+     "wr": 44.0,
+     "games": 129,
+     "src": "opgg"
+    },
+    {
+     "ch": "Alistar",
+     "wr": 48.0,
+     "games": 107,
+     "src": "opgg"
+    },
+    {
+     "ch": "Nautilus",
+     "wr": 49.0,
+     "games": 169,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Lulu",
+     "wr": 53.0,
+     "games": 137,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "support"
   },
   "Tristana": {
-   "id": "Tristana"
+   "id": "Tristana",
+   "pro": {
+    "picks": 37,
+    "bans": 13,
+    "wins": 15,
+    "presence": 0.1,
+    "wr": 0.4054,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 50.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 105,
+     "role_rate": 0.11,
+     "tier": 4
+    },
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.06,
+     "ban": 0.05,
+     "games": 863,
+     "role_rate": 0.87,
+     "tier": 3
+    }
+   },
+   "counters": [
+    {
+     "ch": "Jhin",
+     "wr": 49.0,
+     "games": 105,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 58.0,
+     "games": 128,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Trundle": {
-   "id": "Trundle"
+   "id": "Trundle",
+   "pro": {
+    "picks": 45,
+    "bans": 33,
+    "wins": 32,
+    "presence": 0.156,
+    "wr": 0.7111,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 49.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 172,
+     "role_rate": 0.58,
+     "tier": 4
+    },
+    "opgg_jungle": {
+     "wr": 54.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 94,
+     "role_rate": 0.31,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Tryndamere": {
-   "id": "Tryndamere"
+   "id": "Tryndamere",
+   "pro": {
+    "picks": 3,
+    "bans": 8,
+    "wins": 2,
+    "presence": 0.022,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 48.0,
+     "pick": 0.03,
+     "ban": 0.02,
+     "games": 437,
+     "role_rate": 0.8,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Twisted Fate": {
-   "id": "TwistedFate"
+   "id": "TwistedFate",
+   "pro": {
+    "picks": 14,
+    "bans": 16,
+    "wins": 10,
+    "presence": 0.06,
+    "wr": 0.7143,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.08,
+     "ban": 0.04,
+     "games": 1228,
+     "role_rate": 0.93,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Twitch": {
-   "id": "Twitch"
+   "id": "Twitch",
+   "pro": {
+    "picks": 4,
+    "bans": 1,
+    "wins": 2,
+    "presence": 0.01,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.03,
+     "ban": 0.04,
+     "games": 539,
+     "role_rate": 0.84,
+     "tier": 4
+    }
+   },
+   "main_role": "adc"
   },
   "Udyr": {
-   "id": "Udyr"
+   "id": "Udyr",
+   "pro": {
+    "picks": 3,
+    "bans": 2,
+    "wins": 1,
+    "presence": 0.01,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 96,
+     "role_rate": 0.42,
+     "tier": 4
+    },
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 121,
+     "role_rate": 0.53,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Urgot": {
-   "id": "Urgot"
+   "id": "Urgot",
+   "pro": {
+    "picks": 0,
+    "bans": 4,
+    "wins": 0,
+    "presence": 0.008,
+    "wr": null,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 205,
+     "role_rate": 0.92,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Varus": {
-   "id": "Varus"
+   "id": "Varus",
+   "pro": {
+    "picks": 42,
+    "bans": 26,
+    "wins": 20,
+    "presence": 0.136,
+    "wr": 0.4762,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 46.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 134,
+     "role_rate": 0.18,
+     "tier": 5
+    },
+    "opgg_bottom": {
+     "wr": 49.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 548,
+     "role_rate": 0.75,
+     "tier": 5
+    }
+   },
+   "main_role": "adc"
   },
   "Vayne": {
-   "id": "Vayne"
+   "id": "Vayne",
+   "pro": {
+    "picks": 11,
+    "bans": 17,
+    "wins": 3,
+    "presence": 0.056,
+    "wr": 0.2727,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 41.0,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 227,
+     "role_rate": 0.43,
+     "tier": 5
+    },
+    "opgg_bottom": {
+     "wr": 54.0,
+     "pick": 0.02,
+     "ban": 0.02,
+     "games": 267,
+     "role_rate": 0.51,
+     "tier": 2
+    }
+   },
+   "main_role": "adc"
   },
   "Veigar": {
-   "id": "Veigar"
+   "id": "Veigar",
+   "pro": {
+    "picks": 5,
+    "bans": 1,
+    "wins": 2,
+    "presence": 0.012,
+    "wr": 0.4,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 347,
+     "role_rate": 0.63,
+     "tier": 3
+    },
+    "opgg_bottom": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 117,
+     "role_rate": 0.21,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Vel'Koz": {
-   "id": "Velkoz"
+   "id": "Velkoz",
+   "pro": {
+    "picks": 3,
+    "bans": 5,
+    "wins": 2,
+    "presence": 0.016,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 43.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 114,
+     "role_rate": 0.18,
+     "tier": 5
+    },
+    "opgg_bottom": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 100,
+     "role_rate": 0.15,
+     "tier": 5
+    },
+    "opgg_support": {
+     "wr": 53.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 379,
+     "role_rate": 0.59,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Vex": {
-   "id": "Vex"
+   "id": "Vex",
+   "pro": {
+    "picks": 1,
+    "bans": 0,
+    "wins": 1,
+    "presence": 0.002,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.03,
+     "ban": 0.05,
+     "games": 483,
+     "role_rate": 0.93,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Vi": {
-   "id": "Vi"
+   "id": "Vi",
+   "pro": {
+    "picks": 86,
+    "bans": 224,
+    "wins": 43,
+    "presence": 0.62,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 48.0,
+     "pick": 0.06,
+     "ban": 0.02,
+     "games": 843,
+     "role_rate": 0.97,
+     "tier": 3
+    }
+   },
+   "counters": [
+    {
+     "ch": "Lee Sin",
+     "wr": 43.0,
+     "games": 104,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "jungle"
   },
   "Viego": {
-   "id": "Viego"
+   "id": "Viego",
+   "pro": {
+    "picks": 6,
+    "bans": 16,
+    "wins": 2,
+    "presence": 0.044,
+    "wr": 0.3333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 50.0,
+     "pick": 0.07,
+     "ban": 0.03,
+     "games": 1060,
+     "role_rate": 0.95,
+     "tier": 2
+    }
+   },
+   "beats": [
+    {
+     "ch": "Lee Sin",
+     "wr": 53.0,
+     "games": 123,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "jungle"
   },
   "Viktor": {
-   "id": "Viktor"
+   "id": "Viktor",
+   "pro": {
+    "picks": 87,
+    "bans": 63,
+    "wins": 34,
+    "presence": 0.3,
+    "wr": 0.3908,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 48.0,
+     "pick": 0.08,
+     "ban": 0.11,
+     "games": 1208,
+     "role_rate": 0.82,
+     "tier": 2
+    },
+    "opgg_bottom": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0.1,
+     "games": 208,
+     "role_rate": 0.14,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Vladimir": {
-   "id": "Vladimir"
+   "id": "Vladimir",
+   "pro": {
+    "picks": 4,
+    "bans": 2,
+    "wins": 2,
+    "presence": 0.012,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 56.00000000000001,
+     "pick": 0.01,
+     "ban": 0.02,
+     "games": 173,
+     "role_rate": 0.29,
+     "tier": 2
+    },
+    "opgg_middle": {
+     "wr": 50.0,
+     "pick": 0.03,
+     "ban": 0.02,
+     "games": 406,
+     "role_rate": 0.67,
+     "tier": 3
+    }
+   },
+   "main_role": "mid"
   },
   "Volibear": {
-   "id": "Volibear"
+   "id": "Volibear",
+   "pro": {
+    "picks": 7,
+    "bans": 2,
+    "wins": 3,
+    "presence": 0.018,
+    "wr": 0.4286,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 45.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 409,
+     "role_rate": 0.79,
+     "tier": 4
+    },
+    "opgg_jungle": {
+     "wr": 56.99999999999999,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 83,
+     "role_rate": 0.16,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Warwick": {
-   "id": "Warwick"
+   "id": "Warwick",
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0,
+     "games": 192,
+     "role_rate": 0.34,
+     "tier": 3
+    },
+    "opgg_jungle": {
+     "wr": 51.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 361,
+     "role_rate": 0.64,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Xayah": {
-   "id": "Xayah"
+   "id": "Xayah",
+   "pro": {
+    "picks": 53,
+    "bans": 21,
+    "wins": 28,
+    "presence": 0.148,
+    "wr": 0.5283,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.1,
+     "ban": 0.06,
+     "games": 1529,
+     "role_rate": 1,
+     "tier": 2
+    }
+   },
+   "beats": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 52.0,
+     "games": 347,
+     "src": "opgg"
+    },
+    {
+     "ch": "Ezreal",
+     "wr": 52.0,
+     "games": 127,
+     "src": "opgg"
+    },
+    {
+     "ch": "Jhin",
+     "wr": 51.0,
+     "games": 106,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Xerath": {
-   "id": "Xerath"
+   "id": "Xerath",
+   "pro": {
+    "picks": 4,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.01,
+    "wr": 0.25,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 52.0,
+     "pick": 0.04,
+     "ban": 0.11,
+     "games": 617,
+     "role_rate": 0.46,
+     "tier": 2
+    },
+    "opgg_bottom": {
+     "wr": 50.0,
+     "pick": 0.01,
+     "ban": 0.1,
+     "games": 163,
+     "role_rate": 0.12,
+     "tier": 5
+    },
+    "opgg_support": {
+     "wr": 48.0,
+     "pick": 0.04,
+     "ban": 0.11,
+     "games": 568,
+     "role_rate": 0.42,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Xin Zhao": {
-   "id": "XinZhao"
+   "id": "XinZhao",
+   "pro": {
+    "picks": 74,
+    "bans": 42,
+    "wins": 34,
+    "presence": 0.232,
+    "wr": 0.4595,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 45.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 82,
+     "role_rate": 0.11,
+     "tier": 5
+    },
+    "opgg_jungle": {
+     "wr": 49.0,
+     "pick": 0.04,
+     "ban": 0.01,
+     "games": 602,
+     "role_rate": 0.84,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   },
   "Yasuo": {
-   "id": "Yasuo"
+   "id": "Yasuo",
+   "pro": {
+    "picks": 5,
+    "bans": 6,
+    "wins": 2,
+    "presence": 0.022,
+    "wr": 0.4,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 46.0,
+     "pick": 0.03,
+     "ban": 0.21,
+     "games": 445,
+     "role_rate": 0.24,
+     "tier": 3
+    },
+    "opgg_middle": {
+     "wr": 51.0,
+     "pick": 0.07,
+     "ban": 0.22,
+     "games": 1116,
+     "role_rate": 0.61,
+     "tier": 1
+    },
+    "opgg_bottom": {
+     "wr": 55.00000000000001,
+     "pick": 0.02,
+     "ban": 0.21,
+     "games": 269,
+     "role_rate": 0.15,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Yone": {
-   "id": "Yone"
+   "id": "Yone",
+   "pro": {
+    "picks": 33,
+    "bans": 15,
+    "wins": 16,
+    "presence": 0.096,
+    "wr": 0.4848,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 50.0,
+     "pick": 0.09,
+     "ban": 0.15,
+     "games": 1377,
+     "role_rate": 0.52,
+     "tier": 1
+    },
+    "opgg_middle": {
+     "wr": 49.0,
+     "pick": 0.08,
+     "ban": 0.15,
+     "games": 1220,
+     "role_rate": 0.46,
+     "tier": 1
+    }
+   },
+   "main_role": "top"
   },
   "Yorick": {
-   "id": "Yorick"
+   "id": "Yorick",
+   "pro": {
+    "picks": 24,
+    "bans": 22,
+    "wins": 10,
+    "presence": 0.092,
+    "wr": 0.4167,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 52.0,
+     "pick": 0.03,
+     "ban": 0.05,
+     "games": 431,
+     "role_rate": 0.91,
+     "tier": 2
+    }
+   },
+   "main_role": "top"
   },
   "Yunara": {
-   "id": "Yunara"
+   "id": "Yunara",
+   "pro": {
+    "picks": 119,
+    "bans": 32,
+    "wins": 71,
+    "presence": 0.302,
+    "wr": 0.5966,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 51.0,
+     "pick": 0.1,
+     "ban": 0.05,
+     "games": 1514,
+     "role_rate": 0.99,
+     "tier": 2
+    }
+   },
+   "counters": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 45.0,
+     "games": 204,
+     "src": "opgg"
+    },
+    {
+     "ch": "Jhin",
+     "wr": 48.0,
+     "games": 141,
+     "src": "opgg"
+    }
+   ],
+   "beats": [
+    {
+     "ch": "Ezreal",
+     "wr": 51.0,
+     "games": 106,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Yuumi": {
-   "id": "Yuumi"
+   "id": "Yuumi",
+   "pro": {
+    "picks": 15,
+    "bans": 4,
+    "wins": 7,
+    "presence": 0.038,
+    "wr": 0.4667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 43.0,
+     "pick": 0.06,
+     "ban": 0.14,
+     "games": 901,
+     "role_rate": 1,
+     "tier": 4
+    }
+   },
+   "main_role": "support"
   },
   "Zaahen": {
-   "id": "Zaahen"
+   "id": "Zaahen",
+   "pro": {
+    "picks": 21,
+    "bans": 5,
+    "wins": 9,
+    "presence": 0.052,
+    "wr": 0.4286,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 49.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 536,
+     "role_rate": 0.81,
+     "tier": 3
+    },
+    "opgg_jungle": {
+     "wr": 52.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 94,
+     "role_rate": 0.14,
+     "tier": 3
+    }
+   },
+   "main_role": "top"
   },
   "Zac": {
-   "id": "Zac"
+   "id": "Zac",
+   "pro": {
+    "picks": 3,
+    "bans": 4,
+    "wins": 2,
+    "presence": 0.014,
+    "wr": 0.6667,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_top": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 108,
+     "role_rate": 0.18,
+     "tier": 3
+    },
+    "opgg_jungle": {
+     "wr": 54.0,
+     "pick": 0.03,
+     "ban": 0.01,
+     "games": 398,
+     "role_rate": 0.68,
+     "tier": 2
+    }
+   },
+   "main_role": "jungle"
   },
   "Zed": {
-   "id": "Zed"
+   "id": "Zed",
+   "pro": {
+    "picks": 6,
+    "bans": 3,
+    "wins": 5,
+    "presence": 0.018,
+    "wr": 0.8333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 49.0,
+     "pick": 0.03,
+     "ban": 0.2,
+     "games": 403,
+     "role_rate": 0.22,
+     "tier": 3
+    },
+    "opgg_middle": {
+     "wr": 49.0,
+     "pick": 0.08,
+     "ban": 0.21,
+     "games": 1280,
+     "role_rate": 0.7,
+     "tier": 1
+    }
+   },
+   "main_role": "mid"
   },
   "Zeri": {
-   "id": "Zeri"
+   "id": "Zeri",
+   "pro": {
+    "picks": 27,
+    "bans": 12,
+    "wins": 13,
+    "presence": 0.078,
+    "wr": 0.4815,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 52.0,
+     "pick": 0.05,
+     "ban": 0.01,
+     "games": 837,
+     "role_rate": 0.98,
+     "tier": 3
+    }
+   },
+   "counters": [
+    {
+     "ch": "Kai'Sa",
+     "wr": 47.0,
+     "games": 127,
+     "src": "opgg"
+    }
+   ],
+   "main_role": "adc"
   },
   "Ziggs": {
-   "id": "Ziggs"
+   "id": "Ziggs",
+   "pro": {
+    "picks": 15,
+    "bans": 18,
+    "wins": 8,
+    "presence": 0.066,
+    "wr": 0.5333,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_bottom": {
+     "wr": 53.0,
+     "pick": 0.01,
+     "ban": 0.01,
+     "games": 232,
+     "role_rate": 0.76,
+     "tier": 3
+    }
+   },
+   "main_role": "adc"
   },
   "Zilean": {
-   "id": "Zilean"
+   "id": "Zilean",
+   "pro": {
+    "picks": 2,
+    "bans": 1,
+    "wins": 1,
+    "presence": 0.006,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_support": {
+     "wr": 52.0,
+     "pick": 0.02,
+     "ban": 0.01,
+     "games": 350,
+     "role_rate": 0.85,
+     "tier": 3
+    }
+   },
+   "main_role": "support"
   },
   "Zoe": {
-   "id": "Zoe"
+   "id": "Zoe",
+   "pro": {
+    "picks": 2,
+    "bans": 10,
+    "wins": 2,
+    "presence": 0.024,
+    "wr": 1.0,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_middle": {
+     "wr": 55.00000000000001,
+     "pick": 0.03,
+     "ban": 0.06,
+     "games": 484,
+     "role_rate": 0.74,
+     "tier": 1
+    },
+    "opgg_support": {
+     "wr": 50.0,
+     "pick": 0.01,
+     "ban": 0.05,
+     "games": 118,
+     "role_rate": 0.18,
+     "tier": 4
+    }
+   },
+   "main_role": "mid"
   },
   "Zyra": {
-   "id": "Zyra"
+   "id": "Zyra",
+   "pro": {
+    "picks": 2,
+    "bans": 2,
+    "wins": 1,
+    "presence": 0.008,
+    "wr": 0.5,
+    "games": 500
+   },
+   "soloq": {
+    "opgg_jungle": {
+     "wr": 54.0,
+     "pick": 0.03,
+     "ban": 0.09,
+     "games": 485,
+     "role_rate": 0.57,
+     "tier": 1
+    },
+    "opgg_support": {
+     "wr": 52.0,
+     "pick": 0.02,
+     "ban": 0.09,
+     "games": 337,
+     "role_rate": 0.4,
+     "tier": 3
+    }
+   },
+   "main_role": "jungle"
   }
  },
- "patch": "16.22.1"
+ "patch": "26.22",
+ "ddragon": "16.22.1"
 }
