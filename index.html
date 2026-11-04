@@ -426,7 +426,10 @@ const DUOS=[
  ["Renekton","Elise",2],["Renekton","Lee Sin",1],["Renekton","Nidalee",1],["Camille","Galio",1],["Sion","Rell",1],["Lillia","Seraphine",1]];
 const SYN={},SYNW={};
 DUOS.forEach(([a,b,w])=>{[[a,b],[b,a]].forEach(([x,y])=>{(SYN[x]=SYN[x]||new Set()).add(y);(SYNW[x]=SYNW[x]||{})[y]=Math.max(w,(SYNW[x]||{})[y]||0)})});
-const synW=(a,b)=>(SYNW[a]&&SYNW[a][b])||0;
+const synW=(a,b)=>{ let w=(SYNW[a]&&SYNW[a][b])||0;
+  if(typeof DATA!=="undefined"&&DATA){ const f=(p,q)=>((DATA.champions[p]||{}).synergies||[]).find(z=>z.ch===q);
+    const z=f(a,b)||f(b,a); if(z&&z.wr!=null){ w=Math.max(w, z.wr>=53?2:z.wr>=51?1:0); } }
+  return w; };
 const META=new Set(["Nocturne","Vi","Cassiopeia","Renata Glasc","Qiyana","Olaf","Syndra","Ezreal","Lee Sin","Jarvan IV","Rumble","Orianna","Akali","Jayce","K'Sante","Nautilus","Locke","Seraphine","Lulu","Jhin","Ambessa","Galio","Wukong","Viktor","Alistar","Gnar","Renekton","Yunara","Kalista"]);
 const POOLSET=new Set(POOLS.flat());
 // Troliga roller per champ (T=Top J=Jgl M=Mid A=ADC S=Sup)
