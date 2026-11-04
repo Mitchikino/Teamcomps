@@ -239,10 +239,10 @@ def find_lists(obj, keys):
         for v in obj: hits += find_lists(v, keys)
     return hits
 
-def entry_name_wr(e, idx):
+def entry_name_wr(e, idx, keys=None):
     if not isinstance(e, dict): return None
     name = None
-    for k in ("champion_name", "championName", "name", "champion", "champion_id", "championId", "key"):
+    for k in (keys or ("champion_name", "championName", "name", "champion", "champion_id", "championId", "key")):
         v = e.get(k)
         if isinstance(v, dict): v = v.get("name")
         if v is not None and idx.get(norm(str(v))): name = idx[norm(str(v))]; break
@@ -295,7 +295,7 @@ def opgg(champs, idx, delay):
             except Exception as ex: log("OP.GG meta", lane, "fel:", ex)
             time.sleep(delay)
     # 2) counters + synergier per champ i dess huvudroll
-    first = True
+    first, ana_err, logged_c = True, 0, False
     for name in champs:
         if name not in main: continue
         pos = main[name][0]
@@ -307,7 +307,8 @@ def opgg(champs, idx, delay):
                 err = str(ex)
             time.sleep(0.3)
         if d is None:
-            if first: log("OP.GG analysis", name, "fel:", err[:200])
+            ana_err += 1
+            if ana_err <= 3: log("OP.GG analysis", name, "fel:", err[:200])
             time.sleep(delay); continue
         if first:
             log("OP.GG exempel (analysis):", json.dumps(d, ensure_ascii=False)[:700]); first = False
@@ -320,6 +321,21 @@ def opgg(champs, idx, delay):
                         out.append({"ch": nw[0], "wr": round(nw[1], 2), "games": e.get("play"), "src": "opgg"})
             return out
         weak, strong = grab(["weak_counter"]), grab(["strong_counter"])
+        if not weak and not strong:
+            # reserv: counters-listan under rätt roll i data.positions
+            allc = []
+            for ps in find_lists(d, ["positions"]):
+                for p_ in ps:
+                    if isinstance(p_, dict) and str(p_.get("name", "")).lower() in (pos, pos.upper().lower()):
+                        for e in (p_.get("counters") or []):
+                            nw = entry_name_wr(e, idx)
+                            if nw and nw[0] != name and nw[1] is not None:
+                                allc.append({"ch": nw[0], "wr": round(nw[1], 2), "games": e.get("play"), "src": "opgg"})
+            weak = sorted([x for x in allc if x["wr"] < 50], key=lambda x: x["wr"])
+            strong = sorted([x for x in allc if x["wr"] > 50], key=lambda x: -x["wr"])
+        if not logged_c:
+            for lst in find_lists(d, ["counter"]):
+                if lst: log("OP.GG exempel (counter-rad):", json.dumps(lst[0], ensure_ascii=False)[:300]); logged_c = True; break
         # "counters" = champs som slår denna champ, wr = denna champs WR mot dem (lågt = stark counter)
         if weak:
             if sum(x["wr"] for x in weak) / len(weak) > 50:  # svaret anger motståndarens WR – vänd
@@ -333,13 +349,14 @@ def opgg(champs, idx, delay):
                 sd = m.call(syn_tool, {"champion": opgg_names(name, champs[name]["id"])[0], "my_position": pos,
                                        "synergy_position": SYN_WITH[pos], "lang": "en_US"})
                 lst = [x for l in all_dict_lists(sd) for x in l]
-                cs = [nw for e in lst if (nw := entry_name_wr(e, idx))]
-                if cs: synergies[name] = [{"ch": c, "wr": round(w, 2), "with": SYN_WITH[pos], "src": "opgg"} for c, w in cs if c != name and w is not None][:12]
+                cs = [(nw, e.get("play")) for e in lst if (nw := entry_name_wr(e, idx, ("synergy_champion_name", "synergy_champion_id")))]
+                cs = [{"ch": c, "wr": round(w, 2), "games": g, "with": SYN_WITH[pos], "src": "opgg"} for (c, w), g in cs if c != name and w is not None]
+                if cs: synergies[name] = cs[:12]
                 if name == next(iter(main)): log("OP.GG exempel (synergies):", json.dumps(sd, ensure_ascii=False)[:500])
             except Exception as ex:
                 if len(synergies) == 0: log("OP.GG synergies", name, "fel:", str(ex)[:200])
             time.sleep(delay)
-    log(f"OP.GG: soloQ {len(soloq)} champs, counters {len(counters)}, slår {len(beats)}, synergier {len(synergies)}")
+    log(f"OP.GG: soloQ {len(soloq)} champs, counters {len(counters)}, slår {len(beats)}, synergier {len(synergies)}, analys-fel {ana_err}")
     if not soloq and not counters: raise RuntimeError("tomt svar – se exempel i loggen")
     return soloq, counters, synergies, beats, {n: v[0] for n, v in main.items()}
 
@@ -409,7 +426,7 @@ def main():
 
     def run(key, fn):
         if key not in only:
-            out["sources"][key] = old.get("sources", {}).get(key, "skipped"); return None
+            out["sources"][key] = "av"; return None
         try:
             r = fn(); out["sources"][key] = "ok"; return r
         except Exception as ex:
