@@ -33,11 +33,11 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
 body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.4 "Barlow Semi Condensed",system-ui,sans-serif}
-.wrap{max-width:1240px;margin:0 auto;padding:20px 16px 48px}
+.wrap{max-width:1480px;margin:0 auto;padding:20px 16px 48px}
 h1{font:400 30px/1.1 Marcellus,Georgia,serif;margin:0 0 4px;letter-spacing:.01em}
 .intro{color:var(--muted);margin:0 0 18px;font-size:15px}
 
-.board{display:grid;grid-template-columns:200px 1fr 1fr;gap:14px;margin-bottom:10px;align-items:start}
+.board{display:grid;grid-template-columns:190px 1fr 1fr 230px;gap:12px;margin-bottom:10px;align-items:start}
 .side{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:8px;padding:12px 14px 14px}
 .side.them{border-top-color:var(--red)}
 .side h2{font:400 20px/1.1 Marcellus,Georgia,serif;margin:0 0 10px;color:var(--blue)}
@@ -295,6 +295,44 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .board .ban{position:relative}
 .board .pick.filled:hover .pf::after{content:"×";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:40px;line-height:1;font-weight:300;color:#fff;background:rgba(110,18,24,.66);pointer-events:none;text-shadow:0 1px 4px rgba(0,0,0,.6);z-index:2}
 .board .pick.filled:hover{border-color:var(--red)!important}
+
+/* pick/ban: ingen synlig inputruta, hela raden lyser istället */
+.board .pick input,.board .pick input:hover,.board .pick input:focus,.board .ban input,.board .ban input:focus{background:transparent!important;border-color:transparent!important;box-shadow:none!important;outline:none!important}
+.board .slot:focus-within:not(.filled){border-color:var(--gold)!important;box-shadow:0 0 0 1px var(--gold),inset 0 -3px 8px rgba(0,0,0,.45)}
+/* ---- karta ---- */
+#tab-karta{position:relative}
+.maptools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+.maptools button{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:5px;padding:6px 11px;cursor:pointer}
+.maptools button.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft)}
+.maptools .sw{width:26px;height:26px;padding:0;border-radius:50%}
+.maptools .sep{width:1px;height:24px;background:var(--line);margin:0 4px}
+.mapwrap{position:relative;margin:0 auto;width:min(100%,calc(100vh - 150px));aspect-ratio:1/1;background:#0b1a14;border:2px solid #3a3326;border-radius:6px;overflow:hidden;touch-action:none;user-select:none}
+.mapwrap img.mapimg,.mapwrap canvas{position:absolute;inset:0;width:100%;height:100%}
+.mapwrap canvas.draw{cursor:crosshair}
+.mapwrap.move canvas.draw{pointer-events:none}
+.tok{position:absolute;width:4.6%;aspect-ratio:1/1;transform:translate(-50%,-50%);border-radius:50%;border:2px solid var(--blue);background:#05080c;overflow:hidden;cursor:grab;touch-action:none;box-shadow:0 2px 8px rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;color:#fff;font:700 10px "Barlow Semi Condensed",sans-serif;z-index:5}
+.tok.them{border-color:var(--red)}
+.tok .ic{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:50%;font-size:30px}
+.tok:active{cursor:grabbing}
+
+/* lane-insikt */
+.lncol{--ink:#e8e2d0;--muted:#8d9aa8;color:var(--ink);background:radial-gradient(120% 70% at 50% 0%,#1a2536 0%,#0b1119 70%);border:1px solid #3a3326;border-top:3px solid var(--gold);border-radius:8px;padding:10px;position:sticky;top:calc(10px + env(safe-area-inset-top,0px))}
+.lnt{font:400 15px/1.2 Marcellus,Georgia,serif;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.ln{background:linear-gradient(180deg,#1c2531,#0d1219);border:1px solid #2c3746;border-radius:4px;padding:6px 7px;margin-bottom:5px}
+.ln .h{display:flex;justify-content:space-between;align-items:baseline;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:#a08a5c}
+.ln .h b{font-size:15px;letter-spacing:0;font-variant-numeric:tabular-nums}
+.ln .m{display:flex;align-items:center;gap:5px;margin:4px 0 3px;font-size:13px;min-width:0}
+.ln .m .vs{color:var(--muted);font-size:11px}
+.ln .m span.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.ln .bar{height:5px;border-radius:3px;background:#5a2a2e;overflow:hidden}
+.ln .bar i{display:block;height:100%;background:#5b9be0}
+.ln small{display:block;font-size:11px;color:var(--muted);margin-top:3px}
+.ln.win b{color:#7fb3ea} .ln.lose b{color:#e88a8a} .ln.even b{color:var(--ink)}
+.lnsum{border-top:1px solid #2a3442;margin-top:6px;padding-top:6px;font-size:12.5px;color:var(--muted)}
+.lnsum b{color:var(--ink)}
+.lnempty{font-size:12.5px;color:var(--muted)}
+@media (max-width:1280px){ .board{grid-template-columns:190px 1fr 1fr} .lncol{grid-column:1/-1;position:static} #lanes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px} }
+@media (max-width:980px){ #lanes{grid-template-columns:repeat(2,minmax(0,1fr))} }
 /* ---- musikspelare ---- */
 .mp-btn{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:50;width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:var(--ink);font-size:20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3)}
 .mp-btn.on{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold-soft),0 4px 14px rgba(0,0,0,.3)}
@@ -317,7 +355,7 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 <body>
 <div class="wrap">
   <h1>Teamcomps</h1>
-  <nav class="tabs" aria-label="Flikar"><a href="#draft" data-tab="draft">Draft</a><a href="#spelare" data-tab="spelare">Spelare</a></nav>
+  <nav class="tabs" aria-label="Flikar"><a href="#draft" data-tab="draft">Draft</a><a href="#spelare" data-tab="spelare">Spelare</a><a href="#karta" data-tab="karta">Karta</a></nav>
   <div id="tab-draft">
   <p class="intro">Skriv in bans och picks. Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
 
@@ -337,6 +375,7 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
       <p class="grp">Picks</p>
       <div class="pickrow" data-base="15"></div>
     </div>
+      <aside class="lncol" aria-label="Lane-matchups"><div class="lnt">Lanes</div><div id="lanes"></div></aside>
   </section>
   <div class="tools">
     <span class="note" id="count">Inga bans eller picks</span>
@@ -355,6 +394,28 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
       <div class="profs"><div class="plist" id="plist"></div><div class="pedit" id="pedit"></div></div>
       <div class="ptools"><button type="button" id="pExport">Kopiera profiler</button><button type="button" id="pImport">Klistra in profiler</button><button type="button" id="pReset">Återställ standard</button><span class="note" id="pMsg"></span></div>
     </section>
+  </div>
+
+  <div id="tab-karta" hidden>
+    <div class="maptools" id="maptools">
+      <button type="button" data-tool="move" class="on">✋ Flytta champs</button>
+      <button type="button" data-tool="pen">✏️ Penna</button>
+      <button type="button" data-tool="erase">🧽 Sudd</button>
+      <span class="sep"></span>
+      <button type="button" class="sw on" data-color="#ffffff" style="background:#ffffff" aria-label="Vit"></button>
+      <button type="button" class="sw" data-color="#f5c542" style="background:#f5c542" aria-label="Gul"></button>
+      <button type="button" class="sw" data-color="#ff4d4d" style="background:#ff4d4d" aria-label="Röd"></button>
+      <button type="button" class="sw" data-color="#4da3ff" style="background:#4da3ff" aria-label="Blå"></button>
+      <button type="button" class="sw" data-color="#4dff88" style="background:#4dff88" aria-label="Grön"></button>
+      <span class="sep"></span>
+      <button type="button" id="mapClear">Rensa ritning</button>
+      <button type="button" id="mapReset">Återställ champs</button>
+    </div>
+    <div class="mapwrap move" id="mapwrap">
+      <canvas class="bg" id="mapbg" width="1024" height="1024"></canvas>
+      <img class="mapimg" id="mapimg" alt="" hidden>
+      <canvas class="draw" id="mapdraw" width="1600" height="1600"></canvas>
+    </div>
   </div>
   <datalist id="champlist"></datalist>
 </div>
@@ -379,20 +440,20 @@ const ALIAS={j4:"Jarvan IV",jarvan:"Jarvan IV",mundo:"Dr. Mundo",tf:"Twisted Fat
 
 const R=["Top","Jgl","Mid","ADC","Sup"];
 const COMPS=[
- {n:"Shockwave",k:"shock",t:"Teamfight / wombo",s:5,w:"Ori-boll på J4 eller Ambessa, en fight vid drake eller Baron.",
-  p:[["Ambessa","Maokai","Sion"],["Jarvan IV","Nocturne","Vi","Sejuani"],["Orianna","Syndra","Galio","Taliyah"],["Jhin","Ashe","Kalista","Yunara"],["Renata Glasc","Rakan","Lulu","Bard"]]},
- {n:"Blackout",k:"black",t:"Engage / teamfight",s:5,w:"Nocturne R släcker vision, Pantheon R, Ashe R och Rakan engagear i mörkret.",
-  p:[["Pantheon","Maokai","Sion"],["Nocturne","Jarvan IV","Vi","Elise"],["Orianna","Syndra","Galio","Taliyah"],["Ashe","Kalista","Jhin","Ezreal"],["Rakan","Renata Glasc","Poppy","Bard"]]},
- {n:"Isolation",k:"pick",t:"Pick",s:4,w:"Nocturne R gör dem blinda – fånga en med Ashe R, Syndra E eller Bard Q och ta objektivet 5 mot 4.",
-  p:[["Pantheon","Zaahen","Ambessa"],["Nocturne","Vi","Kha'Zix","Elise","Udyr"],["Syndra","Cassiopeia","Galio","Lissandra","Ryze"],["Ashe","Caitlyn","Varus","Ezreal"],["Bard","Pyke","Thresh","Rakan"]]},
- {n:"Gank & Dive",k:"dive",t:"Dive",s:4,w:"Tower-dive lvl 3–6 med Vi + Rakan, Taliyah R ger en extra spelare. Vinn före 15 min.",
-  p:[["Ambessa","Pantheon","Zaahen"],["Vi","Nocturne","Elise","Kha'Zix","Jarvan IV"],["Taliyah","Galio","Sylas","Akali","Naafiri"],["Kai'Sa","Xayah","Kalista","Ezreal"],["Rakan","Poppy","Pyke"]]},
- {n:"Splitpush 1-3-1",k:"split",t:"Skirmish / split",s:3,w:"Zaahen splittar, Ryze R tar laget dit motståndaren svarar.",
-  p:[["Zaahen","Ambessa","Pantheon"],["Vi","Nocturne","Warwick","Udyr","Kha'Zix"],["Ryze","Galio","Sylas","Akali","Taliyah"],["Lucian","Draven","Tristana","Corki","Sivir"],["Nami","Milio","Karma"]]},
- {n:"Artilleri",k:"poke",t:"Poke / siege",s:3,w:"Pokea ner, riv torn med Viktor-waveclear och Varus-range. Ta aldrig en head-on 5v5.",
-  p:[["Maokai","Dr. Mundo","Sion"],["Cho'Gath","Sejuani","Jarvan IV","Nocturne"],["Viktor","Ziggs","Syndra","Xerath","Mel"],["Varus","Ezreal","Caitlyn","Corki"],["Karma","Lulu","Milio"]]},
- {n:"Kog-bunkern",k:"prot",t:"Protect the carry",s:3,w:"Skala till ~25 min, Orianna och Lulu skyddar Kog'Maw i front-to-back-fights.",
-  p:[["Maokai","Sion","Dr. Mundo"],["Sejuani","Cho'Gath","Vi","Jarvan IV"],["Orianna","Viktor","Lissandra","Cassiopeia"],["Kog'Maw","Jinx","Yunara","Smolder","Zeri"],["Lulu","Milio","Karma","Renata Glasc"]]}
+ {n:"Wombo",k:"shock",t:"Engage / teamfight",s:5,w:"Maokai, J4 och Rakan låser in – Ori-boll och MF R städar. Fighta i chokes runt objektiv.",
+  p:[["Maokai","Sion","Ambessa"],["Jarvan IV","Sejuani","Vi"],["Orianna","Galio","Lissandra"],["Miss Fortune","Jhin","Samira"],["Rakan","Renata Glasc","Poppy"]]},
+ {n:"Full Dive",k:"dive",t:"Dive",s:5,w:"Dyk backline med Vi R, Akali och Kai'Sa R. Snöbolla tidigt, slå när motståndaren står isär.",
+  p:[["Ambessa","Pantheon","Zaahen"],["Vi","Elise","Kha'Zix"],["Akali","Sylas","Yone"],["Kai'Sa","Xayah","Nilah"],["Pyke","Rakan","Thresh"]]},
+ {n:"Catch",k:"pick",t:"Pick",s:5,w:"Nocturne R släcker vision, Ashe R, Syndra E och Bard Q fångar en – ta objektivet 5 mot 4.",
+  p:[["Pantheon","Zaahen","Ambessa"],["Nocturne","Kha'Zix","Elise"],["Syndra","Lissandra","Ahri"],["Ashe","Caitlyn","Varus"],["Bard","Thresh","Pyke"]]},
+ {n:"Artilleri",k:"poke",t:"Poke / siege",s:5,w:"Xerath, Ezreal och Karma pokear ner – riv torn och ge aldrig en jämn 5v5.",
+  p:[["Dr. Mundo","Sion","Maokai"],["Cho'Gath","Sejuani","Udyr"],["Xerath","Ziggs","Viktor","Mel"],["Ezreal","Varus","Corki","Caitlyn"],["Karma","Milio","Lulu"]]},
+ {n:"Hyperbunker",k:"prot",t:"Protect the carry",s:5,w:"Skala till 3 items, Lulu och Lissandra skyddar Kog'Maw – fighta front-to-back.",
+  p:[["Sion","Dr. Mundo","Maokai"],["Sejuani","Cho'Gath","Jarvan IV"],["Lissandra","Orianna","Galio"],["Kog'Maw","Jinx","Yunara","Smolder"],["Lulu","Milio","Renata Glasc"]]},
+ {n:"1-3-1",k:"split",t:"Split push",s:5,w:"Zaahen splittar top, Ryze R tar laget dit motståndaren svarar. Ta torn, inte fights.",
+  p:[["Zaahen","Ambessa","Pantheon"],["Warwick","Udyr","Vi"],["Ryze","Taliyah","Yone"],["Lucian","Tristana","Draven"],["Nami","Karma","Milio"]]},
+ {n:"Early Tempo",k:"dive",t:"Early skirmish",s:5,w:"Kalista + Renata vinner lane, Elise och Taliyah roamar lvl 3–6. Ha 3 000 guld vid 15 min.",
+  p:[["Pantheon","Ambessa","Zaahen"],["Elise","Kha'Zix","Jarvan IV"],["Taliyah","Galio","Sylas"],["Kalista","Draven","Lucian"],["Renata Glasc","Nami","Rakan"]]}
 ];
 const POOL=new Set(COMPS.flatMap(c=>c.p.flat()));
 
@@ -450,7 +511,7 @@ function build(){
         else if(e.key==="Escape"){close()}
       });
       inp.addEventListener("blur",()=>{ setTimeout(close,80); if(!bans[idx]) inp.value="" });
-      slot.addEventListener("click",e=>{ if(e.target.closest(".tp")||e.target.closest(".dd")) return;
+      slot.addEventListener("click",e=>{ if(!e.target.isConnected||e.target.closest(".tp")||e.target.closest(".dd")) return;
         if(bans[idx]){ e.preventDefault(); clear(); close(); inp.blur(); return; }
         if(e.target!==inp) inp.focus(); });
       slot.querySelector(".x").addEventListener("mousedown",e=>e.preventDefault());
@@ -532,8 +593,8 @@ function evalComp(c,gone,ours,enemy=[]){
     if(mine){
       picked++;
       const j=opts.indexOf(mine);
-      if(j===0){score+=10; match++}
-      else if(j>0){score+=5; match++}
+      if(j===0){score+=18; match++}
+      else if(j>0){score+=9; match++}
       else score-=20;
       const alts=opts.filter(x=>x!==mine&&!gone.has(x)&&!oursSet.has(x)).slice(0,2);
       lineup.push({r:R[ri],c:mine,lock:j>=0,off:j<0,alts});
@@ -589,6 +650,7 @@ function render(){
   const res=COMPS.map(c=>evalComp(c,gone,ours,enemy)).sort((a,b)=>(!!a.dead-!!b.dead)||(b.raw-a.raw)||(b.c.s-a.c.s));
   paintPortraits();
   renderNext(res,gone,ours);
+  renderLanes(ours);
   const list=document.getElementById("list"); list.innerHTML="";
   let rank=0;
   res.forEach(r=>{
@@ -709,10 +771,59 @@ function banTips(res,taken,ours){
   const free=[0,1,2,3,4].filter(i=>!bans[i]);
   if(!free.length){ box.style.display="none"; return; } box.style.display="";
   const lab=document.createElement("span"); lab.className="btl"; lab.textContent=enemy.length?"Ban-tips":"Ban-tips (meta)"; box.appendChild(lab);
+  if(!out.length){ const t=document.createElement("span"); t.className="note"; t.style.fontSize="12.5px"; t.textContent="Inga ban-tips – fiendens roller är redan tagna."; box.appendChild(t); }
   out.slice(0,10).forEach((o,k)=>{const b=document.createElement("button"); b.type="button";
     b.innerHTML=`${icon(o.C,"sm")}<span><b>${o.C}</b><small>${o.why[0]}</small></span>`; b.title=o.why.join(" · ");
     b.addEventListener("click",()=>{const i=[0,1,2,3,4].find(j=>!bans[j]); if(i===undefined) return; document.querySelector(`.slot[data-idx="${i}"]`)._set(o.C); save(); render();});
     box.appendChild(b)});
+}
+
+// sprid förslagen över olika comps: varje comps förstaval räknas som "hem", upprepning straffas
+function homeOf(ch,ri){ const c=COMPS.find(c=>c.p[ri]&&c.p[ri][0]===ch); return c?c.n:"–"+ch; }
+function diversify(list,n){ const out=[], seen={}; const pool=list.map(o=>({o,h:homeOf(o.ch,o.ri)}));
+  while(out.length<n&&pool.length){ pool.sort((a,b)=>(b.o.v-(seen[b.h]||0)*9)-(a.o.v-(seen[a.h]||0)*9)); const x=pool.shift(); out.push(x.o); seen[x.h]=(seen[x.h]||0)+1; }
+  return out; }
+
+// ---- lane-insikt: våra picks mot deras (gissade) roller ----
+function mwr(a,b){ // a:s WR mot b ur data.json, annars null
+  if(typeof DATA==="undefined"||!DATA||!DATA.champions) return null;
+  const A=DATA.champions[a]||{}, B=DATA.champions[b]||{}, v=[];
+  const f=(l,ch)=>(l||[]).find(x=>x.ch===ch);
+  let x=f(A.counters,b); if(x) v.push(x.wr);
+  x=f(A.beats,b); if(x) v.push(x.wr<50?100-x.wr:x.wr);
+  x=f(B.counters,a); if(x) v.push(100-x.wr);
+  x=f(B.beats,a); if(x) v.push(x.wr<50?x.wr:100-x.wr);
+  return v.length?v.reduce((t,y)=>t+y,0)/v.length:null;
+}
+function estWR(a,b){ const m=mwr(a,b); if(m!=null) return {wr:m,src:"stat"};
+  const e=champVs(a,[b]).v-champVs(b,[a]).v; return {wr:50+Math.max(-4,Math.min(4,e*0.6)),src:"est"}; }
+function renderLanes(ours){
+  const box=document.getElementById("lanes"); if(!box) return;
+  const enemy=bans.slice(15,20).filter(Boolean), eR=enemyRoles(enemy), them=[null,null,null,null,null];
+  Object.entries(eR).forEach(([c,r])=>{ them[r]=c; });
+  const rows=[]; let sum=0,n=0;
+  const one=(ri,label)=>{ const a=ours[ri], b=them[ri]; if(!a||!b) return {ri,label,a,b};
+    const r=estWR(a,b); sum+=r.wr; n++; return {ri,label,a,b,wr:r.wr,src:r.src}; };
+  rows.push(one(0,"Top")); rows.push(one(1,"Jungle")); rows.push(one(2,"Mid"));
+  // bot 2v2: ADC vs ADC, sup vs sup + duo-synergi
+  const ad=ours[3],sp=ours[4],ead=them[3],esp=them[4];
+  if(ad&&ead||sp&&esp){ const parts=[]; let src="est";
+    if(ad&&ead){ const r=estWR(ad,ead); parts.push(r.wr); if(r.src==="stat") src="stat"; }
+    if(sp&&esp){ const r=estWR(sp,esp); parts.push(r.wr); if(r.src==="stat") src="stat"; }
+    let w=parts.reduce((t,y)=>t+y,0)/parts.length;
+    const syn=(ad&&sp?synW(ad,sp):0)-(ead&&esp?synW(ead,esp):0); w+=syn*1.2;
+    sum+=w; n++; rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + "),wr:w,src,duo:syn});
+  } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
+  box.innerHTML=rows.map(r=>{
+    if(r.wr==null) return `<div class="ln"><div class="h">${r.label}<b>–</b></div><div class="lnempty">${r.a||"?"} <span class="vs">vs</span> ${r.b||"?"}</div></div>`;
+    const cls=r.wr>=51.5?"win":r.wr<=48.5?"lose":"even", txt=r.wr>=51.5?"Vinner":r.wr<=48.5?"Förlorar":"Jämnt";
+    return `<div class="ln ${cls}"><div class="h">${r.label}<b>${r.wr.toFixed(1)} %</b></div>
+      <div class="m"><span class="nm">${r.a}</span><span class="vs">vs</span><span class="nm">${r.b}</span></div>
+      <div class="bar"><i style="width:${Math.max(5,Math.min(95,(r.wr-40)*5))}%"></i></div>
+      <small>${txt} · ${r.src==="stat"?"OP.GG-statistik":"uppskattat från spelstil"}${r.duo?` · duo ${r.duo>0?"+":""}${r.duo}`:""}</small></div>`;
+  }).join("")+(n?`<div class="lnsum">Snitt: <b>${(sum/n).toFixed(1)} %</b>${(()=>{ const done=rows.filter(r=>r.wr!=null); if(done.length<2) return "";
+      const lo=done.reduce((a,b)=>a.wr<b.wr?a:b), hi=done.reduce((a,b)=>a.wr>b.wr?a:b);
+      return `<br>Starkast: <b>${hi.label}</b> – spela runt den.<br>Svagast: <b>${lo.label}</b> – ge jungle-hjälp eller spela säkert.`; })()}</div>`:`<div class="lnempty">Picka champs på båda sidor för att se lane-matchups.</div>`);
 }
 function renderNext(res,gone,ours){
   const taken=new Set([...gone,...ours.filter(Boolean)]);
@@ -739,7 +850,7 @@ function renderNext(res,gone,ours){
       if(tl&&tl.c===ch){tg=18; tgTxt=`Passar ${target.c.n}`}
       else if(opts.includes(ch)){tg=5; tgTxt=`Alternativ i ${target.c.n}`} }
     const plan=[tgTxt,syn.length?`Synergi med ${syn.join(", ")}`:""].filter(Boolean);
-    cands.push({ch,ri,fit:f.f,n:f.n,risk,cv,plan,tg,v:f.f*10+(TIER[ch]||0)*3-risk*4+cv.v*(enemy.length?3:0)+tg*(target?1.6:0)+syn.reduce((t,p)=>t+synW(p,ch),0)*6});
+    cands.push({ch,ri,fit:f.f,n:f.n,risk,cv,plan,tg,v:f.f*10+(TIER[ch]||0)*1.5-risk*4+cv.v*(enemy.length?3:0)+tg*(target?1.6:0)+syn.reduce((t,p)=>t+synW(p,ch),0)*6});
   })});
   const best=new Map(); cands.forEach(o=>{const b=best.get(o.ch); if(!b||o.v>b.v) best.set(o.ch,o)});
   const all=[...best.values()].sort((a,b)=>b.v-a.v);
@@ -747,7 +858,7 @@ function renderNext(res,gone,ours){
   const lastPick=open.length===1;
   const top=lastPick
     ? cands.filter(o=>o.ri===open[0]).sort((a,b)=>b.v-a.v).slice(0,6)
-    : all.filter(o=>o.n>0&&(o.risk<2||o.cv.v>=5||open.length<=2)).slice(0,5);
+    : diversify(all.filter(o=>o.n>0&&(o.risk<2||o.cv.v>=5||open.length<=2)),5);
   if(lastPick) sub.innerHTML=`sista pick: alla alternativ för <b>${R[open[0]]}</b>${target?` · mål-comp ${target.c.n}`:""}`;
   const niche=enemy.length?all.filter(o=>!top.includes(o)&&o.cv.v>=5).sort((a,b)=>b.cv.v-a.cv.v).slice(0,4):[];
   const btn=(o,isN)=>{const b=document.createElement("button"); b.type="button"; if(isN) b.className="n";
@@ -772,7 +883,7 @@ function renderNext(res,gone,ours){
     const head=document.createElement("button"); head.type="button"; head.className="tph";
     head.innerHTML=`Pick<br>Tips`; head.setAttribute("aria-label",`Pick-tips för ${R[ri]}`); head.setAttribute("aria-haspopup","true");
     head.title=`Bäst nu: ${list[0].ch}`;
-    head.addEventListener("click",()=>tp.classList.toggle("open"));
+    head.addEventListener("click",e=>{ e.stopPropagation(); tp.classList.toggle("open"); });
     const menu=document.createElement("div"); menu.className="tpm"; menu.setAttribute("role","menu");
     menu.innerHTML=`<div class="tpt">${R[ri]} – rankat efter comp, lagkamrater och motståndare</div>`;
     list.forEach((o,k)=>{
@@ -781,7 +892,7 @@ function renderNext(res,gone,ours){
       const b=document.createElement("button"); b.type="button"; b.setAttribute("role","menuitem");
       b.className="tpi"+(o.cv.v>=5?" ctr":o.tg>=18?" tg":"");
       b.innerHTML=`<span class="n">${k+1}</span>${icon(o.ch,"sm")}<span class="t"><b>${o.ch}</b>${why.map(w=>`<small>${w}</small>`).join("")}${o.cv.hurt.length?`<small class="w">Svag mot ${o.cv.hurt.join(", ")}</small>`:""}</span>`;
-      b.addEventListener("click",()=>{ tp.classList.remove("open"); document.querySelector(`.slot[data-idx="${10+ri}"]`)._set(o.ch); save(); render(); });
+      b.addEventListener("click",e=>{ e.stopPropagation(); tp.classList.remove("open"); document.querySelector(`.slot[data-idx="${10+ri}"]`)._set(o.ch); save(); render(); });
       menu.appendChild(b);
     });
     tp.appendChild(head); tp.appendChild(menu);
@@ -868,11 +979,63 @@ document.getElementById("pImport").addEventListener("click",()=>{ const t=prompt
   try{ const d=JSON.parse(t); if(!Array.isArray(d.profiles)||!Array.isArray(d.lineup)) throw 0; PROF=d; PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); pMsg("Profiler inlästa"); }catch(e){ pMsg("Kunde inte läsa texten"); } });
 document.getElementById("pReset").addEventListener("click",()=>{ if(!confirm("Återställ alla profiler till standard?")) return; PROF=defaultProfiles(); PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); });
 // flikar
-function showTab(){ const t=location.hash==="#spelare"?"spelare":"draft";
-  document.getElementById("tab-draft").hidden=t!=="draft"; document.getElementById("tab-spelare").hidden=t!=="spelare";
+function showTab(){ const t=location.hash==="#spelare"?"spelare":location.hash==="#karta"?"karta":"draft";
+  document.getElementById("tab-draft").hidden=t!=="draft"; document.getElementById("tab-spelare").hidden=t!=="spelare"; document.getElementById("tab-karta").hidden=t!=="karta";
+  if(t==="karta"&&window.renderMap) renderMap();
   document.querySelectorAll(".tabs a").forEach(a=>a.classList.toggle("on",a.dataset.tab===t)); }
 window.addEventListener("hashchange",showTab);
 applyProfiles(); renderPlayers(); render(); showTab();
+
+// ---- karta ----
+(function(){
+  const wrap=document.getElementById("mapwrap"), bg=document.getElementById("mapbg"), img=document.getElementById("mapimg"), cv=document.getElementById("mapdraw"), ctx=cv.getContext("2d");
+  // reservkarta (ritas om bilden inte laddar)
+  (function(){ const g=bg.getContext("2d"), W=1024;
+    g.fillStyle="#13261c"; g.fillRect(0,0,W,W);
+    g.strokeStyle="#2b4a3a"; g.lineWidth=70; g.lineCap="round";
+    g.beginPath(); g.moveTo(90,930); g.lineTo(90,90); g.lineTo(930,90); g.stroke();
+    g.beginPath(); g.moveTo(90,930); g.lineTo(930,930); g.lineTo(930,90); g.stroke();
+    g.beginPath(); g.moveTo(130,890); g.lineTo(890,130); g.stroke();
+    g.strokeStyle="#1d3c52"; g.lineWidth=60; g.beginPath(); g.moveTo(150,150); g.lineTo(874,874); g.stroke();
+    g.fillStyle="#2c4f7a"; g.beginPath(); g.arc(70,954,90,0,7); g.fill();
+    g.fillStyle="#7a2c34"; g.beginPath(); g.arc(954,70,90,0,7); g.fill();
+    g.fillStyle="#d8c58a"; g.font="bold 26px sans-serif"; g.fillText("Baron",250,360); g.fillText("Drake",700,690);
+  })();
+  const tryImg=list=>{ if(!list.length) return; img.onerror=()=>tryImg(list.slice(1)); img.onload=()=>{img.hidden=false;}; img.src=list[0]; };
+  tryImg([(document.getElementById("mapimg").dataset.src||"map.jpg"),"https://raw.communitydragon.org/latest/game/assets/maps/info/map11/2dlevelminimap.png","https://raw.communitydragon.org/latest/game/levels/map11/info/2dlevelminimap.png","https://ddragon.leagueoflegends.com/cdn/6.8.1/img/map/map11.png"]);
+  let tool="move", color="#ffffff", drawing=false, last=null;
+  const tools=document.getElementById("maptools");
+  tools.querySelectorAll("[data-tool]").forEach(b=>b.addEventListener("click",()=>{ tool=b.dataset.tool; tools.querySelectorAll("[data-tool]").forEach(x=>x.classList.toggle("on",x===b)); wrap.classList.toggle("move",tool==="move"); }));
+  tools.querySelectorAll("[data-color]").forEach(b=>b.addEventListener("click",()=>{ color=b.dataset.color; tools.querySelectorAll("[data-color]").forEach(x=>x.classList.toggle("on",x===b)); if(tool!=="pen"){ tools.querySelector('[data-tool="pen"]').click(); } }));
+  const pt=e=>{ const r=cv.getBoundingClientRect(); return {x:(e.clientX-r.left)/r.width*cv.width, y:(e.clientY-r.top)/r.height*cv.height}; };
+  cv.addEventListener("pointerdown",e=>{ if(tool==="move") return; drawing=true; last=pt(e); cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener("pointermove",e=>{ if(!drawing) return; const p=pt(e);
+    ctx.globalCompositeOperation=tool==="erase"?"destination-out":"source-over"; ctx.strokeStyle=color; ctx.lineWidth=tool==="erase"?48:7; ctx.lineCap="round"; ctx.lineJoin="round";
+    ctx.beginPath(); ctx.moveTo(last.x,last.y); ctx.lineTo(p.x,p.y); ctx.stroke(); last=p; });
+  const end=()=>{ drawing=false; }; cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end);
+  document.getElementById("mapClear").addEventListener("click",()=>ctx.clearRect(0,0,cv.width,cv.height));
+  // champs som cirklar
+  const START=[[10,30],[30,62],[44,56],[70,90],[77,92],[30,10],[70,38],[56,44],[90,70],[92,77]]; // procent: GD top,jgl,mid,adc,sup – fiende 1-5
+  let pos=null; const store=v=>{ try{ localStorage.setItem("tc-map",JSON.stringify(v)) }catch(e){} };
+  try{ pos=JSON.parse(localStorage.getItem("tc-map")||"null"); }catch(e){}
+  if(!Array.isArray(pos)||pos.length!==10) pos=START.map(a=>[...a]);
+  document.getElementById("mapReset").addEventListener("click",()=>{ pos=START.map(a=>[...a]); store(pos); renderMap(); });
+  window.renderMap=function(){
+    wrap.querySelectorAll(".tok").forEach(t=>t.remove());
+    for(let i=0;i<10;i++){
+      const idx=i<5?10+i:15+(i-5); const c=bans[idx];
+      const t=document.createElement("div"); t.className="tok"+(i>=5?" them":"");
+      t.style.left=pos[i][0]+"%"; t.style.top=pos[i][1]+"%";
+      t.innerHTML=c?icon(c,"big"):(i<5?R[i]:String(i-4)); t.title=c||(i<5?`GD ${R[i]}`:`Fiende ${i-4}`);
+      t.addEventListener("pointerdown",e=>{ e.preventDefault(); t.setPointerCapture(e.pointerId); const r=wrap.getBoundingClientRect();
+        const mv=ev=>{ pos[i]=[Math.max(2,Math.min(98,(ev.clientX-r.left)/r.width*100)),Math.max(2,Math.min(98,(ev.clientY-r.top)/r.height*100))]; t.style.left=pos[i][0]+"%"; t.style.top=pos[i][1]+"%"; };
+        const up=()=>{ t.removeEventListener("pointermove",mv); t.removeEventListener("pointerup",up); store(pos); };
+        t.addEventListener("pointermove",mv); t.addEventListener("pointerup",up); });
+      wrap.appendChild(t);
+    }
+  };
+  renderMap();
+})();
 
 // ---- musikspelare: en låt, loop, start/paus, från början, volym ----
 (function(){
