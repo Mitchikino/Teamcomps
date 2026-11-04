@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Teamcomps – bans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Barlow+Semi+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#e9eef3; --panel:#ffffff; --line:#c9d3dd; --ink:#14202c; --muted:#5a6878;
+  --gold:#a07a2c; --gold-soft:#f3e7c8; --blue:#2a62a8; --blue-soft:#dde9f7;
+  --red:#b03a3a; --red-soft:#f7e0e0; --dead:#9aa6b2;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#0a1420; --panel:#101e2d; --line:#233a50; --ink:#e8e2d0; --muted:#8a9aab;
+    --gold:#c8aa6e; --gold-soft:#2a2414; --blue:#5b9be0; --blue-soft:#12263d;
+    --red:#e06b6b; --red-soft:#341818; --dead:#4d5d6d;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#0a1420; --panel:#101e2d; --line:#233a50; --ink:#e8e2d0; --muted:#8a9aab;
+  --gold:#c8aa6e; --gold-soft:#2a2414; --blue:#5b9be0; --blue-soft:#12263d;
+  --red:#e06b6b; --red-soft:#341818; --dead:#4d5d6d;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:500 16px/1.4 "Barlow Semi Condensed",system-ui,sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:20px 16px 48px}
+h1{font:400 30px/1.1 Marcellus,Georgia,serif;margin:0 0 4px;letter-spacing:.01em}
+.intro{color:var(--muted);margin:0 0 18px;font-size:15px}
+
+.board{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:10px}
+.side{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--blue);border-radius:8px;padding:12px 14px 14px}
+.side.them{border-top-color:var(--red)}
+.side h2{font:400 20px/1.1 Marcellus,Georgia,serif;margin:0 0 10px;color:var(--blue)}
+.side.them h2{color:var(--red)}
+.grp{font-size:13.5px;font-weight:600;color:var(--muted);margin:0 0 5px}
+.banrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;margin-bottom:8px}
+.bt{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;margin-bottom:14px}
+.btl{grid-column:1/-1;font-size:12.5px;font-weight:700;color:var(--red)}
+.bt button{font:inherit;font-size:13px;line-height:1.15;text-align:left;border:1px dashed var(--red);background:var(--red-soft);color:var(--ink);border-radius:4px;padding:3px 7px;cursor:pointer}
+.bt button small{display:block;font-size:11.5px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bt button{min-width:0}
+.us .pick{grid-template-columns:104px 46px 1fr}
+.tp{display:flex;flex-direction:column;gap:2px;margin-right:6px;min-width:0}
+.tp button{font:inherit;font-size:12px;line-height:1;height:19px;padding:0 5px;border:1px dashed var(--line);background:var(--panel);color:var(--muted);border-radius:3px;cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp button:hover,.tp button:focus-visible{border-color:var(--blue);color:var(--ink);outline:none}
+.tp button.tg{border-color:var(--blue);color:var(--ink);background:var(--blue-soft)}
+.nx button small.pl{color:var(--ink);font-weight:600}
+.tp button.ctr{border-color:var(--gold);color:var(--ink);background:var(--gold-soft)}
+.pickrow{display:grid;gap:6px}
+.slot{position:relative}
+.slot input{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:5px}
+.slot input:focus{outline:2px solid var(--gold);outline-offset:1px}
+.slot .x{position:absolute;right:2px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--muted);font-size:17px;cursor:pointer;padding:2px 5px;display:none}
+.slot.filled .x{display:block}
+/* bans: små, gråa, överstrukna */
+.ban input{font-size:13.5px;padding:6px 4px 6px 24px;height:32px;text-overflow:ellipsis}
+.ban .x{opacity:0;background:var(--panel);border-radius:3px;font-size:15px}
+.ban:hover .x,.ban:focus-within .x{opacity:1}
+@media (hover:none){.ban .x{opacity:1}}
+.ban::before{content:"⊘";position:absolute;left:6px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:13px;pointer-events:none}
+.ban.filled::before{display:none}
+.ban.filled input{padding-left:7px;text-decoration:line-through;text-decoration-thickness:1.5px;color:var(--muted);background:var(--panel)}
+.us .ban.filled input{border-color:var(--blue)} .them .ban.filled input{border-color:var(--red)}
+/* picks: större, med rolltagg */
+.pick{display:grid;grid-template-columns:46px 1fr;align-items:center}
+.pick .rl{font-size:13px;font-weight:700;color:var(--muted);text-align:center;border:1px solid var(--line);border-right:0;border-radius:5px 0 0 5px;height:40px;line-height:38px;background:var(--panel)}
+.pick input{font-size:16px;padding:8px 26px 8px 10px;height:40px;border-radius:0 5px 5px 0}
+.pick .x{right:4px}
+.us .pick.filled input{background:var(--blue-soft);border-color:var(--blue);font-weight:700}
+.us .pick.filled .rl{border-color:var(--blue);color:var(--blue)}
+.them .pick.filled input{background:var(--red-soft);border-color:var(--red);font-weight:700}
+.them .pick.filled .rl{border-color:var(--red);color:var(--red)}
+.dd{position:absolute;left:0;min-width:190px;width:100%;top:calc(100% + 3px);z-index:20;background:var(--panel);border:1px solid var(--line);border-radius:6px;margin:0;padding:3px;list-style:none;max-height:260px;overflow:auto;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+.dd li{padding:6px 8px;border-radius:4px;cursor:pointer;font-size:15px}
+.dd li.on,.dd li:hover{background:var(--gold-soft)}
+.dd li .pool{color:var(--gold);font-size:12px;margin-left:6px}
+.banrow .slot:nth-child(n+4) .dd{left:auto;right:0}
+.ch.lock{border-color:var(--blue);background:var(--blue-soft);font-weight:600}
+.ch.off{border:1px dashed var(--red);background:var(--red-soft)}
+.ch.off s,.ch.lock s{display:none}
+.tag{font-size:12px;color:var(--muted);margin-left:4px}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.tools button{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:6px 12px;cursor:pointer}
+.tools .note{color:var(--muted);font-size:14px}
+
+.next{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:6px;padding:9px 12px;margin-bottom:14px}
+.next h3{font:400 16px/1.2 Marcellus,Georgia,serif;margin:0 0 6px}
+.next h3 span{font:500 13px "Barlow Semi Condensed",sans-serif;color:var(--muted);margin-left:6px}
+.nx{display:flex;flex-wrap:wrap;gap:6px}
+.nx button{font:inherit;font-size:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:5px;padding:4px 9px;cursor:pointer;text-align:left;line-height:1.2}
+.nx button:hover,.nx button:focus-visible{border-color:var(--blue);outline:none}
+.nx button b{font-weight:700}
+.nx button small{display:block;color:var(--muted);font-size:12px}
+.last{color:var(--muted);font-size:13px;margin:6px 0 0}
+.nxh{font-size:13px;font-weight:700;color:var(--gold);margin:9px 0 5px}
+.nx button.n{border-style:dashed;border-color:var(--gold)}
+.nx button small.k{color:var(--blue);font-weight:600}
+.nx button small.k::first-letter{text-transform:uppercase}
+.nx button small.w{color:var(--red);font-weight:600}
+.vs{font-size:13.5px;margin:0 0 3px;color:var(--muted)}
+.vs b{font-weight:700;color:var(--ink)} .vs b.up{color:var(--blue)} .vs b.down{color:var(--red)}
+.last b{color:var(--red);font-weight:600}
+ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.comp{display:grid;grid-template-columns:46px 1fr;gap:0 12px;padding:12px 14px;background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:6px}
+.comp .rk{font:400 30px/1 Marcellus,serif;color:var(--gold);text-align:center;padding-top:2px}
+.comp.top{border-width:1px 1px 1px 6px}
+.head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.name{font:400 21px/1.15 Marcellus,serif}
+.type{color:var(--muted);font-size:14px}
+.score{margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:700;font-variant-numeric:tabular-nums}
+.bar{width:90px;height:6px;border-radius:3px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold)}
+.line{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:8px 0 6px}
+.col{display:flex;flex-direction:column;gap:3px;min-width:0}
+.col .ch{display:block;overflow:hidden;text-overflow:ellipsis}
+.alts{display:grid;grid-template-columns:1fr 1fr;gap:3px}
+.alt{font-size:12.5px;padding:2px 5px;border-radius:3px;border:1px dashed var(--line);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:center}
+.alt.none{opacity:.5}
+.ch{font-size:14.5px;padding:3px 8px;border-radius:4px;border:1px solid var(--line);white-space:nowrap}
+.ch b{color:var(--muted);font-weight:600;margin-right:4px;font-size:12.5px}
+.ch.sub{border-color:var(--gold);background:var(--gold-soft)}
+.ch.sub s{color:var(--muted);margin-left:5px;font-size:12.5px}
+.win{color:var(--muted);font-size:14.5px;margin:0}
+.comp.dead{border-left-color:var(--dead);opacity:.6}
+.comp.dead .rk{color:var(--dead)}
+.why{color:var(--red);font-size:14.5px;margin:6px 0 0;font-weight:600}
+.legend{color:var(--muted);font-size:13.5px;margin-top:14px}
+
+@media (max-width:720px){
+  .board{grid-template-columns:1fr}
+  .score{margin-left:0;width:100%}
+  .comp{grid-template-columns:34px 1fr}
+  .comp .rk{font-size:24px}
+  .line{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (prefers-reduced-motion:no-preference){ .comp{transition:opacity .15s} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Teamcomps</h1>
+  <p class="intro">Skriv in bans och picks. Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
+
+  <section class="board" aria-label="Draft">
+    <div class="side us">
+      <h2>Vi</h2>
+      <p class="grp">Bans</p>
+      <div class="banrow" data-base="0"></div>
+      <div class="bt" id="bantips"></div>
+      <p class="grp">Picks</p>
+      <div class="pickrow" data-base="10"></div>
+    </div>
+    <div class="side them">
+      <h2>Fienden</h2>
+      <p class="grp">Bans</p>
+      <div class="banrow" data-base="5"></div>
+      <p class="grp">Picks</p>
+      <div class="pickrow" data-base="15"></div>
+    </div>
+  </section>
+  <div class="tools">
+    <span class="note" id="count">Inga bans eller picks</span>
+    <button type="button" id="reset">Rensa allt</button>
+  </div>
+
+  <div class="next" aria-live="polite"><h3>Tips: nästa pick<span id="nxsub">klicka för att låsa · tar hänsyn till fiendens picks</span></h3><div class="nx" id="nx"></div><p class="nxh" id="nicheh" style="display:none">Nisch / counterpicks mot deras picks</p><div class="nx" id="niche"></div><p class="last" id="last"></p></div>
+  <ol class="comps" id="list"></ol>
+  <p class="legend" id="datasrc">Ingen data.json hittad – sidan använder inbyggd data.</p>
+  <p class="legend">Små rutor till vänster om era roller = 2 tips per roll (blå = passar den comp ni ser ut att gå mot, guld = counterpick). Ban-tips under era bans väger fiendens synergier och vad som kontrar er bästa comp. Fiendens picks justerar poängen: compen får plus om den kontrar deras stil (dive, poke, engage …) och minus om den kontras. Blå champ = er låsta pick. Röd streckad = er pick finns inte i compens plan (avdrag). Under varje pick visas de två närmaste alternativen som inte är bannade. Guldmarkerad champ = alternativ som ersätter en bannad champ (överstruket namn). Poäng = meta-vikt minus avdrag för varje byte; byte i bot-paret drar extra eftersom synergin sitter i paret.</p>
+</div>
+
+<script>
+let DATA=null; // fylls från data.json om den finns
+const CHAMPS=["Aatrox","Ahri","Akali","Akshan","Alistar","Ambessa","Amumu","Anivia","Annie","Aphelios","Ashe","Aurelion Sol","Aurora","Azir","Bard","Bel'Veth","Blitzcrank","Brand","Braum","Briar","Caitlyn","Camille","Cassiopeia","Cho'Gath","Corki","Darius","Diana","Dr. Mundo","Draven","Ekko","Elise","Evelynn","Ezreal","Fiddlesticks","Fiora","Fizz","Galio","Gangplank","Garen","Gnar","Gragas","Graves","Gwen","Hecarim","Heimerdinger","Hwei","Illaoi","Irelia","Ivern","Janna","Jarvan IV","Jax","Jayce","Jhin","Jinx","K'Sante","Kai'Sa","Kalista","Karma","Karthus","Kassadin","Katarina","Kayle","Kayn","Kennen","Kha'Zix","Kindred","Kled","Kog'Maw","LeBlanc","Lee Sin","Leona","Lillia","Lissandra","Locke","Lucian","Lulu","Lux","Malphite","Malzahar","Maokai","Master Yi","Mel","Milio","Miss Fortune","Mordekaiser","Morgana","Naafiri","Nami","Nasus","Nautilus","Neeko","Nidalee","Nilah","Nocturne","Nunu & Willump","Olaf","Orianna","Ornn","Pantheon","Poppy","Pyke","Qiyana","Quinn","Rakan","Rammus","Rek'Sai","Rell","Renata Glasc","Renekton","Rengar","Riven","Rumble","Ryze","Samira","Sejuani","Senna","Seraphine","Sett","Shaco","Shen","Shyvana","Singed","Sion","Sivir","Skarner","Smolder","Sona","Soraka","Swain","Sylas","Syndra","Tahm Kench","Taliyah","Talon","Taric","Teemo","Thresh","Tristana","Trundle","Tryndamere","Twisted Fate","Twitch","Udyr","Urgot","Varus","Vayne","Veigar","Vel'Koz","Vex","Vi","Viego","Viktor","Vladimir","Volibear","Warwick","Wukong","Xayah","Xerath","Xin Zhao","Yasuo","Yone","Yorick","Yunara","Yuumi","Zaahen","Zac","Zed","Zeri","Ziggs","Zilean","Zoe","Zyra"];
+const ALIAS={j4:"Jarvan IV",jarvan:"Jarvan IV",mundo:"Dr. Mundo",tf:"Twisted Fate",mf:"Miss Fortune",ww:"Warwick",kog:"Kog'Maw",kha:"Kha'Zix",khazix:"Kha'Zix",cho:"Cho'Gath",renata:"Renata Glasc",nunu:"Nunu & Willump",asol:"Aurelion Sol",lb:"LeBlanc",xin:"Xin Zhao",yi:"Master Yi",sej:"Sejuani",ori:"Orianna",cass:"Cassiopeia",naut:"Nautilus",ksante:"K'Sante",kaisa:"Kai'Sa",lee:"Lee Sin",gp:"Gangplank",tk:"Tahm Kench",velkoz:"Vel'Koz",belveth:"Bel'Veth",reksai:"Rek'Sai",heimer:"Heimerdinger",fiddle:"Fiddlesticks",panth:"Pantheon",zaheen:"Zaahen",nafiri:"Naafiri",nafirii:"Naafiri",sera:"Seraphine",liss:"Lissandra"};
+
+const R=["Top","Jgl","Mid","ADC","Sup"];
+const COMPS=[
+ {n:"Shockwave",k:"shock",t:"Teamfight / wombo",s:5,w:"Ori-boll på J4 eller Ambessa, en fight vid drake eller Baron.",
+  p:[["Ambessa","Maokai","Sion"],["Jarvan IV","Nocturne","Vi","Sejuani"],["Orianna","Syndra","Galio","Taliyah"],["Jhin","Ashe","Kalista","Yunara"],["Renata Glasc","Rakan","Lulu","Bard"]]},
+ {n:"Blackout",k:"black",t:"Engage / teamfight",s:5,w:"Nocturne R släcker vision, Pantheon R, Ashe R och Rakan engagear i mörkret.",
+  p:[["Pantheon","Maokai","Sion"],["Nocturne","Jarvan IV","Vi","Elise"],["Orianna","Syndra","Galio","Taliyah"],["Ashe","Kalista","Jhin","Ezreal"],["Rakan","Renata Glasc","Poppy","Bard"]]},
+ {n:"Isolation",k:"pick",t:"Pick",s:4,w:"Nocturne R gör dem blinda – fånga en med Ashe R, Syndra E eller Bard Q och ta objektivet 5 mot 4.",
+  p:[["Pantheon","Zaahen","Ambessa"],["Nocturne","Vi","Kha'Zix","Elise","Udyr"],["Syndra","Cassiopeia","Galio","Lissandra","Ryze"],["Ashe","Caitlyn","Varus","Ezreal"],["Bard","Pyke","Thresh","Rakan"]]},
+ {n:"Gank & Dive",k:"dive",t:"Dive",s:4,w:"Tower-dive lvl 3–6 med Vi + Rakan, Taliyah R ger en extra spelare. Vinn före 15 min.",
+  p:[["Ambessa","Pantheon","Zaahen"],["Vi","Nocturne","Elise","Kha'Zix","Jarvan IV"],["Taliyah","Galio","Sylas","Akali","Naafiri"],["Kai'Sa","Xayah","Kalista","Ezreal"],["Rakan","Poppy","Pyke"]]},
+ {n:"Splitpush 1-3-1",k:"split",t:"Skirmish / split",s:3,w:"Zaahen splittar, Ryze R tar laget dit motståndaren svarar.",
+  p:[["Zaahen","Ambessa","Pantheon"],["Vi","Nocturne","Warwick","Udyr","Kha'Zix"],["Ryze","Galio","Sylas","Akali","Taliyah"],["Lucian","Draven","Tristana","Corki","Sivir"],["Nami","Milio","Karma"]]},
+ {n:"Artilleri",k:"poke",t:"Poke / siege",s:3,w:"Pokea ner, riv torn med Viktor-waveclear och Varus-range. Ta aldrig en head-on 5v5.",
+  p:[["Maokai","Dr. Mundo","Sion"],["Cho'Gath","Sejuani","Jarvan IV","Nocturne"],["Viktor","Ziggs","Syndra","Xerath","Mel"],["Varus","Ezreal","Caitlyn","Corki"],["Karma","Lulu","Milio"]]},
+ {n:"Kog-bunkern",k:"prot",t:"Protect the carry",s:3,w:"Skala till ~25 min, Orianna och Lulu skyddar Kog'Maw i front-to-back-fights.",
+  p:[["Maokai","Sion","Dr. Mundo"],["Sejuani","Cho'Gath","Vi","Jarvan IV"],["Orianna","Viktor","Lissandra","Cassiopeia"],["Kog'Maw","Jinx","Yunara","Smolder","Zeri"],["Lulu","Milio","Karma","Renata Glasc"]]}
+];
+const POOL=new Set(COMPS.flatMap(c=>c.p.flat()));
+
+const norm=s=>s.toLowerCase().normalize("NFD").replace(/[^a-z0-9]/g,"");
+const bans=Array(20).fill(null); // 0-4 våra bans, 5-9 fiendens bans, 10-14 våra picks (per roll), 15-19 deras picks
+const ROLEPOOL=R.map((_,ri)=>{const m=new Map(); COMPS.forEach(c=>c.p[ri].forEach((x,i)=>m.set(x,(m.get(x)||0)+(10-i)))); return [...m.entries()].sort((a,b)=>b[1]-a[1]).map(e=>e[0])});
+const ourRole=idx=>idx>=10&&idx<15?idx-10:-1;
+
+function search(q,self){
+  const nq=norm(q); const taken=new Set(bans.filter((b,i)=>b&&i!==self));
+  const ri=ourRole(self);
+  if(!nq){
+    const base=ri>=0?ROLEPOOL[ri]:CHAMPS.filter(c=>POOL.has(c));
+    return base.filter(c=>!taken.has(c)).slice(0,8);
+  }
+  const list=CHAMPS.filter(c=>!taken.has(c));
+  const a=ALIAS[nq]; const out=[];
+  if(a&&!taken.has(a)) out.push(a);
+  list.forEach(c=>{if(norm(c).startsWith(nq)&&!out.includes(c)) out.push(c)});
+  list.forEach(c=>{if(norm(c).includes(nq)&&!out.includes(c)) out.push(c)});
+  return out.slice(0,8);
+}
+
+function build(){
+  const rows=document.querySelectorAll("[data-base]");
+  rows.forEach(row=>{
+    const base=+row.dataset.base;
+    for(let k=0;k<5;k++){
+      const idx=base+k;
+      const isPick=base>=10, ourPick=base===10;
+      const who=(base===0||base===10)?"Vår":"Fiendens";
+      const ph=isPick?"Välj champ":"Ban";
+      const slot=document.createElement("div"); slot.className="slot "+(isPick?"pick":"ban");
+      slot.innerHTML=`${ourPick?`<span class="tp" aria-label="Tips för ${R[k]}"></span>`:""}${isPick?`<span class="rl">${ourPick?R[k]:k+1}</span>`:""}<input type="text" autocomplete="off" spellcheck="false" placeholder="${ph}" aria-label="${who} ${isPick?'pick':'ban'} ${ourPick?R[k]:k+1}"><button class="x" type="button" aria-label="Ta bort">×</button>`;
+      row.appendChild(slot);
+      const inp=slot.querySelector("input"); inp.dataset.idx=idx; slot.dataset.idx=idx; let dd=null, hi=0, opts=[];
+      const close=()=>{if(dd){dd.remove();dd=null}};
+      const open=()=>{
+        opts=search(bans[idx]?"":inp.value,idx); hi=0; close();
+        if(!opts.length) return;
+        dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
+        opts.forEach((c,i)=>{const li=document.createElement("li"); li.innerHTML=c+(POOL.has(c)?'<span class="pool">i er pool</span>':''); if(i===hi) li.className="on";
+          li.addEventListener("mousedown",e=>{e.preventDefault(); pick(c)}); dd.appendChild(li)});
+        slot.appendChild(dd);
+      };
+      const paint=()=>{ if(!dd) return; [...dd.children].forEach((li,i)=>li.classList.toggle("on",i===hi)); dd.children[hi]?.scrollIntoView({block:"nearest"}) };
+      const pick=c=>{bans[idx]=c; inp.value=c; slot.classList.add("filled"); close(); save(); render(); const nx=document.querySelector(`[data-idx="${idx+1}"]`); if(nx&&!bans[idx+1]&&(idx+1)%5!==0) nx.focus(); else inp.blur()};
+      const clear=()=>{bans[idx]=null; inp.value=""; slot.classList.remove("filled"); save(); render()};
+      inp.addEventListener("focus",()=>{ if(!bans[idx]) open() });
+      inp.addEventListener("input",()=>{ if(bans[idx]){bans[idx]=null; slot.classList.remove("filled"); render(); save()} open() });
+      inp.addEventListener("keydown",e=>{
+        if(e.key==="ArrowDown"){e.preventDefault(); if(!dd) open(); else {hi=Math.min(hi+1,opts.length-1); paint()}}
+        else if(e.key==="ArrowUp"){e.preventDefault(); hi=Math.max(hi-1,0); paint()}
+        else if(e.key==="Enter"){ if(dd&&opts[hi]){e.preventDefault(); pick(opts[hi])} }
+        else if(e.key==="Escape"){close()}
+        else if(e.key==="Backspace"&&bans[idx]){e.preventDefault(); clear(); open()}
+      });
+      inp.addEventListener("blur",()=>{ setTimeout(close,80); if(!bans[idx]) inp.value="" });
+      slot.querySelector(".x").addEventListener("click",()=>{clear(); inp.focus()});
+      slot._set=c=>{ if(c){bans[idx]=c; inp.value=c; slot.classList.add("filled")} };
+    }
+  });
+}
+
+// ---- Counter-logik ----
+// e=engage d=dive/all-in p=poke/long range l=peel t=tank c=orörlig carry a=assassin/burst x=dash-beroende
+// h=heal/sustain s=kort range i bot m=AP-burst n=stoppar dashes k=smälter tanks
+const TR={
+"Aatrox":"dhx","Ambessa":"dx","Camille":"dx","Cho'Gath":"th","Darius":"dh","Dr. Mundo":"th","Fiora":"dxh","Gangplank":"p","Garen":"d","Gnar":"tex","Gragas":"ex","Gwen":"dxk","Illaoi":"dh","Irelia":"dx","Jax":"dx","Jayce":"px","K'Sante":"telx","Kennen":"em","Kled":"dex","Malphite":"tex","Maokai":"tel","Mordekaiser":"dh","Nasus":"dh","Olaf":"dh","Ornn":"te","Pantheon":"dex","Quinn":"px","Renekton":"dxh","Riven":"dx","Rumble":"pm","Sett":"dh","Shen":"tl","Singed":"t","Sion":"te","Teemo":"p","Trundle":"dhk","Tryndamere":"dx","Urgot":"d","Volibear":"deh","Yorick":"d","Zaahen":"dx",
+"Bel'Veth":"dx","Briar":"dh","Diana":"aemx","Ekko":"amx","Elise":"adm","Evelynn":"am","Fiddlesticks":"em","Graves":"dx","Hecarim":"edx","Ivern":"l","Jarvan IV":"edx","Karthus":"cm","Kayn":"dx","Kha'Zix":"ax","Kindred":"c","Lee Sin":"dx","Lillia":"dm","Master Yi":"dx","Naafiri":"adx","Nidalee":"p","Nocturne":"ed","Nunu & Willump":"te","Qiyana":"ax","Rammus":"te","Rek'Sai":"dx","Rengar":"ax","Sejuani":"te","Shaco":"a","Shyvana":"dx","Skarner":"te","Udyr":"dh","Vi":"edx","Viego":"dx","Warwick":"dh","Wukong":"edx","Xin Zhao":"dx","Zac":"tex",
+"Ahri":"amx","Akali":"amx","Akshan":"cx","Anivia":"plm","Annie":"em","Aurelion Sol":"cm","Aurora":"amx","Azir":"pclx","Cassiopeia":"cmn","Corki":"px","Fizz":"amx","Galio":"tel","Hwei":"pm","Kassadin":"amx","Katarina":"am","LeBlanc":"amx","Lissandra":"elm","Lux":"plm","Malzahar":"lm","Mel":"pm","Neeko":"em","Orianna":"plm","Ryze":"cm","Sylas":"admx","Syndra":"pam","Taliyah":"pem","Talon":"a","Twisted Fate":"am","Veigar":"cm","Vel'Koz":"pm","Vex":"amn","Viktor":"plm","Vladimir":"chm","Xerath":"pcm","Yasuo":"dx","Yone":"adx","Zed":"a","Ziggs":"pcm","Zoe":"pam","Kayle":"cm","Heimerdinger":"pm","Brand":"pm",
+"Aphelios":"c","Ashe":"pc","Caitlyn":"pc","Draven":"cs","Ezreal":"p","Jhin":"pc","Jinx":"c","Kai'Sa":"dxk","Kalista":"xs","Kog'Maw":"ck","Lucian":"xs","Miss Fortune":"c","Nilah":"dxs","Samira":"dxs","Senna":"pc","Sivir":"c","Smolder":"c","Tristana":"x","Twitch":"ck","Varus":"pck","Vayne":"xsk","Xayah":"c","Yunara":"c","Zeri":"x",
+"Alistar":"et","Bard":"e","Blitzcrank":"e","Braum":"lt","Janna":"l","Karma":"pl","Leona":"et","Lulu":"l","Milio":"l","Morgana":"l","Nami":"l","Nautilus":"et","Poppy":"en","Pyke":"aex","Rakan":"ex","Rell":"etx","Renata Glasc":"l","Seraphine":"pl","Sona":"lh","Soraka":"lh","Tahm Kench":"lt","Taric":"lt","Thresh":"e","Yuumi":"lh","Zilean":"l","Zyra":"p"};
+const TN={e:"engage",d:"dive",p:"poke",l:"peel",t:"tanks",c:"orörliga carries",a:"assassins",x:"dash-champs",h:"healing",s:"kort range i bot",m:"AP-burst",n:"anti-dash",k:"tank-shred"};
+// Varför er champ kontrar en egenskap (kort text)
+const WHY={x:"stoppar dashes",t:"smälter tanks",h:"anti-heal",d:"peel mot dive",a:"överlever burst",p:"engagear in på poke",c:"fångar orörliga",e:"disengage mot engage",s:"vinner lane mot kort range",m:"magic-shield mot AP"};
+// Comp-typ: bra (g) och dålig (b) mot
+const MATCH={shock:{g:{d:4,a:3,x:2},b:{p:4,l:3}},black:{g:{c:4,p:3},b:{l:4,n:4}},pick:{g:{c:3,p:3},b:{t:3,l:2}},dive:{g:{c:4,p:3},b:{l:4,t:2,n:5}},split:{g:{c:2,p:2},b:{e:3}},poke:{g:{c:3},b:{e:4,d:3}},prot:{g:{t:3},b:{d:4,a:3,p:3}}};
+// Er champ: vilka fiende-egenskaper den kontrar (vikt)
+const CNT={
+"Poppy":{x:5,e:2,d:1},"Vex":{x:4,d:2},"Cassiopeia":{x:3,t:2,d:1},"Lulu":{d:4,a:4,x:2},"Renata Glasc":{d:3,e:3,a:2},"Milio":{d:3,a:2},"Soraka":{p:3},"Galio":{m:5,a:3,e:1},"Lissandra":{d:4,a:3,x:2},"Orianna":{d:2,e:2},"Swain":{d:3,t:1},"Taliyah":{d:3},"Viktor":{d:2,x:1},"Syndra":{a:1,d:1},"Aurora":{x:2},"Mel":{p:4},
+"Maokai":{d:3,x:2},"Sion":{c:1},"Dr. Mundo":{a:3,m:2},"Cho'Gath":{t:3,x:1,d:1},"Sejuani":{d:2,e:1},"Zaahen":{t:3},"Pantheon":{c:3,p:3},"Ambessa":{c:3,p:2},
+"Kog'Maw":{t:5},"Vayne":{t:5},"Varus":{t:3,h:4},"Twitch":{t:3},"Kai'Sa":{c:2,t:1},"Ezreal":{e:1},"Caitlyn":{s:4,t:1},"Ashe":{s:2,d:1,e:1},"Jhin":{s:2},"Xayah":{d:3,e:2},"Sivir":{e:2},"Kalista":{e:1},"Senna":{s:2},"Corki":{s:1},"Smolder":{t:1},"Miss Fortune":{s:1},"Jinx":{t:1},"Draven":{s:1},
+"Vi":{c:4,p:3},"Nocturne":{c:4,p:3},"Jarvan IV":{c:3,p:3},"Kha'Zix":{c:4,p:2},"Warwick":{c:2,h:1},"Udyr":{d:1},"Elise":{c:3},
+"Akali":{c:3,p:3},"Naafiri":{c:3,p:2},"Sylas":{e:2,p:1},"Yone":{c:2,p:2},"Ryze":{t:2},"Xerath":{c:3},"Ziggs":{c:2},
+"Rakan":{p:3,c:3},"Pyke":{c:3,p:2},"Thresh":{c:3,p:2},"Bard":{c:3,p:2},"Nami":{d:2,s:2},"Karma":{d:3,e:2}};
+// Era fulla pooler per roll
+const POOLS=[
+ ["Sion","Zaahen","Ambessa","Pantheon","Maokai","Dr. Mundo"],
+ ["Jarvan IV","Elise","Warwick","Sejuani","Cho'Gath","Kha'Zix","Udyr","Nocturne","Vi"],
+ ["Orianna","Swain","Sylas","Ryze","Syndra","Akali","Lissandra","Yone","Ziggs","Naafiri","Vex","Taliyah","Mel","Aurora","Xerath","Galio","Cassiopeia","Viktor"],
+ ["Ashe","Caitlyn","Corki","Draven","Ezreal","Jhin","Jinx","Kai'Sa","Kalista","Kog'Maw","Lucian","Miss Fortune","Nilah","Samira","Senna","Sivir","Smolder","Tristana","Twitch","Varus","Vayne","Xayah","Yunara","Zeri"],
+ ["Bard","Thresh","Poppy","Pyke","Milio","Lulu","Rakan","Karma","Renata Glasc","Soraka","Nami"]];
+const tr=ch=>TR[ch]||"";
+function compVs(c,enemy){
+  if(!enemy.length) return {adj:0,g:"",b:""};
+  const m=MATCH[c.k]; let adj=0; const gw={},bw={};
+  enemy.forEach(ch=>{ for(const k of tr(ch)){ if(m.g[k]){adj+=m.g[k];(gw[k]=gw[k]||[]).push(ch)} if(m.b[k]){adj-=m.b[k];(bw[k]=bw[k]||[]).push(ch)} } });
+  adj=Math.max(-20,Math.min(20,Math.round(adj*1.5)));
+  const fmt=o=>Object.entries(o).sort((a,b)=>b[1].length-a[1].length).slice(0,2).map(([k,v])=>`${TN[k]} (${[...new Set(v)].join(", ")})`).join(", ");
+  return {adj,g:fmt(gw),b:fmt(bw)};
+}
+function champVs(ch,enemy){
+  let v=0; const cnt=CNT[ch]||{}; const mine=tr(ch); const why={}; const hurt=new Set();
+  enemy.forEach(e=>{ const t=tr(e);
+    for(const k of t){ if(cnt[k]){v+=cnt[k]; (why[k]=why[k]||new Set()).add(e)} }
+    if(mine.includes("c")&&(t.includes("d")||t.includes("a"))){v-=3; hurt.add(e)}
+    if(mine.includes("x")&&t.includes("n")){v-=5; hurt.add(e)}
+    if(mine.includes("a")&&(t.includes("t")||t.includes("l"))){v-=2; hurt.add(e)}
+    if(mine.includes("d")&&t.includes("l")){v-=1; hurt.add(e)}
+    if(mine.includes("t")&&t.includes("k")){v-=2; hurt.add(e)}
+    if(mine.includes("s")&&(e==="Caitlyn"||e==="Varus"||e==="Ashe"||e==="Jhin")){v-=2; hurt.add(e)}
+  });
+  // Statistiska counters från data.json (lolalytics/OP.GG): e.counters = champs som slår e
+  const stat=[], statN=[];
+  if(DATA) enemy.forEach(e=>{
+    const cs=((DATA.champions[e]||{}).counters||[]).filter(x=>x.ch===ch);
+    if(cs.length){ const wr=cs.reduce((t,x)=>t+x.wr,0)/cs.length; if(50-wr>0.5){ v+=(50-wr)*2; stat.push(`${e} ${(100-wr).toFixed(1)} %`); statN.push(e); } }
+    const mine2=((DATA.champions[ch]||{}).counters||[]).filter(x=>x.ch===e);
+    if(mine2.length){ const wr=mine2.reduce((t,x)=>t+x.wr,0)/mine2.length; if(50-wr>0.5){ v-=(50-wr)*2; hurt.add(e); } }
+  });
+  const hitAll=new Set(Object.values(why).flatMap(s=>[...s]));
+  const reasons=Object.entries(why).sort((a,b)=>(cnt[b[0]]*b[1].size)-(cnt[a[0]]*a[1].size)).slice(0,2).map(([k,s])=>`${WHY[k]}: ${[...s].join(", ")}`);
+  if(stat.length) reasons.unshift(`Statistisk counter: ${stat.join(", ")}`);
+  statN.forEach(n=>hitAll.add(n));
+  return {v,reasons,hurt:[...hurt].filter(x=>!hitAll.has(x))};
+}
+
+function evalComp(c,gone,ours,enemy=[]){
+  let score=c.s*20, lineup=[], dead=null, match=0, picked=0;
+  const oursSet=new Set(ours.filter(Boolean));
+  c.p.forEach((opts,ri)=>{
+    const mine=ours[ri];
+    if(mine){
+      picked++;
+      const j=opts.indexOf(mine);
+      if(j===0){score+=10; match++}
+      else if(j>0){score+=5; match++}
+      else score-=20;
+      const alts=opts.filter(x=>x!==mine&&!gone.has(x)&&!oursSet.has(x)).slice(0,2);
+      lineup.push({r:R[ri],c:mine,lock:j>=0,off:j<0,alts});
+      return;
+    }
+    const avail=x=>!gone.has(x)&&!oursSet.has(x);
+    const i=opts.findIndex(avail);
+    if(i<0){ dead=dead||R[ri]; lineup.push({r:R[ri],c:"–",alts:[]}); return; }
+    if(i>0){ score-=4+i*3; if(ri>=3) score-=4; }
+    const alts=opts.slice(i+1).filter(avail).slice(0,2);
+    lineup.push({r:R[ri],c:opts[i],sub:i>0,was:opts[0],alts});
+  });
+  const vs=compVs(c,enemy); score+=vs.adj;
+  return {c,score:Math.max(0,Math.min(100,score)),raw:score,lineup,dead,match,picked,vs};
+}
+
+function render(){
+  const gone=new Set([...bans.slice(0,10),...bans.slice(15,20)].filter(Boolean));
+  const ours=bans.slice(10,15);
+  const nb=bans.slice(0,10).filter(Boolean).length, np=bans.slice(10).filter(Boolean).length;
+  document.getElementById("count").textContent=(nb||np)?`${nb} bans, ${np} picks`:"Inga bans eller picks";
+  const enemy=bans.slice(15,20).filter(Boolean);
+  const eR=enemyRoles(enemy);
+  for(let k=0;k<5;k++){ const rl=document.querySelector(`.slot[data-idx="${15+k}"] .rl`); if(!rl) continue; const c=bans[15+k]; rl.textContent=(c&&eR[c]!==undefined)?R[eR[c]]:String(k+1); rl.title=c?"Trolig roll":""; }
+  const res=COMPS.map(c=>evalComp(c,gone,ours,enemy)).sort((a,b)=>(!!a.dead-!!b.dead)||(b.raw-a.raw)||(b.c.s-a.c.s));
+  renderNext(res,gone,ours);
+  const list=document.getElementById("list"); list.innerHTML="";
+  let rank=0;
+  res.forEach(r=>{
+    const li=document.createElement("li");
+    const alive=!r.dead; if(alive) rank++;
+    li.className="comp"+(alive&&rank===1?" top":"")+(alive?"":" dead");
+    const subs=r.lineup.filter(x=>x.sub).length;
+    const meta=[r.c.t]; if(r.picked) meta.push(`${r.match}/${r.picked} picks passar`); if(subs) meta.push(`${subs} byte${subs>1?"n":""}`);
+    li.innerHTML=`<div class="rk">${alive?rank:"–"}</div><div>
+      <div class="head"><span class="name">${r.c.n}</span><span class="type">${meta.join(" · ")}</span>
+      ${alive?`<span class="score"><span class="bar"><i style="width:${r.score}%"></i></span>${r.score}</span>`:""}</div>
+      <div class="line">${r.lineup.map(x=>{
+        const cls="ch"+(x.sub?" sub":"")+(x.lock?" lock":"")+(x.off?" off":"");
+        const tip=x.lock?`${x.c} – er pick`:x.off?`${x.c} – er pick, finns inte i compens plan`:x.sub?`${x.c} ersätter ${x.was}`:x.c;
+        return `<div class="col"><span class="${cls}" title="${tip}"><b>${x.r}</b>${x.c}${x.sub?`<s>${x.was}</s>`:""}</span><div class="alts">${[0,1].map(k=>x.alts[k]?`<span class="alt" title="Alternativ: ${x.alts[k]}">${x.alts[k]}</span>`:`<span class="alt none">–</span>`).join("")}</div></div>`}).join("")}</div>
+      ${alive&&enemy.length&&(r.vs.g||r.vs.b)?`<p class="vs"><b class="${r.vs.adj>0?"up":r.vs.adj<0?"down":""}">${r.vs.adj>0?"+":""}${r.vs.adj}</b> mot deras picks${r.vs.g?` – bra mot ${r.vs.g}`:""}${r.vs.b?`${r.vs.g?";":" –"} svag mot ${r.vs.b}`:""}</p>`:""}
+      ${alive?`<p class="win">${r.c.w}</p>`:`<p class="why">Går inte att spela: alla alternativ för ${r.dead} är bannade eller tagna.</p>`}
+    </div>`;
+    list.appendChild(li);
+  });
+}
+
+const TIER={"Nocturne":3,"Vi":3,"Jarvan IV":3,"Orianna":3,"Syndra":3,"Cassiopeia":3,"Renata Glasc":3,"Ezreal":3,"Galio":2,"Viktor":2,"Ambessa":2,"Pantheon":2,"Jhin":2,"Lucian":2,"Ashe":2,"Kalista":2,"Yunara":2,"Varus":2,"Corki":2,"Lulu":2,"Karma":2,"Akali":2,"Ryze":2,"Zaahen":1,"Maokai":1,"Sejuani":1,"Taliyah":1,"Sylas":1,"Naafiri":1,"Caitlyn":1,"Kai'Sa":1,"Xayah":1,"Tristana":1,"Draven":1,"Sivir":1,"Milio":1,"Rakan":1,"Poppy":1,"Bard":1};
+const SAFE=new Set(["Nocturne","Vi","Jarvan IV","Orianna","Galio","Ezreal","Renata Glasc","Sejuani","Cho'Gath","Viktor","Lulu","Karma","Jhin","Syndra"]);
+const RISKY=new Set(["Ambessa","Pantheon","Zaahen","Maokai","Sion","Dr. Mundo","Kog'Maw","Akali","Sylas","Ryze","Lucian","Cassiopeia","Yone","Kai'Sa","Bard"]);
+const TL=["","B-tier","A-tier","S-tier"];
+// Kända duos och synergier – pro play + vanliga i soloqueue. Vikt 2 = välkänd, ofta spelad duo.
+const DUOS=[
+ // bot-duos
+ ["Kog'Maw","Lulu",2],["Kog'Maw","Milio",2],["Kog'Maw","Renata Glasc",1],["Kog'Maw","Janna",1],["Kog'Maw","Yuumi",1],
+ ["Xayah","Rakan",2],["Kai'Sa","Rakan",1],["Samira","Rakan",1],
+ ["Lucian","Nami",2],["Lucian","Braum",2],["Lucian","Milio",1],["Lucian","Karma",1],
+ ["Kalista","Thresh",2],["Kalista","Renata Glasc",2],["Kalista","Nautilus",2],["Kalista","Alistar",2],["Kalista","Rell",1],["Kalista","Leona",1],["Kalista","Braum",1],["Kalista","Taric",1],["Kalista","Poppy",1],
+ ["Kai'Sa","Nautilus",2],["Kai'Sa","Alistar",1],["Kai'Sa","Rell",1],["Kai'Sa","Leona",1],["Kai'Sa","Poppy",1],
+ ["Samira","Rell",2],["Samira","Nautilus",2],["Samira","Alistar",1],["Samira","Leona",1],["Samira","Pyke",1],
+ ["Draven","Thresh",2],["Draven","Leona",1],["Draven","Nautilus",1],["Draven","Pyke",1],["Draven","Blitzcrank",1],["Draven","Alistar",1],
+ ["Senna","Tahm Kench",2],["Senna","Seraphine",1],["Senna","Braum",1],["Senna","Bard",1],
+ ["Twitch","Yuumi",2],["Twitch","Lulu",2],["Twitch","Milio",1],
+ ["Zeri","Yuumi",2],["Zeri","Lulu",2],["Zeri","Milio",1],
+ ["Jinx","Lulu",2],["Jinx","Thresh",1],["Jinx","Milio",1],["Jinx","Janna",1],
+ ["Aphelios","Thresh",2],["Aphelios","Lulu",1],["Aphelios","Rell",1],["Aphelios","Milio",1],
+ ["Vayne","Lulu",2],["Vayne","Taric",1],["Vayne","Yuumi",1],
+ ["Smolder","Lulu",1],["Smolder","Milio",1],["Smolder","Renata Glasc",1],["Yunara","Lulu",1],["Yunara","Milio",1],
+ ["Ezreal","Karma",2],["Ezreal","Yuumi",1],["Ezreal","Seraphine",1],["Ezreal","Lulu",1],
+ ["Jhin","Renata Glasc",1],["Jhin","Zyra",1],["Jhin","Morgana",1],["Jhin","Seraphine",1],["Jhin","Karma",1],["Jhin","Leona",1],
+ ["Caitlyn","Lux",2],["Caitlyn","Morgana",2],["Caitlyn","Karma",1],["Caitlyn","Zyra",1],
+ ["Varus","Karma",1],["Varus","Lux",1],["Varus","Zyra",1],["Varus","Seraphine",1],
+ ["Miss Fortune","Leona",2],["Miss Fortune","Amumu",2],["Miss Fortune","Rell",1],["Miss Fortune","Seraphine",1],["Miss Fortune","Malphite",1],
+ ["Ashe","Braum",1],["Ashe","Bard",1],["Ashe","Seraphine",1],["Ashe","Karma",1],["Ashe","Swain",1],["Ashe","Brand",1],
+ ["Nilah","Taric",2],["Nilah","Yuumi",1],["Nilah","Lulu",1],["Tristana","Braum",1],["Tristana","Leona",1],["Sivir","Karma",1],["Corki","Karma",1],
+ ["Master Yi","Taric",2],["Master Yi","Yuumi",2],["Master Yi","Lulu",1],["Kayle","Lulu",1],["Olaf","Yuumi",1],["Seraphine","Sona",2],["Sona","Taric",2],
+ // wombo / knock-ups
+ ["Yasuo","Malphite",2],["Yasuo","Diana",2],["Yasuo","Gragas",2],["Yasuo","Alistar",1],["Yasuo","Nautilus",1],["Yasuo","Rakan",1],["Yasuo","Wukong",1],["Yasuo","Jarvan IV",1],["Yasuo","Rell",1],["Yasuo","Ornn",1],["Yasuo","Gnar",1],["Yasuo","Zac",1],["Yasuo","Vi",1],["Yasuo","Kalista",1],["Yasuo","Yone",1],["Yasuo","Amumu",1],
+ ["Yone","Malphite",2],["Yone","Diana",1],["Yone","Gragas",1],["Yone","Alistar",1],["Yone","Nautilus",1],["Yone","Rakan",1],["Yone","Wukong",1],["Yone","Jarvan IV",1],["Yone","Rell",1],["Yone","Ornn",1],["Yone","Zac",1],
+ ["Orianna","Jarvan IV",2],["Orianna","Malphite",2],["Orianna","Wukong",2],["Orianna","Vi",1],["Orianna","Nocturne",1],["Orianna","Rell",1],["Orianna","Rakan",1],["Orianna","Hecarim",1],["Orianna","Zac",1],["Orianna","Camille",1],["Orianna","Sion",1],["Orianna","Ambessa",1],["Orianna","Kennen",1],
+ ["Amumu","Miss Fortune",2],["Malphite","Miss Fortune",1],["Rumble","Jarvan IV",1],["Rumble","Wukong",1],["Rumble","Amumu",1],["Kennen","Jarvan IV",1],
+ // mid–jungle / top–jungle
+ ["Twisted Fate","Nocturne",2],["Twisted Fate","Pantheon",1],["Twisted Fate","Shen",1],["Galio","Lee Sin",1],["Galio","Camille",1],["Galio","Nocturne",1],["Galio","Twisted Fate",1],["Shen","Nocturne",1],["Pantheon","Nocturne",1],
+ ["Syndra","Jarvan IV",1],["Syndra","Vi",1],["Taliyah","Jarvan IV",1],["Taliyah","Vi",1],["Viktor","Jarvan IV",1],["Viktor","Sejuani",1],["Azir","Lee Sin",2],["Azir","Jarvan IV",1],["Azir","Rell",1],["Cassiopeia","Sejuani",1],["Cassiopeia","Rell",1],
+ ["Renekton","Elise",2],["Renekton","Lee Sin",1],["Renekton","Nidalee",1],["Camille","Galio",1],["Sion","Rell",1],["Lillia","Seraphine",1]];
+const SYN={},SYNW={};
+DUOS.forEach(([a,b,w])=>{[[a,b],[b,a]].forEach(([x,y])=>{(SYN[x]=SYN[x]||new Set()).add(y);(SYNW[x]=SYNW[x]||{})[y]=Math.max(w,(SYNW[x]||{})[y]||0)})});
+const synW=(a,b)=>(SYNW[a]&&SYNW[a][b])||0;
+const META=new Set(["Nocturne","Vi","Cassiopeia","Renata Glasc","Qiyana","Olaf","Syndra","Ezreal","Lee Sin","Jarvan IV","Rumble","Orianna","Akali","Jayce","K'Sante","Nautilus","Locke","Seraphine","Lulu","Jhin","Ambessa","Galio","Wukong","Viktor","Alistar","Gnar","Renekton","Yunara","Kalista"]);
+const POOLSET=new Set(POOLS.flat());
+// Troliga roller per champ (T=Top J=Jgl M=Mid A=ADC S=Sup)
+const ROLE_RAW={T:"Aatrox Ambessa Camille Cho'Gath Darius Dr._Mundo Fiora Gangplank Garen Gnar Gwen Illaoi Irelia Jax Jayce K'Sante Kayle Kennen Kled Malphite Maokai Mordekaiser Nasus Olaf Ornn Pantheon Poppy Quinn Renekton Riven Rumble Sett Shen Singed Sion Teemo Trundle Tryndamere Urgot Volibear Yorick Zaahen Galio Yone Yasuo Akali Sylas Gragas Vladimir Aurora Vayne Heimerdinger Tahm_Kench Ryze Swain Varus",
+J:"Bel'Veth Briar Diana Ekko Elise Evelynn Fiddlesticks Graves Hecarim Ivern Jarvan_IV Karthus Kayn Kha'Zix Kindred Lee_Sin Lillia Master_Yi Naafiri Nidalee Nocturne Nunu_&_Willump Qiyana Rammus Rek'Sai Rengar Sejuani Shaco Shyvana Skarner Udyr Vi Viego Warwick Wukong Xin_Zhao Zac Amumu Gragas Volibear Trundle Pantheon Maokai Talon Taliyah Zed Cho'Gath Poppy Jax Olaf Sylas Gwen Mordekaiser Brand Zyra Jayce",
+M:"Ahri Akali Akshan Anivia Annie Aurelion_Sol Aurora Azir Cassiopeia Corki Diana Ekko Fizz Galio Hwei Kassadin Katarina LeBlanc Lissandra Locke Lux Malzahar Mel Naafiri Neeko Orianna Qiyana Ryze Swain Sylas Syndra Taliyah Talon Twisted_Fate Veigar Vel'Koz Vex Viktor Vladimir Xerath Yasuo Yone Zed Ziggs Zoe Kog'Maw Tristana Smolder Irelia Brand Heimerdinger Seraphine Karthus Kayle Annie Jayce Gragas",
+A:"Aphelios Ashe Caitlyn Corki Draven Ezreal Jhin Jinx Kai'Sa Kalista Kog'Maw Lucian Miss_Fortune Nilah Samira Senna Sivir Smolder Tristana Twitch Varus Vayne Xayah Yunara Zeri Ziggs Seraphine Swain Karthus Yasuo",
+S:"Alistar Bard Blitzcrank Brand Braum Janna Karma Leona Lulu Lux Milio Morgana Nami Nautilus Neeko Poppy Pyke Rakan Rell Renata_Glasc Senna Seraphine Sona Soraka Swain Tahm_Kench Taric Thresh Vel'Koz Xerath Yuumi Zilean Zyra Maokai Shen Camille Elise Galio Annie Heimerdinger Ashe Hwei Mel"};
+const RK=["T","J","M","A","S"];
+const ROLES={}; Object.entries(ROLE_RAW).forEach(([r,list])=>list.split(" ").forEach(n=>{n=n.replace(/_/g," "); (ROLES[n]=ROLES[n]||new Set()).add(RK.indexOf(r))}));
+// Ordningen spelar roll: första listan en champ står i räknas som huvudroll
+const MAINROLE={}; RK.forEach((r,ri)=>ROLE_RAW[r].split(" ").forEach(n=>{n=n.replace(/_/g," "); if(MAINROLE[n]===undefined) MAINROLE[n]=ri}));
+const MAIN_FIX={"Kog'Maw":3,"Tristana":3,"Smolder":3,"Corki":3,"Varus":3,"Vayne":3,"Senna":3,"Ashe":3,"Ziggs":2,"Seraphine":4,"Swain":2,"Karthus":1,"Yasuo":2,"Yone":2,"Akali":2,"Sylas":2,"Gragas":1,"Vladimir":2,"Aurora":2,"Heimerdinger":2,"Tahm Kench":4,"Ryze":2,"Galio":2,"Pantheon":0,"Maokai":0,"Poppy":4,"Trundle":1,"Volibear":0,"Jax":0,"Olaf":0,"Gwen":0,"Mordekaiser":0,"Brand":4,"Zyra":4,"Jayce":0,"Talon":2,"Zed":2,"Taliyah":2,"Cho'Gath":0,"Diana":1,"Ekko":1,"Qiyana":1,"Naafiri":2,"Lux":4,"Neeko":2,"Hwei":2,"Mel":2,"Xerath":2,"Vel'Koz":2,"Shen":0,"Camille":0,"Elise":1,"Annie":2,"Kayle":0,"Irelia":0};
+Object.assign(MAINROLE,MAIN_FIX);
+// Sätt fiendens picks på troliga roller (de med minst valfrihet först, huvudroll prioriteras)
+function enemyRoles(enemy){
+  const filled={}; const order=[...enemy].sort((a,b)=>((ROLES[a]||new Set()).size||5)-((ROLES[b]||new Set()).size||5));
+  order.forEach(ch=>{ const rs=[...(ROLES[ch]||[])]; const pref=MAINROLE[ch];
+    const pick=(pref!==undefined&&!Object.values(filled).includes(pref))?pref:rs.find(r=>!Object.values(filled).includes(r));
+    if(pick!==undefined) filled[ch]=pick; });
+  return filled; // champ -> rollindex
+}
+function banTips(res,taken,ours){
+  const enemy=bans.slice(15,20).filter(Boolean);
+  const eRole=enemyRoles(enemy); const filledR=new Set(Object.values(eRole));
+  const best=res.find(r=>!r.dead); const ourLine=best?best.lineup.map(x=>x.c).filter(c=>c&&c!=="–"):[];
+  const m=best?MATCH[best.c.k]:{b:{}};
+  const out=[];
+  CHAMPS.forEach(C=>{ if(taken.has(C)) return; if(!enemy.length&&!META.has(C)) return;
+    const strongDuo=enemy.some(e=>synW(e,C)>=2); if(POOLSET.has(C)&&!strongDuo) return;
+    const cr=[...(ROLES[C]||[])]; if(cr.length&&(cr.every(r=>filledR.has(r))||(MAINROLE[C]!==undefined&&filledR.has(MAINROLE[C])))) return; // deras (huvud)roll är redan tagen
+    let s=0; const why=[]; const tC=tr(C);
+    const syn=enemy.filter(e=>synW(e,C));
+    if(syn.length){ const w=syn.reduce((t,e)=>t+synW(e,C),0); s+=w*6; why.push(`${w>=syn.length*2?"Känd duo":"Synergi"}: ${syn.join(", ")}${POOLSET.has(C)&&POOLS.some((pl,ri)=>pl.includes(C)&&!ours[ri])?" (eller picka själv)":""}`); }
+    let th=0; for(const k of tC){ if(m.b[k]) th+=m.b[k]; }
+    const hits=new Set();
+    ourLine.forEach(O=>{const tO=tr(O);
+      if(tC.includes("n")&&tO.includes("x")){th+=4;hits.add(O)}
+      if(tC.includes("l")&&(tO.includes("d")||tO.includes("a"))){th+=1;hits.add(O)}
+      if(tC.includes("k")&&tO.includes("t")){th+=2;hits.add(O)}
+      if((tC.includes("d")||tC.includes("a"))&&tO.includes("c")){th+=1;hits.add(O)}
+    });
+    if(th>=4){ s+=th; why.push(hits.size?`Kontrar: ${[...hits].slice(0,3).join(", ")}`:`Kontrar ${best.c.n}`); }
+    if(DATA){ const mine=ours.filter(Boolean).length?ours.filter(Boolean):ourLine;
+      mine.forEach(O=>{ const cs=((DATA.champions[O]||{}).counters||[]).filter(x=>x.ch===C);
+        if(cs.length){ const wr=cs.reduce((t,x)=>t+x.wr,0)/cs.length; if(50-wr>1){ s+=(50-wr)*3; why.unshift(`Kontrar er ${O} (${(100-wr).toFixed(1)} %)`); } } }); }
+    if(META.has(C)){ s+=3; if(!why.length) why.push("Hög pro-prio"); }
+    if(s>0) out.push({C,s,why});
+  });
+  out.sort((a,b)=>b.s-a.s);
+  const box=document.getElementById("bantips"); box.innerHTML="";
+  const free=[0,1,2,3,4].filter(i=>!bans[i]);
+  if(!free.length){ box.style.display="none"; return; } box.style.display="";
+  const lab=document.createElement("span"); lab.className="btl"; lab.textContent=enemy.length?"Ban-tips":"Ban-tips (meta)"; box.appendChild(lab);
+  out.slice(0,4).forEach(o=>{const b=document.createElement("button"); b.type="button";
+    b.innerHTML=`<b>${o.C}</b><small>${o.why[0]}</small>`; b.title=o.why.join(" · ");
+    b.addEventListener("click",()=>{const i=[0,1,2,3,4].find(j=>!bans[j]); if(i===undefined) return; document.querySelector(`.slot[data-idx="${i}"]`)._set(o.C); save(); render();});
+    box.appendChild(b)});
+}
+function renderNext(res,gone,ours){
+  const taken=new Set([...gone,...ours.filter(Boolean)]);
+  const enemy=bans.slice(15,20).filter(Boolean);
+  const alive=res.filter(r=>!r.dead);
+  const oursP=ours.filter(Boolean);
+  // Vikt per comp: högre score och fler matchande picks = mer sannolik plan
+  const wOf=r=>Math.pow(Math.max(0,r.raw)/100,2)*(1+(r.match||0)*1.5)*(r.picked&&!r.match?0.3:1);
+  const target=oursP.length?[...alive].sort((a,b)=>wOf(b)-wOf(a))[0]:null;
+  const sub=document.getElementById("nxsub");
+  sub.innerHTML=target?`ni ser ut att gå mot <b>${target.c.n}</b> · klicka för att låsa`:"klicka för att låsa · tar hänsyn till fiendens picks";
+  const fit=new Map();
+  alive.forEach(r=>r.c.p.forEach((opts,ri)=>{ if(ours[ri]) return;
+    opts.forEach((ch,j)=>{ if(taken.has(ch)) return;
+      const k=ch+"|"+ri; const o=fit.get(k)||{f:0,n:0}; o.f+=wOf(r)*(j===0?1:j===1?.55:.3); o.n++; fit.set(k,o);
+    })}));
+  // Alla champs i era pooler i öppna roller
+  const cands=[];
+  POOLS.forEach((pool,ri)=>{ if(ours[ri]) return; pool.forEach(ch=>{ if(taken.has(ch)) return;
+    const f=fit.get(ch+"|"+ri)||{f:0,n:0}; const risk=SAFE.has(ch)?0:RISKY.has(ch)?2:1; const cv=champVs(ch,enemy);
+    const syn=oursP.filter(p=>synW(p,ch));
+    let tg=0, tgTxt="";
+    if(target){ const tl=target.lineup[ri]; const opts=target.c.p[ri];
+      if(tl&&tl.c===ch){tg=18; tgTxt=`Passar ${target.c.n}`}
+      else if(opts.includes(ch)){tg=5; tgTxt=`Alternativ i ${target.c.n}`} }
+    const plan=[tgTxt,syn.length?`Synergi med ${syn.join(", ")}`:""].filter(Boolean);
+    cands.push({ch,ri,fit:f.f,n:f.n,risk,cv,plan,tg,v:f.f*10+(TIER[ch]||0)*3-risk*4+cv.v*(enemy.length?3:0)+tg*(target?1.6:0)+syn.reduce((t,p)=>t+synW(p,ch),0)*6});
+  })});
+  const best=new Map(); cands.forEach(o=>{const b=best.get(o.ch); if(!b||o.v>b.v) best.set(o.ch,o)});
+  const all=[...best.values()].sort((a,b)=>b.v-a.v);
+  const open=[0,1,2,3,4].filter(ri=>!ours[ri]);
+  const lastPick=open.length===1;
+  const top=lastPick
+    ? cands.filter(o=>o.ri===open[0]).sort((a,b)=>b.v-a.v).slice(0,6)
+    : all.filter(o=>o.n>0&&(o.risk<2||o.cv.v>=5||open.length<=2)).slice(0,5);
+  if(lastPick) sub.innerHTML=`sista pick: alla alternativ för <b>${R[open[0]]}</b>${target?` · mål-comp ${target.c.n}`:""}`;
+  const niche=enemy.length?all.filter(o=>!top.includes(o)&&o.cv.v>=5).sort((a,b)=>b.cv.v-a.cv.v).slice(0,4):[];
+  const btn=(o,isN)=>{const b=document.createElement("button"); b.type="button"; if(isN) b.className="n";
+    const meta=isN?`${o.n?o.n+" comps":"utanför compsen"} · ${TL[TIER[o.ch]||0]||"nisch i pro"}`:`${o.n} comps · ${TL[TIER[o.ch]||0]||"nisch"} · ${o.risk===2?"lätt":o.risk?"medel":"svår"} att countra`;
+    b.innerHTML=`<b>${o.ch}</b> ${R[o.ri]}<small>${meta}</small>${o.plan.map(t=>`<small class="pl">${t}</small>`).join("")}${o.cv.reasons.map(t=>`<small class="k">${t}</small>`).join("")}${o.cv.hurt.length?`<small class="w">Svag mot ${o.cv.hurt.join(", ")}</small>`:""}`;
+    b.title=`Lås ${o.ch} som ${R[o.ri]}`;
+    b.addEventListener("click",()=>{const sl=document.querySelector(`.slot[data-idx="${10+o.ri}"]`); if(!sl) return; sl._set(o.ch); save(); render();});
+    return b;};
+  const nx=document.getElementById("nx"); nx.innerHTML="";
+  if(!top.length&&!niche.length){ nx.innerHTML='<span class="last">Alla roller är pickade.</span>'; }
+  top.forEach(o=>nx.appendChild(btn(o,false)));
+  const nh=document.getElementById("nicheh"), ni=document.getElementById("niche"); ni.innerHTML="";
+  nh.style.display=niche.length?"":"none"; niche.forEach(o=>ni.appendChild(btn(o,true)));
+  const late=lastPick?[]:all.filter(o=>o.n>0&&o.risk===2&&!top.includes(o)&&!niche.includes(o)&&o.cv.v<3).slice(0,4).map(o=>o.ch);
+  document.getElementById("last").innerHTML=late.length?`<b>Pickas sist</b> (lätta att countra): ${late.join(", ")}`:"";
+  // 2 tips per roll bredvid era pick-rutor
+  for(let ri=0;ri<5;ri++){
+    const tp=document.querySelector(`.slot[data-idx="${10+ri}"] .tp`); if(!tp) continue; tp.innerHTML="";
+    if(ours[ri]) continue;
+    cands.filter(o=>o.ri===ri).sort((a,b)=>b.v-a.v).slice(0,2).forEach(o=>{
+      const b=document.createElement("button"); b.type="button";
+      const why=[...o.plan,...o.cv.reasons].join(" · ")||(o.n?`${o.n} comps`:"");
+      b.innerHTML=`${o.ch}`; b.title=`${o.ch}${why?" – "+why:""}${o.cv.hurt.length?" · svag mot "+o.cv.hurt.join(", "):""}`;
+      if(o.cv.v>=5) b.className="ctr"; else if(o.tg>=18) b.className="tg";
+      b.addEventListener("click",()=>{document.querySelector(`.slot[data-idx="${10+ri}"]`)._set(o.ch); save(); render();});
+      tp.appendChild(b)});
+  }
+  banTips(res,new Set([...taken,...enemy]),ours);
+}
+function save(){ try{ localStorage.setItem("comp-draft",JSON.stringify(bans)) }catch(e){} }
+function load(){ try{ const s=JSON.parse(localStorage.getItem("comp-draft")||localStorage.getItem("comp-bans")||"null"); if(Array.isArray(s)){ s.forEach((c,i)=>{ const sl=document.querySelector(`.slot[data-idx="${i}"]`); if(c&&CHAMPS.includes(c)&&sl) sl._set(c) }) } }catch(e){} }
+
+document.getElementById("reset").addEventListener("click",()=>{
+  document.querySelectorAll(".slot").forEach(s=>{bans[+s.dataset.idx]=null; s.querySelector("input").value=""; s.classList.remove("filled")});
+  save(); render();
+});
+
+build(); load(); render();
+
+// ---- Ladda data.json (skapas av scripts/update_data.py) ----
+function applyData(){
+  Object.entries(DATA.champions||{}).forEach(([n,c])=>{
+    const p=c.pro; if(p&&p.games>=50){ const pr=p.presence||0;
+      TIER[n]=pr>=.45?3:pr>=.2?2:pr>=.07?1:0; if(pr>=.3) META.add(n); else if(pr<.1) META.delete(n); }
+  });
+  const src=Object.entries(DATA.sources||{}).map(([k,v])=>`${k}: ${v==="ok"?"✓":v}`).join(" · ");
+  document.getElementById("datasrc").textContent=`Data: patch ${DATA.patch||"?"}, uppdaterad ${(DATA.updated||"").replace("T"," ").replace("Z"," UTC")} – ${src}`;
+}
+fetch("data.json",{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.champions){ DATA=d; applyData(); render(); } }).catch(()=>{});
+</script>
+</body>
+</html>
