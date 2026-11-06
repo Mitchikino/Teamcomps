@@ -5,11 +5,15 @@ Hämtar champ-statistik och skriver data.json som index.html läser.
 Källor (varje källa misslyckas för sig – resten körs ändå):
   1. Data Dragon (Riot)   – patch + champ-lista (officiellt, stabilt)
   2. Leaguepedia          – pro-picks/bans/WR senaste X dagarna
-  3. OP.GG MCP            – soloQ WR/pick/ban per roll + counters
-  4. Lolalytics           – soloQ tierlist + counters (scraping, kan gå sönder vid layoutändring)
+  3. OP.GG MCP            – soloQ WR/pick/ban per roll + ALLA matchups (WR + games)
+  4. Lolalytics           – matchups (WR + games) via sajtens JSON, HTML som reserv
+
+Matchups sparas per champ som  "mu": {"Motståndare": {"o": [wr, games], "l": [wr, games]}}
+(o = OP.GG, l = Lolalytics, wr = champens WR mot motståndaren). Bara par med > 20 games sparas.
+index.html väger ihop källorna efter antal games.
 
 Kör:  pip install -r requirements.txt && python scripts/update_data.py
-Flaggor: --only ddragon,pro,opgg[,lolalytics]   --pro-days 60   --rank emerald_plus
+Flaggor: --only ddragon,pro,opgg,lolalytics   --pro-days 60   --tier emerald_plus   --delay 1.0
 """
 import argparse, datetime as dt, json, os, re, sys, time, unicodedata
 from pathlib import Path
@@ -20,7 +24,7 @@ OUT = ROOT / "data.json"
 UA = {"User-Agent": "teamcomps-personal/1.0 (private team tool)"}
 S = requests.Session(); S.headers.update(UA)
 LANES = ["top", "jungle", "middle", "bottom", "support"]
-MIN_GAMES = 15  # minsta antal matcher för att en counter/synergi ska räknas
+MIN_GAMES = 21  # matchup/synergi måste ha MER än 20 games för att sparas
 
 def log(*a): print("[data]", *a, flush=True)
 def norm(s): return re.sub(r"[^a-z0-9]", "", unicodedata.normalize("NFD", s.lower()))
@@ -273,12 +277,18 @@ def opgg_names(name, cid):
     out = special.get(name, []) + [a, b, c]
     return list(dict.fromkeys(out))
 
+def games_of(e):
+    for k in ("play", "games", "count", "n"):
+        v = e.get(k)
+        if isinstance(v, (int, float)): return int(v)
+    return None
+
 def opgg(champs, idx, delay):
     m = MCP(); tools = m.start()
     log("OP.GG verktyg:", ", ".join(tools))
     meta_tool, ana_tool, syn_tool = "lol_list_lane_meta_champions", "lol_get_champion_analysis", "lol_get_champion_synergies"
-    soloq, counters, beats, synergies, main = {}, {}, {}, {}, {}
-    # 1) WR/pick/ban per roll + huvudroll per champ
+    soloq, mu, synergies, main, roles = {}, {}, {}, {}, {}
+    # 1) WR/pick/ban per roll + vilka roller varje champ spelas i
     if meta_tool in tools:
         for lane in LANES:
             pos = OP_LANE[lane]
@@ -295,127 +305,174 @@ def opgg(champs, idx, delay):
                         soloq.setdefault(n, {})[lane] = {"wr": wr, "pick": e.get("pick_rate"), "ban": e.get("ban_rate"),
                                                          "games": e.get("play"), "role_rate": rr, "tier": e.get("tier")}
                         if rr > main.get(n, ("", -1))[1]: main[n] = (pos, rr)
+                        if rr >= 0.15: roles.setdefault(n, []).append((pos, rr))
                 log(f"OP.GG meta {lane}: {n_found} champs")
             except Exception as ex: log("OP.GG meta", lane, "fel:", ex)
             time.sleep(delay)
-    # 2) counters + synergier per champ i dess huvudroll
-    first, ana_err, logged_c = True, 0, False
+    # 2) matchups per champ och roll (huvudroll + roller med >= 15 % role rate, max 2)
+    ana_err, logged, flips = 0, 0, 0
     for name in champs:
         if name not in main: continue
-        pos = main[name][0]
-        d = None
-        for cname in opgg_names(name, champs[name]["id"]):
-            try:
-                d = m.call(ana_tool, {"champion": cname, "position": pos, "game_mode": "ranked", "lang": "en_US"}); break
-            except Exception as ex:
-                err = str(ex)
-            time.sleep(0.3)
-        if d is None:
-            ana_err += 1
-            if ana_err <= 3: log("OP.GG analysis", name, "fel:", err[:200])
-            time.sleep(delay); continue
-        if first:
-            log("OP.GG exempel (analysis):", json.dumps(d, ensure_ascii=False)[:700]); first = False
-        def grab(keys):
-            out = []
-            for lst in find_lists(d, keys):
-                for e in lst:
-                    nw = entry_name_wr(e, idx)
-                    if nw and nw[0] != name and nw[1] is not None:
-                        out.append({"ch": nw[0], "wr": round(nw[1], 2), "games": e.get("play"), "src": "opgg"})
-            return out
-        weak, strong = grab(["weak_counter"]), grab(["strong_counter"])
-        if not weak and not strong:
-            # reserv: counters-listan under rätt roll i data.positions
-            allc = []
+        plist = [p for p, _ in sorted(roles.get(name, [main[name]]), key=lambda x: -x[1])][:2] or [main[name][0]]
+        for pos in plist:
+            d = None
+            for cname in opgg_names(name, champs[name]["id"]):
+                try:
+                    d = m.call(ana_tool, {"champion": cname, "position": pos, "game_mode": "ranked", "lang": "en_US"}); break
+                except Exception as ex:
+                    err = str(ex)
+                time.sleep(0.3)
+            if d is None:
+                ana_err += 1
+                if ana_err <= 3: log("OP.GG analysis", name, pos, "fel:", err[:200])
+                time.sleep(delay); continue
+            def rows(lists):
+                out = []
+                for lst in lists:
+                    for e in lst:
+                        nw = entry_name_wr(e, idx)
+                        g = games_of(e) if isinstance(e, dict) else None
+                        if nw and nw[0] != name and nw[1] is not None and g and g >= MIN_GAMES:
+                            out.append((nw[0], nw[1], g))
+                return out
+            # topp-listor (weak = champs som slår oss, strong = champs vi slår)
+            weak, strong = rows(find_lists(d, ["weak_counter"])), rows(find_lists(d, ["strong_counter"]))
+            if weak and sum(w for _, w, _ in weak) / len(weak) > 50: weak = [(c, 100 - w, g) for c, w, g in weak]
+            if strong and sum(w for _, w, _ in strong) / len(strong) < 50: strong = [(c, 100 - w, g) for c, w, g in strong]
+            top = {c: (w, g) for c, w, g in weak + strong}
+            # hela listan under rätt roll i data.positions[].counters
+            full = []
             for ps in find_lists(d, ["positions"]):
                 for p_ in ps:
-                    if isinstance(p_, dict) and str(p_.get("name", "")).lower() in (pos, pos.upper().lower()):
-                        for e in (p_.get("counters") or []):
-                            nw = entry_name_wr(e, idx)
-                            if nw and nw[0] != name and nw[1] is not None:
-                                allc.append({"ch": nw[0], "wr": round(nw[1], 2), "games": e.get("play"), "src": "opgg"})
-            weak = sorted([x for x in allc if x["wr"] < 50], key=lambda x: x["wr"])
-            strong = sorted([x for x in allc if x["wr"] > 50], key=lambda x: -x["wr"])
-        if not logged_c:
-            for lst in find_lists(d, ["counter"]):
-                if lst: log("OP.GG exempel (counter-rad):", json.dumps(lst[0], ensure_ascii=False)[:300]); logged_c = True; break
-        # "counters" = champs som slår denna champ, wr = denna champs WR mot dem (lågt = stark counter)
-        if weak:
-            if sum(x["wr"] for x in weak) / len(weak) > 50:  # svaret anger motståndarens WR – vänd
-                for x in weak: x["wr"] = round(100 - x["wr"], 2)
-            counters[name] = weak[:10]
-        if strong: beats[name] = strong[:10]
-        time.sleep(delay)
-        # synergier
+                    if isinstance(p_, dict) and str(p_.get("name", "")).lower() == pos.lower():
+                        full += rows([p_.get("counters") or []])
+            # vems WR? jämför mot topp-listorna och vänd hela listan om den är spegelvänd
+            same = [abs(w - top[c][0]) for c, w, _ in full if c in top]
+            flip = [abs((100 - w) - top[c][0]) for c, w, _ in full if c in top]
+            if same and sum(flip) < sum(same):
+                full = [(c, 100 - w, g) for c, w, g in full]; flips += 1
+            if logged < 2:
+                log(f"OP.GG matchups {name} ({pos}): topp {len(top)}, hela listan {len(full)}"); logged += 1
+            M = mu.setdefault(name, {})
+            for c, w, g in full + [(c, w, g) for c, (w, g) in top.items()]:
+                if c not in M or g > M[c][1]: M[c] = [round(w, 2), g]
+            time.sleep(delay)
+        # synergier (huvudrollen)
+        pos = main[name][0]
         if syn_tool in tools:
             try:
                 sd = m.call(syn_tool, {"champion": opgg_names(name, champs[name]["id"])[0], "my_position": pos,
                                        "synergy_position": SYN_WITH[pos], "lang": "en_US"})
                 lst = [x for l in all_dict_lists(sd) for x in l]
-                cs = [(nw, e.get("play")) for e in lst if (nw := entry_name_wr(e, idx, ("synergy_champion_name", "synergy_champion_id")))]
-                cs = [{"ch": c, "wr": round(w, 2), "games": g, "with": SYN_WITH[pos], "src": "opgg"} for (c, w), g in cs if c != name and w is not None]
+                cs = []
+                for e in lst:
+                    nw = entry_name_wr(e, idx, ("synergy_champion_name", "synergy_champion_id"))
+                    g = games_of(e)
+                    if nw and nw[0] != name and nw[1] is not None and g and g >= MIN_GAMES:
+                        cs.append({"ch": nw[0], "wr": round(nw[1], 2), "games": g, "with": SYN_WITH[pos], "src": "opgg"})
                 if cs: synergies[name] = cs[:12]
-                if name == next(iter(main)): log("OP.GG exempel (synergies):", json.dumps(sd, ensure_ascii=False)[:500])
             except Exception as ex:
                 if len(synergies) == 0: log("OP.GG synergies", name, "fel:", str(ex)[:200])
             time.sleep(delay)
-    log(f"OP.GG: soloQ {len(soloq)} champs, counters {len(counters)}, slår {len(beats)}, synergier {len(synergies)}, analys-fel {ana_err}")
-    if not soloq and not counters: raise RuntimeError("tomt svar – se exempel i loggen")
-    return soloq, counters, synergies, beats, {n: v[0] for n, v in main.items()}
+    n_mu = sum(len(v) for v in mu.values())
+    log(f"OP.GG: soloQ {len(soloq)} champs, matchups {n_mu} (för {len(mu)} champs), synergier {len(synergies)}, vända listor {flips}, analys-fel {ana_err}")
+    if not soloq and not mu: raise RuntimeError("tomt svar – se exempel i loggen")
+    return soloq, mu, synergies, {n: v[0] for n, v in main.items()}, {n: [p for p, _ in v] for n, v in roles.items()}
 
-def soloq_text(text, lane, soloq, idx):
-    """Reservtolkning om OP.GG svarar med text: rad med champnamn + första procenttal = WR."""
-    names = sorted(set(idx.values()), key=len, reverse=True)
-    for line in text.splitlines():
-        pct = re.search(r"(\d{1,2}\.\d+)\s*%", line)
-        if not pct: continue
-        low = line.lower()
-        n = next((x for x in names if x.lower() in low), None)
-        if n and lane not in soloq.get(n, {}): soloq.setdefault(n, {})[lane] = {"wr": float(pct.group(1))}
+# ---------- 4. Lolalytics ----------
+LL_UA = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+         "Accept": "application/json, text/html;q=0.9", "Referer": "https://lolalytics.com/"}
+LL_LANE = {"top": "top", "jungle": "jungle", "mid": "middle", "adc": "bottom", "support": "support"}
 
-# ---------- 4. Lolalytics (scraping) ----------
 def lol_slug(name, cid):
     return {"Wukong": "wukong", "Nunu & Willump": "nunu", "Renata Glasc": "renata"}.get(name, cid.lower())
 
-def lolalytics(champs, idx, rank, delay):
-    try:
-        import lolalytics_api as la
-    except ImportError:
-        log("Lolalytics: paketet lolalytics-api saknas (pip install lolalytics-api)"); return {}, {}
-    tiers, counters = {}, {}
-    for lane in ["top", "jungle", "mid", "adc", "support"]:
-        try:
-            d = json.loads(la.get_tierlist(n=60, lane=lane, rank=rank))
-            for e in d.values():
-                n = idx.get(norm(e["champion"]))
-                if n: tiers.setdefault(n, {})[lane] = {"tier": e["tier"], "wr": float(e["winrate"].strip("%") or 0)}
-        except Exception as ex: log("Lolalytics tierlist", lane, "fel:", ex)
-        time.sleep(delay)
-    fails = 0
-    for name, c in champs.items():
-        try:
-            d = json.loads(la.get_counters(n=8, champion=lol_slug(name, c["id"]), rank=rank))
-            # winrate = CHAMPENS winrate mot countern (lågt = stark counter)
-            cs = []
-            for e in d.values():
-                n = idx.get(norm(e["champion"]))
-                if n: cs.append({"ch": n, "wr": float(e["winrate"]), "src": "lolalytics"})
-            if cs: counters[name] = cs
-        except Exception as ex:
-            fails += 1
-            if fails <= 3: log("Lolalytics counters", name, "fel:", ex)
-        time.sleep(delay)
-    log(f"Lolalytics: tierlist för {len(tiers)} champs, counters för {len(counters)} ({fails} fel)")
-    if not tiers and not counters: raise RuntimeError(f"tomt svar ({fails} fel)")
-    return tiers, counters
+def ll_parse_json(j, idx, me):
+    """Generisk tolkning: hitta poster med champ-id + WR + games, var som helst i svaret."""
+    out = {}
+    def num(v):
+        return float(v) if isinstance(v, (int, float)) and not isinstance(v, bool) else None
+    def walk(o, key_hint=None):
+        if isinstance(o, dict):
+            name = None
+            for k in ("cid", "championId", "champion_id", "champion", "c", "id", "name"):
+                if k in o and idx.get(norm(str(o[k]))): name = idx[norm(str(o[k]))]; break
+            if not name and key_hint is not None and idx.get(norm(str(key_hint))): name = idx[norm(str(key_hint))]
+            wr = next((num(o[k]) for k in ("vsWr", "vs_wr", "wr", "winRate", "win_rate", "winrate") if k in o and num(o[k]) is not None), None)
+            g = next((num(o[k]) for k in ("n", "games", "gamesPlayed", "play", "count") if k in o and num(o[k]) is not None), None)
+            if wr is None and g and num(o.get("wins")) is not None: wr = 100 * o["wins"] / g
+            if name and name != me and wr is not None and g:
+                wr = wr * 100 if wr <= 1 else wr
+                if 0 < wr < 100 and g >= MIN_GAMES and (name not in out or g > out[name][1]): out[name] = [round(wr, 2), int(g)]
+            for k, v in o.items(): walk(v, k)
+        elif isinstance(o, list):
+            # [wr, games] eller [games, wins] under en champ-nyckel
+            if key_hint is not None and idx.get(norm(str(key_hint))) and 2 <= len(o) <= 8 and all(num(x) is not None for x in o[:2]):
+                name = idx[norm(str(key_hint))]; a, b = o[0], o[1]
+                wr, g = (a, b) if a <= 100 and b > 100 else ((100 * b / a, a) if a > b and a > 100 else (None, None))
+                if name != me and wr and g and g >= MIN_GAMES and 0 < wr < 100: out.setdefault(name, [round(wr, 2), int(g)])
+            for v in o: walk(v, key_hint)
+    walk(j)
+    return out
+
+def ll_parse_html(text, idx, me, slug):
+    """Reserv: läs rader runt länkar /lol/<slug>/vs/<motståndare>/ – första % = WR, största heltal = games."""
+    out = {}
+    for mm in re.finditer(rf'/lol/{re.escape(slug)}/vs/([a-z0-9]+)/', text):
+        opp = idx.get(norm(mm.group(1)))
+        if not opp or opp == me or opp in out: continue
+        chunk = re.sub(r"<[^>]+>", " ", text[mm.end():mm.end() + 1200])
+        pct = re.search(r"(\d{1,2}(?:\.\d+)?)\s*%", chunk)
+        ints = [int(x.replace(",", "").replace("\u00a0", "")) for x in re.findall(r"\b\d{1,3}(?:[,\u00a0]\d{3})+\b|\b\d{2,6}\b", chunk)]
+        g = max(ints) if ints else 0
+        if pct and g >= MIN_GAMES: out[opp] = [round(float(pct.group(1)), 2), g]
+    return out
+
+def lolalytics(champs, idx, plan, tier, delay):
+    """plan = {champ: [lanes]} i OP.GG-format (top/jungle/mid/adc/support)."""
+    mu, fails, how, shown = {}, 0, {"json": 0, "html": 0}, 0
+    for name, lanes in plan.items():
+        slug = lol_slug(name, champs[name]["id"])
+        for lane in lanes:
+            ll = LL_LANE.get(lane, lane); got, err = {}, ""
+            for host in ("https://a1.lolalytics.com/mega/", "https://ax.lolalytics.com/mega/"):
+                try:
+                    r = S.get(host, params={"ep": "counter", "v": "1", "c": slug, "lane": ll, "tier": tier,
+                                            "queue": "ranked", "region": "all"}, headers=LL_UA, timeout=30)
+                    if r.status_code == 200 and r.text.strip().startswith(("{", "[")):
+                        j = r.json()
+                        if shown < 1: log("Lolalytics exempel (json):", first_text(j, 500)); shown += 1
+                        got = ll_parse_json(j, idx, name)
+                        if got: how["json"] += 1; break
+                    else: err = f"{host} {r.status_code}"
+                except Exception as ex: err = str(ex)[:150]
+            if not got:
+                try:
+                    r = S.get(f"https://lolalytics.com/lol/{slug}/counters/", params={"lane": ll, "tier": tier}, headers=LL_UA, timeout=30)
+                    if r.status_code == 200:
+                        got = ll_parse_html(r.text, idx, name, slug)
+                        if got: how["html"] += 1
+                    else: err = f"html {r.status_code}"
+                except Exception as ex: err = str(ex)[:150]
+            if got:
+                M = mu.setdefault(name, {})
+                for c, v in got.items():
+                    if c not in M or v[1] > M[c][1]: M[c] = v
+            else:
+                fails += 1
+                if fails <= 3: log("Lolalytics", name, lane, "inga matchups:", err)
+            time.sleep(delay)
+    n_mu = sum(len(v) for v in mu.values())
+    log(f"Lolalytics: matchups {n_mu} (för {len(mu)} champs), via json {how['json']}, html {how['html']}, {fails} misslyckade")
+    if not mu: raise RuntimeError(f"inga matchups ({fails} fel) – se exempel i loggen")
+    return mu
 
 # ---------- main ----------
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", default="ddragon,pro,opgg", help="lägg till ,lolalytics för att även skrapa lolalytics")
+    ap.add_argument("--only", default="ddragon,pro,opgg,lolalytics")
     ap.add_argument("--pro-days", type=int, default=60)
-    ap.add_argument("--rank", default="", help="lolalytics-rank, t.ex. diamond_plus. Tomt = sajtens standard")
+    ap.add_argument("--tier", default="emerald_plus", help="lolalytics-tier, t.ex. emerald_plus, diamond_plus")
     ap.add_argument("--delay", type=float, default=1.0, help="sekunder mellan anrop (var snäll mot sajterna)")
     a = ap.parse_args(); only = set(a.only.split(","))
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
@@ -437,24 +494,45 @@ def main():
             log(f"{key} misslyckades: {ex}"); out["sources"][key] = f"fel: {ex}"[:200]; return None
 
     og = run("opgg", lambda: opgg(champs, idx, a.delay))
-    ll = run("lolalytics", lambda: lolalytics(champs, idx, a.rank, a.delay))
+    # lolalytics hämtas för samma roller som OP.GG hittade (annars förra körningens main_role)
+    plan = {}
+    for n in champs:
+        lanes = (og[4].get(n) if og else None) or ([og[3][n]] if og and n in og[3] else None) or \
+                ([old.get("champions", {}).get(n, {}).get("main_role")] if old.get("champions", {}).get(n, {}).get("main_role") else [])
+        if lanes: plan[n] = lanes[:2]
+    ll = run("lolalytics", lambda: lolalytics(champs, idx, plan, a.tier, a.delay))
     pro = run("pro", lambda: leaguepedia(a.pro_days, idx))
 
-    # Slå ihop. Saknas en källa denna körning behålls förra körningens värden.
+    # Slå ihop. Saknas en källa denna körning behålls förra körningens värden för den källan.
     for n in C:
         prev = old.get("champions", {}).get(n, {})
         C[n]["pro"] = (pro or {}).get(n) if pro is not None else prev.get("pro")
-        sq = {}
-        if og: sq.update({f"opgg_{k}": v for k, v in og[0].get(n, {}).items()})
-        if ll: sq.update({f"lolalytics_{k}": v for k, v in ll[0].get(n, {}).items()})
-        C[n]["soloq"] = sq or prev.get("soloq")
-        cs = (og[1].get(n, []) if og else []) + (ll[1].get(n, []) if ll else [])
-        C[n]["counters"] = cs or prev.get("counters", [])
+        sq = {f"opgg_{k}": v for k, v in og[0].get(n, {}).items()} if og else \
+             {k: v for k, v in (prev.get("soloq") or {}).items() if k.startswith("opgg_")}
+        C[n]["soloq"] = sq
+        prev_mu = prev.get("mu") or {}
+        M = {}
+        for key, src in (("o", og[1] if og else None), ("l", ll)):
+            if src is not None:
+                for c, v in (src.get(n) or {}).items(): M.setdefault(c, {})[key] = v
+            else:
+                for c, v in prev_mu.items():
+                    if key in v: M.setdefault(c, {})[key] = v[key]
+        C[n]["mu"] = M
+        # counters/beats (äldre format) = sammanvägd WR, viktad efter games
+        comb = []
+        for c, v in M.items():
+            g = sum(x[1] for x in v.values())
+            if g: comb.append({"ch": c, "wr": round(sum(x[0] * x[1] for x in v.values()) / g, 2), "games": g, "src": "+".join(sorted(v))})
+        C[n]["counters"] = sorted([x for x in comb if x["wr"] < 50], key=lambda x: x["wr"])[:10]
+        C[n]["beats"] = sorted([x for x in comb if x["wr"] >= 50], key=lambda x: -x["wr"])[:10]
         C[n]["synergies"] = (og[2].get(n, []) if og else []) or prev.get("synergies", [])
-        C[n]["beats"] = (og[3].get(n, []) if og else []) or prev.get("beats", [])
-        C[n]["main_role"] = (og[4].get(n) if og else None) or prev.get("main_role")
+        C[n]["main_role"] = (og[3].get(n) if og else None) or prev.get("main_role")
         C[n] = {k: v for k, v in C[n].items() if v}
-    OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1))
+    tot = sum(len(c.get("mu", {})) for c in C.values())
+    both = sum(1 for c in C.values() for v in c.get("mu", {}).values() if len(v) == 2)
+    log(f"Matchups totalt: {tot}, varav {both} med båda källorna")
+    OUT.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     log(f"Skrev {OUT} – patch {out['patch']}, källor: {out['sources']}")
 
 if __name__ == "__main__":
