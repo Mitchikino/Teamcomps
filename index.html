@@ -528,6 +528,22 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 .wrh{cursor:help;text-decoration:underline dotted;text-underline-offset:2px;outline:none}
 .wrs,.ln small.wrs{display:none;font-size:10.5px;line-height:1.35;color:#9aa6b4;font-weight:400;letter-spacing:0;text-transform:none;white-space:normal}
 .wrh:hover .wrs,.wrh:focus .wrs,.ln:hover small.wrs,.ln:focus-within small.wrs{display:block}
+/* skärmdump -> draft */
+.tbtn{display:flex;gap:8px}
+.shothint{margin:-14px 0 18px;font-size:13px;color:var(--muted)}
+.shothint b{color:var(--ink);font-weight:600}
+.shotres{background:rgba(16,24,62,.92);border:1px solid #2f3d78;border-radius:6px;padding:10px 12px;margin:-10px 0 22px;font-size:14px}
+.shotres h4{margin:0 0 8px;font-size:15px}
+.shotres .sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 14px}
+.shotres .sr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-height:30px}
+.shotres .sr .q{white-space:nowrap}
+.shotres .sr em{color:var(--muted);font-style:normal;min-width:78px;font-size:12.5px}
+.shotres .sr img{width:24px;height:24px;border-radius:4px}
+.shotres .sr .q{color:var(--gold)}
+.shotres .sr button,.shotres .sa button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:5px;padding:2px 7px;cursor:pointer}
+.shotres .sr button.on{border-color:var(--gold);background:#3a3018}
+.shotres .sa{display:flex;gap:8px;margin-top:10px;align-items:center}
+.shotres .sa small{color:var(--muted)}
 </style>
 </head>
 <body>
@@ -538,7 +554,7 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
   <h1>Teamcomps</h1>
   <nav class="tabs" aria-label="Flikar"><a href="#draft" data-tab="draft">Draft</a><a href="#spelare" data-tab="spelare">Spelare</a><a href="#karta" data-tab="karta">Karta</a></nav>
   <div id="tab-draft">
-  <p class="intro">Skriv in bans och picks. Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
+  <p class="intro">Skriv in bans och picks – eller klistra in en skärmdump av champ select (Ctrl+V). Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
 
   <section class="board" aria-label="Draft">
     <aside class="btcol" aria-label="Ban-tips"><div class="bt" id="bantips"></div></aside>
@@ -561,8 +577,10 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
   </section>
   <div class="tools">
     <span class="note" id="count">Inga bans eller picks</span>
-    <img class="deco bard" src="bard.webp" alt="" aria-hidden="true"><button type="button" id="reset">Rensa allt</button>
+    <img class="deco bard" src="bard.webp" alt="" aria-hidden="true"><span class="tbtn"><button type="button" id="shot" title="Ctrl+V med en skärmdump av champ select fungerar också">📋 Skärmdump</button><input type="file" id="shotf" accept="image/*" hidden><button type="button" id="reset">Rensa allt</button></span>
   </div>
+  <p class="shothint">📋 <b>Skärmdump av champ select:</b> ta bild på <b>bara LoL-fönstret</b> – Alt+PrtSc, eller Win+Shift+S och välj <b>Fönster</b>-läget (inte rektangel) och klicka på klienten. Tryck sedan Ctrl+V här på sidan.</p>
+  <div class="shotres" id="shotres" hidden></div>
 
   <div class="next" aria-live="polite"><h3>Tips: nästa pick<span id="nxsub">klicka för att låsa · tar hänsyn till fiendens picks</span></h3><div class="nxr" id="nxr" role="group" aria-label="Roll för tips"></div><div class="nx" id="nx"></div><p class="nxh" id="nicheh" style="display:none">Nisch / counterpicks mot deras picks</p><div class="nx" id="niche"></div><p class="last" id="last"></p></div>
   <ol class="comps" id="list"></ol>
@@ -1222,6 +1240,81 @@ document.getElementById("reset").addEventListener("click",()=>{
 });
 
 build(); load(); render();
+
+
+// ---- Skärmdump av champ select -> bans/picks (bildigenkänning + OCR, allt i webbläsaren) ----
+// Koordinater mätta på LoL-klienten i 1596x889, skalas till skärmdumpens storlek.
+const SHOT={W:1596,H:889,banR:16,picR:33,
+  bans:[38,88,138,188,238,1364,1414,1464,1514,1564],banY:50,
+  allyX:108,enemyX:1530,rowY:k=>163+100*k,
+  allyName:k=>[155,132+100*k,340,150+100*k],allyRole:k=>[155,152+100*k,300,172+100*k],enemyName:k=>[1270,142+100*k,1485,162+100*k]};
+const SN=20; let SHOTT=null, OCRW=null, SHOTROWS=[];
+function featOf(src,sx,sy,sw,sh){
+  const c=document.createElement("canvas"); c.width=c.height=SN; const g=c.getContext("2d",{willReadFrequently:true});
+  g.imageSmoothingEnabled=true; g.imageSmoothingQuality="high"; g.drawImage(src,sx,sy,sw,sh,0,0,SN,SN);
+  const d=g.getImageData(0,0,SN,SN).data, v=[];
+  for(let y=0;y<SN;y++) for(let x=0;x<SN;x++){ if((x-SN/2+.5)**2+(y-SN/2+.5)**2>(SN*.42)**2) continue; const i=(y*SN+x)*4; v.push(d[i],d[i+1],d[i+2]); }
+  const m=v.reduce((t,a)=>t+a,0)/v.length; let n=0; for(let i=0;i<v.length;i++){ v[i]-=m; n+=v[i]*v[i]; } n=Math.sqrt(n)||1;
+  return Float32Array.from(v,a=>a/n);
+}
+function shotTemplates(){ if(SHOTT) return SHOTT;
+  SHOTT=Promise.all(CHAMPS.map(ch=>new Promise(res=>{ const im=new Image(); im.crossOrigin="anonymous";
+    im.onload=()=>{ try{ const s=im.naturalWidth; res([ch,[1,1.12,1.25,1.4].map(z=>{ const c=s/z,o=(s-c)/2; return featOf(im,o,o,c,c); })]); }catch(e){ res(null); } };
+    im.onerror=()=>res(null); im.src=iconUrl(ch); }))).then(l=>Object.fromEntries(l.filter(Boolean)));
+  return SHOTT; }
+function matchIcon(f,T){ const out=[]; for(const ch in T){ let b=-1; for(const t of T[ch]){ let s=0; for(let i=0;i<f.length;i++) s+=f[i]*t[i]; if(s>b) b=s; } out.push({ch,s:b}); }
+  return out.sort((a,b)=>b.s-a.s).slice(0,3); }
+async function ocrWorker(){ if(OCRW) return OCRW;
+  if(!window.Tesseract) await new Promise((res,rej)=>{ const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
+  const w=await Tesseract.createWorker("eng"); await w.setParameters({tessedit_pageseg_mode:"7"}); OCRW=w; return w; }
+function txtCanvas(img,[x1,y1,x2,y2],fx,fy){
+  const c=document.createElement("canvas"); c.width=Math.round((x2-x1)*3); c.height=Math.round((y2-y1)*3); const g=c.getContext("2d",{willReadFrequently:true});
+  g.drawImage(img,x1*fx,y1*fy,(x2-x1)*fx,(y2-y1)*fy,0,0,c.width,c.height);
+  const d=g.getImageData(0,0,c.width,c.height); for(let i=0;i<d.data.length;i+=4){ const l=.299*d.data[i]+.587*d.data[i+1]+.114*d.data[i+2]; d.data[i]=d.data[i+1]=d.data[i+2]=l>105?0:255; }
+  g.putImageData(d,0,0); return c; }
+function lev(a,b){ const d=Array.from({length:b.length+1},(_,i)=>i); for(let i=1;i<=a.length;i++){ let p=d[0]; d[0]=i; for(let j=1;j<=b.length;j++){ const t=d[j]; d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1)); p=t; } } return d[b.length]; }
+function champFromText(t){ const q=norm(t||""); if(q.length<3) return null; if(ALIAS[q]) return ALIAS[q];
+  let best=null,bd=99; for(const c of CHAMPS){ const d=lev(q,norm(c)); if(d<bd){ bd=d; best=c; } }
+  return best&&bd<=Math.max(1,Math.floor(norm(best).length*.25))?best:null; }
+function roleFromText(t){ const q=norm(t||""); const m=[["top",0],["jungle",1],["mid",2],["bottom",3],["bot",3],["adc",3],["support",4],["utility",4]].find(([k])=>q.startsWith(k)); return m?m[1]:-1; }
+async function readShot(blob){
+  const box=document.getElementById("shotres"); box.hidden=false; box.innerHTML="<h4>Läser skärmdump…</h4>";
+  let img; try{ img=await createImageBitmap(blob); }catch(e){ box.innerHTML="<h4>Kunde inte läsa bilden.</h4>"; return; }
+  const fx=img.width/SHOT.W, fy=img.height/SHOT.H, warn=[];
+  if(Math.abs(img.width/img.height-SHOT.W/SHOT.H)>.06) warn.push("Bilden verkar inte vara bara LoL-fönstret. Ta om den med Alt+PrtSc eller Win+Shift+S i Fönster-läget.");
+  const [T,W]=await Promise.all([shotTemplates().catch(()=>({})), ocrWorker().catch(()=>null)]);
+  if(!Object.keys(T).length) warn.push("Champ-ikonerna gick inte att ladda – bara namn läses.");
+  if(!W) warn.push("Textläsningen (OCR) gick inte att ladda – bara ikoner används.");
+  const icon=(x,y,r)=>Object.keys(T).length?matchIcon(featOf(img,(x-r)*fx,(y-r)*fy,2*r*fx,2*r*fy),T):[];
+  const ocr=async b=>{ if(!W) return ""; try{ return (await W.recognize(txtCanvas(img,b,fx,fy))).data.text.trim(); }catch(e){ return ""; } };
+  const rows=[];
+  SHOT.bans.forEach((x,i)=>{ const m=icon(x,SHOT.banY,SHOT.banR); if(!m.length||m[0].s<.38) return;
+    rows.push({idx:i,label:i<5?`GD ban ${i+1}`:`Fiende ban ${i-4}`,ch:m[0].s>=.65&&m[0].s-(m[1]?m[1].s:0)>=.08?m[0].ch:null,alts:m}); });
+  const al=[];
+  for(let k=0;k<5;k++){ const name=champFromText(await ocr(SHOT.allyName(k))), role=roleFromText(await ocr(SHOT.allyRole(k))), m=icon(SHOT.allyX,SHOT.rowY(k),SHOT.picR);
+    const ch=name||(m[0]&&m[0].s>=.85?m[0].ch:null); if(ch||(!W&&m[0]&&m[0].s>=.6)) al.push({ch,role,alts:m}); }
+  const used=new Set(al.map(a=>a.role).filter(r=>r>=0)), noRole=al.filter(a=>a.role<0);
+  const guess=enemyRoles(noRole.map(a=>a.ch).filter(Boolean));
+  noRole.forEach(a=>{ let r=a.ch!=null?guess[a.ch]:undefined; if(r===undefined||used.has(r)) r=[0,1,2,3,4].find(x=>!used.has(x)); if(r!==undefined){ a.role=r; used.add(r); } });
+  al.filter(a=>a.role>=0).forEach(a=>rows.push({idx:10+a.role,label:`GD ${R[a.role]}`,ch:a.ch,alts:a.alts}));
+  for(let k=0;k<5;k++){ const name=champFromText(await ocr(SHOT.enemyName(k))), m=icon(SHOT.enemyX,SHOT.rowY(k),SHOT.picR);
+    const ch=name||(m[0]&&m[0].s>=.85?m[0].ch:null); if(ch||(!W&&m[0]&&m[0].s>=.6)) rows.push({idx:15+k,label:`Fiende pick ${k+1}`,ch,alts:m}); }
+  rows.sort((a,b)=>a.idx-b.idx); SHOTROWS=rows; drawShot(warn);
+}
+function drawShot(warn){
+  const box=document.getElementById("shotres"), rows=SHOTROWS;
+  if(!rows.length){ box.innerHTML=`<h4>Hittade inga bans eller picks.</h4>${(warn||[]).map(w=>`<small>${w}</small><br>`).join("")}<div class="sa"><button type="button" data-a="x">Stäng</button></div>`; }
+  else box.innerHTML=`<h4>Hittat i skärmdumpen – kolla och tryck Fyll i</h4>${(warn||[]).map(w=>`<small>⚠ ${w}</small><br>`).join("")}<div class="sg">${rows.map((r,i)=>`<div class="sr"><em>${r.label}</em>${r.ch?`<img src="${iconUrl(r.ch)}" alt=""><b>${r.ch}</b>`:'<span class="q">? välj:</span>'}${(!r.ch?r.alts:[]).map(a=>`<button type="button" data-i="${i}" data-c="${a.ch}">${a.ch}</button>`).join("")}${r.ch?`<button type="button" data-i="${i}" data-c="">✕</button>`:""}</div>`).join("")}</div><div class="sa"><button type="button" data-a="ok">Fyll i</button><button type="button" data-a="x">Avbryt</button><small>Osäkra rutor (?) fylls inte i förrän du valt.</small></div>`;
+  box.querySelectorAll("button[data-i]").forEach(b=>b.addEventListener("click",()=>{ SHOTROWS[+b.dataset.i].ch=b.dataset.c||null; drawShot(warn); }));
+  box.querySelectorAll("button[data-a]").forEach(b=>b.addEventListener("click",()=>{
+    if(b.dataset.a==="ok"){ const seen=new Set(); SHOTROWS.forEach(r=>{ if(!r.ch||seen.has(r.ch)) return; seen.add(r.ch); const sl=document.querySelector(`.slot[data-idx="${r.idx}"]`); if(sl) sl._set(r.ch); }); save(); render(); }
+    box.hidden=true; box.innerHTML=""; }));
+}
+document.getElementById("shot").addEventListener("click",()=>document.getElementById("shotf").click());
+document.getElementById("shotf").addEventListener("change",e=>{ const f=e.target.files[0]; if(f) readShot(f); e.target.value=""; });
+document.addEventListener("paste",e=>{ if(document.getElementById("tab-draft").hidden) return; const it=[...((e.clipboardData&&e.clipboardData.items)||[])].find(i=>i.type.startsWith("image/")); if(!it) return; e.preventDefault(); readShot(it.getAsFile()); });
+const tabDraft=document.getElementById("tab-draft"); tabDraft.addEventListener("dragover",e=>{ if([...e.dataTransfer.items].some(i=>i.type.startsWith("image/"))) e.preventDefault(); });
+tabDraft.addEventListener("drop",e=>{ const f=[...e.dataTransfer.files].find(f=>f.type.startsWith("image/")); if(!f) return; e.preventDefault(); readShot(f); });
 
 // ---- Ladda data.json (skapas av scripts/update_data.py) ----
 function applyData(){
