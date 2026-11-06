@@ -529,25 +529,23 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 .wrs,.ln small.wrs{display:none;font-size:10.5px;line-height:1.35;color:#9aa6b4;font-weight:400;letter-spacing:0;text-transform:none;white-space:normal}
 .wrh:hover .wrs,.wrh:focus .wrs,.ln:hover small.wrs,.ln:focus-within small.wrs{display:block}
 /* skärmdump -> draft */
-.tbtn{display:flex;gap:8px}
-.shothint{margin:-14px 0 18px;font-size:13px;color:var(--muted)}
-.shothint b{color:var(--ink);font-weight:600}
-.shotres{background:rgba(16,24,62,.92);border:1px solid #2f3d78;border-radius:6px;padding:10px 12px;margin:-10px 0 22px;font-size:14px}
-.shotres h4{margin:0 0 8px;font-size:15px}
-.shotres .sg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 14px}
-.shotres .sr{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;min-height:30px}
-.shotres .sr .q{white-space:nowrap}
-.shotres .sr em{color:var(--muted);font-style:normal;min-width:78px;font-size:12.5px}
-.shotres .sr img{width:24px;height:24px;border-radius:4px}
-.shotres .sr .q{color:var(--gold)}
-.shotres .sr button,.shotres .sa button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:5px;padding:2px 7px;cursor:pointer}
-.shotres .sr button.on{border-color:var(--gold);background:#3a3018}
-.shotres .sa{display:flex;gap:8px;margin-top:10px;align-items:center}
-.shotres .sa small{color:var(--muted)}
+
+.shotbox{border:2px dashed #3d4c8f;border-radius:8px;padding:12px 14px;margin:0 0 14px;cursor:pointer;font-size:14px;color:var(--muted);background:rgba(16,24,62,.6);outline:none;position:relative}
+.shotbox b{color:var(--ink);font-size:15px}
+.shotbox:hover,.shotbox:focus{border-color:#e7a6ff;background:rgba(40,30,80,.7)}
+.shotbox:focus b::after{content:"  ✓ redo";color:#e7a6ff;font-weight:600}
+.shotbox.busy{border-style:solid;border-color:var(--gold)}
+.shotbox .sst{display:block;margin-top:4px;color:var(--ink);font-size:13px}
+.shotbox .sst:empty{display:none}
+.shotbox .sfile{position:absolute;right:10px;top:10px;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:5px;padding:2px 8px;cursor:pointer}
 /* dropdowns ovanpå allt: lyft rutan man hovrar över över grannarna */
 .comp,.board .side,.btcol,.lncol,.next,.aimcol{position:relative;z-index:1}
 .comp:hover,.comp:focus-within,.board .side:hover,.board .side:focus-within,.btcol:hover,.lncol:hover,.next:hover,.next:focus-within,.aimcol:hover{z-index:60}
 .tpm,.dd{z-index:100}
+/* comps: dubbelt så höga champ-rutor (samma bredd) */
+#list .ch.crh{min-height:61px;gap:8px}
+#list .crh .ic.xs{width:40px;height:40px;font-size:40px;border-radius:4px}
+#list .crh .rico{width:22px;height:22px}
 </style>
 </head>
 <body>
@@ -559,6 +557,11 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
   <nav class="tabs" aria-label="Flikar"><a href="#draft" data-tab="draft">Draft</a><a href="#spelare" data-tab="spelare">Spelare</a><a href="#karta" data-tab="karta">Karta</a></nav>
   <div id="tab-draft">
   <p class="intro">Skriv in bans och picks – eller klistra in en skärmdump av champ select (Ctrl+V). Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
+
+  <div class="shotbox" id="shotbox" tabindex="0" role="button" aria-label="Klistra in skärmdump av champ select">
+    <b>📋 Klicka här och tryck Ctrl+V</b> <span>– skärmdump av <u>bara LoL-fönstret</u> (Alt+PrtSc, eller Win+Shift+S → Fönster). Fyller i bans och picks automatiskt.</span>
+    <span class="sst" id="shotst"></span><button type="button" class="sfile" id="shotfb">välj fil</button><input type="file" id="shotf" accept="image/*" hidden>
+  </div>
 
   <section class="board" aria-label="Draft">
     <aside class="btcol" aria-label="Ban-tips"><div class="bt" id="bantips"></div></aside>
@@ -581,10 +584,8 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
   </section>
   <div class="tools">
     <span class="note" id="count">Inga bans eller picks</span>
-    <img class="deco bard" src="bard.webp" alt="" aria-hidden="true"><span class="tbtn"><button type="button" id="shot" title="Ctrl+V med en skärmdump av champ select fungerar också">📋 Skärmdump</button><input type="file" id="shotf" accept="image/*" hidden><button type="button" id="reset">Rensa allt</button></span>
+    <img class="deco bard" src="bard.webp" alt="" aria-hidden="true"><button type="button" id="reset">Rensa allt</button>
   </div>
-  <p class="shothint">📋 <b>Skärmdump av champ select:</b> ta bild på <b>bara LoL-fönstret</b> – Alt+PrtSc, eller Win+Shift+S och välj <b>Fönster</b>-läget (inte rektangel) och klicka på klienten. Tryck sedan Ctrl+V här på sidan.</p>
-  <div class="shotres" id="shotres" hidden></div>
 
   <div class="next" aria-live="polite"><h3>Tips: nästa pick<span id="nxsub">klicka för att låsa · tar hänsyn till fiendens picks</span></h3><div class="nxr" id="nxr" role="group" aria-label="Roll för tips"></div><div class="nx" id="nx"></div><p class="nxh" id="nicheh" style="display:none">Nisch / counterpicks mot deras picks</p><div class="nx" id="niche"></div><p class="last" id="last"></p></div>
   <ol class="comps" id="list"></ol>
@@ -1252,7 +1253,7 @@ const SHOT={W:1596,H:889,banR:16,picR:33,
   bans:[38,88,138,188,238,1364,1414,1464,1514,1564],banY:50,
   allyX:108,enemyX:1530,rowY:k=>163+100*k,
   allyName:k=>[155,132+100*k,340,150+100*k],allyRole:k=>[155,152+100*k,300,172+100*k],enemyName:k=>[1270,142+100*k,1485,162+100*k]};
-const SN=20; let SHOTT=null, OCRW=null, SHOTROWS=[];
+const SN=20; let SHOTT=null, OCRW=null;
 function featOf(src,sx,sy,sw,sh){
   const c=document.createElement("canvas"); c.width=c.height=SN; const g=c.getContext("2d",{willReadFrequently:true});
   g.imageSmoothingEnabled=true; g.imageSmoothingQuality="high"; g.drawImage(src,sx,sy,sw,sh,0,0,SN,SN);
@@ -1281,14 +1282,14 @@ function champFromText(t){ const q=norm(t||""); if(q.length<3) return null; if(A
   let best=null,bd=99; for(const c of CHAMPS){ const d=lev(q,norm(c)); if(d<bd){ bd=d; best=c; } }
   return best&&bd<=Math.max(1,Math.floor(norm(best).length*.25))?best:null; }
 function roleFromText(t){ const q=norm(t||""); const m=[["top",0],["jungle",1],["mid",2],["bottom",3],["bot",3],["adc",3],["support",4],["utility",4]].find(([k])=>q.startsWith(k)); return m?m[1]:-1; }
+const shotSt=(t,busy)=>{ document.getElementById("shotst").textContent=t; document.getElementById("shotbox").classList.toggle("busy",!!busy); };
+function clearSlot(i){ const sl=document.querySelector(`.slot[data-idx="${i}"]`); bans[i]=null; if(!sl) return; const inp=sl.querySelector("input"); inp.value=""; inp.readOnly=false; sl.classList.remove("filled"); }
 async function readShot(blob){
-  const box=document.getElementById("shotres"); box.hidden=false; box.innerHTML="<h4>Läser skärmdump…</h4>";
-  let img; try{ img=await createImageBitmap(blob); }catch(e){ box.innerHTML="<h4>Kunde inte läsa bilden.</h4>"; return; }
+  shotSt("Läser skärmdumpen…",true);
+  let img; try{ img=await createImageBitmap(blob); }catch(e){ shotSt("Kunde inte läsa bilden."); return; }
   const fx=img.width/SHOT.W, fy=img.height/SHOT.H, warn=[];
-  if(Math.abs(img.width/img.height-SHOT.W/SHOT.H)>.06) warn.push("Bilden verkar inte vara bara LoL-fönstret. Ta om den med Alt+PrtSc eller Win+Shift+S i Fönster-läget.");
+  if(Math.abs(img.width/img.height-SHOT.W/SHOT.H)>.06){ shotSt("Bilden är inte bara LoL-fönstret – ta om den med Alt+PrtSc eller Win+Shift+S → Fönster."); return; }
   const [T,W]=await Promise.all([shotTemplates().catch(()=>({})), ocrWorker().catch(()=>null)]);
-  if(!Object.keys(T).length) warn.push("Champ-ikonerna gick inte att ladda – bara namn läses.");
-  if(!W) warn.push("Textläsningen (OCR) gick inte att ladda – bara ikoner används.");
   const icon=(x,y,r)=>Object.keys(T).length?matchIcon(featOf(img,(x-r)*fx,(y-r)*fy,2*r*fx,2*r*fy),T):[];
   const ocr=async b=>{ if(!W) return ""; try{ return (await W.recognize(txtCanvas(img,b,fx,fy))).data.text.trim(); }catch(e){ return ""; } };
   const rows=[];
@@ -1303,18 +1304,17 @@ async function readShot(blob){
   al.filter(a=>a.role>=0).forEach(a=>rows.push({idx:10+a.role,label:`GD ${R[a.role]}`,ch:a.ch,alts:a.alts}));
   for(let k=0;k<5;k++){ const name=champFromText(await ocr(SHOT.enemyName(k))), m=icon(SHOT.enemyX,SHOT.rowY(k),SHOT.picR);
     const ch=name||(m[0]&&m[0].s>=.85?m[0].ch:null); if(ch||(!W&&m[0]&&m[0].s>=.6)) rows.push({idx:15+k,label:`Fiende pick ${k+1}`,ch,alts:m}); }
-  rows.sort((a,b)=>a.idx-b.idx); SHOTROWS=rows; drawShot(warn);
+  // fyll i säkra träffar direkt – skriver över det som stod i rutan, och flyttar champen om den låg i fel ruta
+  const ok=rows.filter(r=>r.ch), seen=new Set();
+  ok.forEach(r=>{ if(seen.has(r.ch)) return; seen.add(r.ch);
+    bans.forEach((b,i)=>{ if(b===r.ch&&i!==r.idx) clearSlot(i); });
+    clearSlot(r.idx); const sl=document.querySelector(`.slot[data-idx="${r.idx}"]`); if(sl) sl._set(r.ch); });
+  save(); render();
+  const miss=rows.filter(r=>!r.ch).length;
+  shotSt(seen.size?`Klart – fyllde i ${seen.size} champs${miss?`, ${miss} osäkra hoppades över`:""}.`:"Hittade inga champs – är det en skärmdump av champ select?");
 }
-function drawShot(warn){
-  const box=document.getElementById("shotres"), rows=SHOTROWS;
-  if(!rows.length){ box.innerHTML=`<h4>Hittade inga bans eller picks.</h4>${(warn||[]).map(w=>`<small>${w}</small><br>`).join("")}<div class="sa"><button type="button" data-a="x">Stäng</button></div>`; }
-  else box.innerHTML=`<h4>Hittat i skärmdumpen – kolla och tryck Fyll i</h4>${(warn||[]).map(w=>`<small>⚠ ${w}</small><br>`).join("")}<div class="sg">${rows.map((r,i)=>`<div class="sr"><em>${r.label}</em>${r.ch?`<img src="${iconUrl(r.ch)}" alt=""><b>${r.ch}</b>`:'<span class="q">? välj:</span>'}${(!r.ch?r.alts:[]).map(a=>`<button type="button" data-i="${i}" data-c="${a.ch}">${a.ch}</button>`).join("")}${r.ch?`<button type="button" data-i="${i}" data-c="">✕</button>`:""}</div>`).join("")}</div><div class="sa"><button type="button" data-a="ok">Fyll i</button><button type="button" data-a="x">Avbryt</button><small>Osäkra rutor (?) fylls inte i förrän du valt.</small></div>`;
-  box.querySelectorAll("button[data-i]").forEach(b=>b.addEventListener("click",()=>{ SHOTROWS[+b.dataset.i].ch=b.dataset.c||null; drawShot(warn); }));
-  box.querySelectorAll("button[data-a]").forEach(b=>b.addEventListener("click",()=>{
-    if(b.dataset.a==="ok"){ const seen=new Set(); SHOTROWS.forEach(r=>{ if(!r.ch||seen.has(r.ch)) return; seen.add(r.ch); const sl=document.querySelector(`.slot[data-idx="${r.idx}"]`); if(sl) sl._set(r.ch); }); save(); render(); }
-    box.hidden=true; box.innerHTML=""; }));
-}
-document.getElementById("shot").addEventListener("click",()=>document.getElementById("shotf").click());
+document.getElementById("shotfb").addEventListener("click",e=>{ e.stopPropagation(); document.getElementById("shotf").click(); });
+document.getElementById("shotbox").addEventListener("click",()=>document.getElementById("shotbox").focus());
 document.getElementById("shotf").addEventListener("change",e=>{ const f=e.target.files[0]; if(f) readShot(f); e.target.value=""; });
 document.addEventListener("paste",e=>{ if(document.getElementById("tab-draft").hidden) return; const it=[...((e.clipboardData&&e.clipboardData.items)||[])].find(i=>i.type.startsWith("image/")); if(!it) return; e.preventDefault(); readShot(it.getAsFile()); });
 const tabDraft=document.getElementById("tab-draft"); tabDraft.addEventListener("dragover",e=>{ if([...e.dataTransfer.items].some(i=>i.type.startsWith("image/"))) e.preventDefault(); });
