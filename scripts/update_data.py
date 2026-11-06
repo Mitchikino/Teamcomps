@@ -398,7 +398,11 @@ def ll_parse_json(j, idx, me):
             for k in ("cid", "championId", "champion_id", "champion", "c", "id", "name"):
                 if k in o and idx.get(norm(str(o[k]))): name = idx[norm(str(o[k]))]; break
             if not name and key_hint is not None and idx.get(norm(str(key_hint))): name = idx[norm(str(key_hint))]
-            wr = next((num(o[k]) for k in ("vsWr", "vs_wr", "wr", "winRate", "win_rate", "winrate") if k in o and num(o[k]) is not None), None)
+            wr = None
+            for k in ("vsWr", "vs_wr"):  # Lolalytics: vsWr = MOTSTÅNDARENS WR mot champen -> vänd
+                if k in o and num(o[k]) is not None: wr = 100 - (o[k] * 100 if o[k] <= 1 else o[k]); break
+            if wr is None:
+                wr = next((num(o[k]) for k in ("wr", "winRate", "win_rate", "winrate") if k in o and num(o[k]) is not None), None)
             g = next((num(o[k]) for k in ("n", "games", "gamesPlayed", "play", "count") if k in o and num(o[k]) is not None), None)
             if wr is None and g and num(o.get("wins")) is not None: wr = 100 * o["wins"] / g
             if name and name != me and wr is not None and g:
@@ -413,6 +417,12 @@ def ll_parse_json(j, idx, me):
                 if name != me and wr and g and g >= MIN_GAMES and 0 < wr < 100: out.setdefault(name, [round(wr, 2), int(g)])
             for v in o: walk(v, key_hint)
     walk(j)
+    # Kontroll: "strong"-counters ska slå champen (champens WR < 50). Är det tvärtom är listan spegelvänd.
+    strong = []
+    for lst in find_lists(j, ["strong"]): strong += [x for x in lst if not isinstance(x, (dict, list))]
+    sw = [out[idx[norm(str(c))]][0] for c in strong if idx.get(norm(str(c))) in out]
+    if sw and sum(sw) / len(sw) > 50:
+        for v in out.values(): v[0] = round(100 - v[0], 2)
     return out
 
 def ll_parse_html(text, idx, me, slug):
