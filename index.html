@@ -524,6 +524,10 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 
 .board{position:relative;z-index:20}
 .next{position:relative;z-index:1}
+/* WR-källor vid hover */
+.wrh{cursor:help;text-decoration:underline dotted;text-underline-offset:2px;outline:none}
+.wrs,.ln small.wrs{display:none;font-size:10.5px;line-height:1.35;color:#9aa6b4;font-weight:400;letter-spacing:0;text-transform:none;white-space:normal}
+.wrh:hover .wrs,.wrh:focus .wrs,.ln:hover small.wrs,.ln:focus-within small.wrs{display:block}
 </style>
 </head>
 <body>
@@ -618,20 +622,22 @@ const ALIAS={j4:"Jarvan IV",jarvan:"Jarvan IV",mundo:"Dr. Mundo",tf:"Twisted Fat
 
 const R=["Top","Jgl","Mid","ADC","Sup"];
 const COMPS=[
- {n:"Wombo",k:"shock",t:"Engage / teamfight",s:5,w:"Maokai, J4 och Rakan låser in – Ori-boll och MF R städar. Fighta i chokes runt objektiv.",
-  p:[["Maokai","Sion","Ambessa"],["Jarvan IV","Sejuani","Vi"],["Orianna","Galio","Lissandra"],["Miss Fortune","Jhin","Samira"],["Rakan","Renata Glasc","Poppy"]]},
- {n:"Full Dive",k:"dive",t:"Dive",s:5,w:"Dyk backline med Vi R, Akali och Kai'Sa R. Snöbolla tidigt, slå när motståndaren står isär.",
-  p:[["Ambessa","Pantheon","Zaahen"],["Vi","Elise","Kha'Zix"],["Akali","Sylas","Yone"],["Kai'Sa","Xayah","Nilah"],["Pyke","Rakan","Thresh"]]},
- {n:"Catch",k:"pick",t:"Pick",s:5,w:"Nocturne R släcker vision, Ashe R, Syndra E och Bard Q fångar en – ta objektivet 5 mot 4.",
-  p:[["Pantheon","Zaahen","Ambessa"],["Nocturne","Kha'Zix","Elise"],["Syndra","Lissandra","Ahri"],["Ashe","Caitlyn","Varus"],["Bard","Thresh","Pyke"]]},
- {n:"Artilleri",k:"poke",t:"Poke / siege",s:5,w:"Xerath, Ezreal och Karma pokear ner – riv torn och ge aldrig en jämn 5v5.",
-  p:[["Dr. Mundo","Sion","Maokai"],["Cho'Gath","Sejuani","Udyr"],["Xerath","Ziggs","Viktor","Mel"],["Ezreal","Varus","Corki","Caitlyn"],["Karma","Milio","Lulu"]]},
- {n:"Hyperbunker",k:"prot",t:"Protect the carry",s:5,w:"Skala till 3 items, Lulu och Lissandra skyddar Kog'Maw – fighta front-to-back.",
-  p:[["Sion","Dr. Mundo","Maokai"],["Sejuani","Cho'Gath","Jarvan IV"],["Lissandra","Orianna","Galio"],["Kog'Maw","Jinx","Yunara","Smolder"],["Lulu","Milio","Renata Glasc"]]},
+ {n:"Wombo",k:"shock",t:"Engage / teamfight",s:5,w:"J4 EQ eller Rakan W startar, Ori-bollen sitter på engagern – Ori R + Jhin W städar. Fighta i chokes runt drake/Baron.",
+  p:[["Ambessa","Sion","Maokai"],["Jarvan IV","Vi","Sejuani"],["Orianna","Galio","Lissandra"],["Jhin","Ashe","Miss Fortune"],["Rakan","Renata Glasc","Poppy"]]},
+ {n:"Front-to-back",k:"shock",t:"Kontroll / teamfight",s:5,w:"Cassio/Syndra zonar, Renata R vänder deras frontline mot dem själva. Ta fighten där de måste gå rakt in.",
+  p:[["Sion","Ambessa","Maokai"],["Jarvan IV","Vi","Sejuani"],["Cassiopeia","Syndra","Viktor"],["Jhin","Yunara","Ezreal"],["Renata Glasc","Lulu","Karma"]]},
+ {n:"Full Dive",k:"dive",t:"Dive",s:5,w:"Vi R låser backline, Galio R och Ambessa följer. Snöbolla tidigt och dyk när de står isär.",
+  p:[["Ambessa","Zaahen","Pantheon"],["Vi","Jarvan IV","Kha'Zix"],["Galio","Akali","Sylas","Yone"],["Kalista","Kai'Sa","Lucian"],["Rakan","Poppy","Pyke"]]},
+ {n:"Catch",k:"pick",t:"Pick",s:5,w:"Nocturne R släcker vision, Bard Q/Ashe R/Syndra E fångar en – ta objektivet 5 mot 4.",
+  p:[["Pantheon","Zaahen","Ambessa"],["Nocturne","Elise","Kha'Zix"],["Syndra","Ryze","Lissandra"],["Ashe","Ezreal","Caitlyn"],["Bard","Renata Glasc","Thresh"]]},
+ {n:"Artilleri",k:"poke",t:"Poke / siege",s:5,w:"Viktor, Ezreal och Karma pokear ner – riv torn och ge aldrig en jämn 5v5.",
+  p:[["Sion","Maokai","Dr. Mundo"],["Jarvan IV","Sejuani","Cho'Gath"],["Viktor","Ziggs","Mel","Xerath"],["Ezreal","Corki","Caitlyn","Varus"],["Karma","Lulu","Milio"]]},
+ {n:"Hyperbunker",k:"prot",t:"Protect the carry",s:5,w:"Skala till 3 items, Lulu + Ori-sköld håller Yunara vid liv – fighta front-to-back.",
+  p:[["Sion","Maokai","Dr. Mundo"],["Sejuani","Jarvan IV","Cho'Gath"],["Orianna","Lissandra","Galio"],["Yunara","Jinx","Kog'Maw","Zeri"],["Lulu","Milio","Renata Glasc"]]},
  {n:"1-3-1",k:"split",t:"Split push",s:5,w:"Zaahen splittar top, Ryze R tar laget dit motståndaren svarar. Ta torn, inte fights.",
-  p:[["Zaahen","Ambessa","Pantheon"],["Warwick","Udyr","Vi"],["Ryze","Taliyah","Yone"],["Lucian","Tristana","Draven"],["Nami","Karma","Milio"]]},
+  p:[["Zaahen","Ambessa","Pantheon"],["Vi","Kha'Zix","Udyr","Warwick"],["Ryze","Taliyah","Aurora"],["Lucian","Sivir","Tristana"],["Nami","Karma","Milio"]]},
  {n:"Early Tempo",k:"dive",t:"Early skirmish",s:5,w:"Kalista + Renata vinner lane, Elise och Taliyah roamar lvl 3–6. Ha 3 000 guld vid 15 min.",
-  p:[["Pantheon","Ambessa","Zaahen"],["Elise","Kha'Zix","Jarvan IV"],["Taliyah","Galio","Sylas"],["Kalista","Draven","Lucian"],["Renata Glasc","Nami","Rakan"]]}
+  p:[["Pantheon","Ambessa","Zaahen"],["Elise","Jarvan IV","Vi"],["Taliyah","Syndra","Galio"],["Kalista","Lucian","Draven"],["Renata Glasc","Nami","Rakan"]]}
 ];
 const POOL=new Set(COMPS.flatMap(c=>c.p.flat()));
 
@@ -667,7 +673,8 @@ function build(){
       const slot=document.createElement("div"); slot.className="slot "+(isPick?"pick":"ban");
       slot.innerHTML=`<span class="pf" aria-hidden="true"></span>${isPick?`<span class="rl">${ourPick?R[k]:k+1}</span>`:""}<input type="text" autocomplete="off" spellcheck="false" placeholder="${ph}" aria-label="${who} ${isPick?'pick':'ban'} ${ourPick?R[k]:k+1}"><button class="x" type="button" aria-label="Ta bort">×</button>`;
       row.appendChild(slot);
-      const inp=slot.querySelector("input"); inp.dataset.idx=idx; slot.dataset.idx=idx; let dd=null, hi=0, opts=[];
+      const inp=slot.querySelector("input"); inp.dataset.idx=idx; slot.dataset.idx=idx; let dd=null, hi=0, opts=[], wasF=false;
+      const typeOnly=idx>=15; // motståndarens picks: lista visas först när man skriver
       const close=()=>{if(dd){dd.remove();dd=null}};
       const open=()=>{
         close(); const ri=ourRole(idx), q=bans[idx]?"":inp.value;
@@ -686,20 +693,22 @@ function build(){
         slot.appendChild(dd);
       };
       const paint=()=>{ if(!dd) return; dd.querySelectorAll("li[data-k]").forEach(li=>li.classList.toggle("on",+li.dataset.k===hi)); dd.querySelector(`li[data-k="${hi}"]`)?.scrollIntoView({block:"nearest"}) };
-      if(isPick){ slot.addEventListener("mouseenter",()=>{ if(!bans[idx]&&!dd) open(); }); slot.addEventListener("mouseleave",()=>{ close(); }); }
+      if(isPick&&!typeOnly){ slot.addEventListener("mouseenter",()=>{ if(!bans[idx]&&!dd) open(); }); slot.addEventListener("mouseleave",()=>{ close(); }); }
       const pick=c=>{bans[idx]=c; inp.value=c; inp.readOnly=true; slot.classList.add("filled"); close(); inp.blur(); save(); render();};
       const clear=()=>{bans[idx]=null; inp.value=""; inp.readOnly=false; slot.classList.remove("filled"); save(); render()};
-      inp.addEventListener("focus",()=>{ if(!bans[idx]) open() });
-      inp.addEventListener("input",()=>{ if(bans[idx]){bans[idx]=null; slot.classList.remove("filled"); render(); save()} open() });
+      inp.addEventListener("focus",()=>{ if(!bans[idx]&&!typeOnly) open() });
+      inp.addEventListener("input",()=>{ if(bans[idx]){bans[idx]=null; slot.classList.remove("filled"); render(); save()} if(typeOnly&&!inp.value.trim()) close(); else open() });
       inp.addEventListener("keydown",e=>{
-        if(e.key==="ArrowDown"){e.preventDefault(); if(!dd) open(); else {hi=Math.min(hi+1,opts.length-1); paint()}}
+        if(e.key==="ArrowDown"){e.preventDefault(); if(!dd){ if(!typeOnly||inp.value.trim()) open(); } else {hi=Math.min(hi+1,opts.length-1); paint()}}
         else if(e.key==="ArrowUp"){e.preventDefault(); hi=Math.max(hi-1,0); paint()}
         else if(e.key==="Enter"){ if(dd&&opts[hi]){e.preventDefault(); pick(opts[hi])} }
         else if(e.key==="Escape"){close()}
       });
       inp.addEventListener("blur",()=>{ setTimeout(close,80); if(!bans[idx]) inp.value="" });
+      slot.addEventListener("mousedown",()=>{ wasF=document.activeElement===inp; });
       slot.addEventListener("click",e=>{ if(!e.target.isConnected||e.target.closest(".tp")||e.target.closest(".dd")) return;
         if(bans[idx]){ e.preventDefault(); clear(); close(); inp.blur(); return; }
+        if(typeOnly&&wasF&&!inp.value.trim()){ close(); inp.blur(); return; }
         if(e.target!==inp) inp.focus(); });
       slot.querySelector(".x").addEventListener("mousedown",e=>e.preventDefault());
       slot.querySelector(".x").addEventListener("click",e=>{e.preventDefault(); e.stopPropagation(); clear(); close(); inp.blur();});
@@ -760,6 +769,8 @@ function champVs(ch,enemy){
   // Statistiska counters från data.json (lolalytics/OP.GG): e.counters = champs som slår e
   const stat=[], statN=[];
   if(DATA) enemy.forEach(e=>{
+    const md=muD(ch,e);
+    if(md){ if(md.wr-50>0.5){ v+=(md.wr-50)*2; stat.push(`${e} ${wrTip(md)}`); statN.push(e); } else if(50-md.wr>0.5){ v-=(50-md.wr)*2; hurt.add(e); } return; }
     const cs=((DATA.champions[e]||{}).counters||[]).filter(x=>x.ch===ch);
     if(cs.length){ const wr=cs.reduce((t,x)=>t+x.wr,0)/cs.length; if(50-wr>0.5){ v+=(50-wr)*2; stat.push(`${e} ${(100-wr).toFixed(1)} %`); statN.push(e); } }
     const mine2=((DATA.champions[ch]||{}).counters||[]).filter(x=>x.ch===e);
@@ -792,7 +803,7 @@ function synRaw(a,b){ if(!DATA||!DATA.champions) return null; const f=(p,q)=>((D
 function pickScore(ch,ri,X,target,alive){
   let v=0, laneD=0; const plan=[], warn=[]; const opp=X.them[ri];
   if(opp){ const r=estWR(ch,opp), d=r.wr-50; laneD=d; v+=d*(r.src==="stat"?4:3);
-    const pc=r.src==="stat"?` (${r.wr.toFixed(1)} %)`:""; if(d>=1) plan.push(`Vinner lane mot ${opp}${pc}`); else if(d<=-1) warn.push(`Förlorar lane mot ${opp}${pc}`); }
+    const pc=r.d?` (${wrTip(r.d)})`:r.src==="stat"?` (${r.wr.toFixed(1)} %)`:""; if(d>=1) plan.push(`Vinner lane mot ${opp}${pc}`); else if(d<=-1) warn.push(`Förlorar lane mot ${opp}${pc}`); }
   if(ri>=3){ const o2=X.them[ri===3?4:3]; if(o2) v+=(estWR(ch,o2).wr-50)*1.5; }
   const cv=champVs(ch,X.enemy); v+=cv.v*1.5;
   const syn=X.oursP.filter(p=>synW(p,ch));
@@ -822,14 +833,23 @@ const RICO=[{"S":119,"g":"M18.0 116.7C18.0 116.5 22.6 111.8 28.2 106.2L38.4 96.0
 const roleIcon=ri=>{ const o=RICO[ri]; return `<svg class="rico" viewBox="0 0 ${o.S} ${o.S}" aria-hidden="true">${o.g?`<path class="g" fill-rule="evenodd" d="${o.g}"/>`:""}<path class="hl" fill-rule="evenodd" d="${o.h}"/></svg>`; };
 
 const COMPX={
- "Wombo":{win:"Vinn 5v5 runt objektiv – en bra engage med Maokai/J4/Rakan + Ori-boll avgör fighten.",risk:"Poke och disengage (Janna, Lulu, Ezreal) nöter ner er innan engage. Beroende av ults – utan dem är ni svaga.",fight:"När ults är uppe: lvl 6/11/16 och 1–2 items. Bäst i trånga ytor (jungel, flod-chokes).",obj:"Drakar och Baron – starta objektivet för att tvinga dem in i chokes.",tip:"Vänta in deras flash/disengage innan ni går. Flanka inte för tidigt, warda chokes före objektiv."},
- "Full Dive":{win:"Snöbolla tidigt och dyk backline – Vi R och Kai'Sa R tar ut ADC/mid innan de hinner göra skada.",risk:"Peel (Lulu, Janna), anti-dash (Poppy) och tjocka tanks. Faller av om ni inte ligger före.",fight:"Mid game (1–2 items) när fienden står isär eller efter en pick på deras support.",obj:"Grubs, Herald och tower dives – ta torn tidigt för att öppna kartan.",tip:"Gå in samtidigt, fokusera ADC. Dyk inte under torn utan wave."},
- "Catch":{win:"Fånga en (Nocturne R, Ashe R, Syndra E, Bard Q) och ta objektivet 5 mot 4.",risk:"Grupperade lag med god vision och tanks som inte dör av en pick.",fight:"Aldrig frontalt 5v5 – fighta direkt efter en pick eller när någon facecheckar.",obj:"Baron/drake direkt efter en pick, annars torn.",tip:"Djup vision, sweepa deras wards och använd Nocturne R inför objektiv."},
- "Artilleri":{win:"Belägra torn med poke – riv dem och ge aldrig en jämn 5v5.",risk:"Hård engage och dive (Malphite, Vi, J4) samt flanker. Svag om waves inte är pushade.",fight:"Bara när de är pokeade under ~60 % HP. Backa annars.",obj:"Torn och drakar som kan pokeas från range.",tip:"Håll waves pushade, ward flanker och spara disengage till deras engage."},
- "Hyperbunker":{win:"Skala till 3 items och fighta front-to-back – Kog'Maw vinner fighten om han lever.",risk:"Svagt early, och dive/assassins på carryn. Poke som tvingar back.",fight:"25+ min, grupperat runt carryn. Undvik tidiga skirmishar.",obj:"Byt objektiv tidigt, satsa på Baron/Elder sent.",tip:"Peela först, jaga aldrig. Vision runt carryn, ingen facecheck."},
- "1-3-1":{win:"Zaahen splittar en sidlane, resten håller mid – Ryze R tar laget dit de svarar.",risk:"Hård engage 5v4, svag teamfight och kräver bra kommunikation.",fight:"Undvik fights. Slå bara när de skickar 2 mot splittern.",obj:"Torn, inhibs och Herald – tryck på två sidor samtidigt.",tip:"TP-timers, wave management och ward i sidlanes."},
- "Early Tempo":{win:"Vinn lane med Kalista + Renata, Elise och Taliyah roamar lvl 3–6. Ha 3 000 guld vid 15 min.",risk:"Faller av sent mot skalande lag – måste avsluta tidigt.",fight:"Lvl 3–6 skirmishar och tidiga drakar/grubs.",obj:"Grubs, Herald, första tornet och tidiga drakar.",tip:"Invade, tracka deras jungler och avsluta innan 25 min."}};
-const xinfo=n=>{ const x=COMPX[n]; if(!x) return ""; return `<dl><dt>Wincon</dt><dd>${x.win}</dd><dt>Risker</dt><dd>${x.risk}</dd><dt>Fighta</dt><dd>${x.fight}</dd><dt>Objektiv</dt><dd>${x.obj}</dd><dt>Tips</dt><dd>${x.tip}</dd></dl>`; };
+ "Wombo":{win:"Vinn 5v5 runt objektiv – en engage + Ori R avgör fighten.",risk:"Poke och disengage nöter ner er innan engage. Utan ults är ni svaga.",fight:"Lvl 6/11/16 och 1–2 items, i trånga ytor.",obj:"Drakar och Baron – starta objektivet så de måste in i chokes.",tip:"Vänta in deras flash. Warda chokes före objektiv.",
+  bot:"Rakan W/R + Jhin W rotar alla som är CC:ade – stark lvl 2-all-in. Ashe R kan starta fighten från range.",js:"J4 EQ + Rakan W lvl 3–4 gank mid via floden. Rakan Q-heal håller J4 vid liv i invades.",tm:"Ori lägger bollen på Ambessa/Sion – deras R + Ori R = 3-mans wombo. Galio R på Thomas när han går in top.",pro:"Orianna 71 % WR på Worlds 2026 (21 picks), J4 en av årets mest spelade junglers."},
+ "Front-to-back":{win:"Ni har mer räckvidd och kontroll i en rak fight – låt dem gå in och straffa.",risk:"Flanker och dive på Cassio. Svag om ni tappar vision runt objektiv.",fight:"Mid–late, runt drake/Baron när de måste gå genom en smal yta.",obj:"Drakar via zonkontroll, Baron när Cassio har 2–3 items.",tip:"Cassio står bakom Sion, aldrig först. Spara Renata R till deras engage.",
+  bot:"Jhin + Renata: Renata E-sköld och Q-binding följs av Jhin W-root. Yunara är skalningsalternativet.",js:"Renata R får deras team att slåss mot varann – J4 R fångar dem samtidigt. Vi R tar ut den som flashar ut.",tm:"Sion håller fronten medan Cassio/Syndra trycker lanen – Sion ultar in, Cassio R stunnar alla som vänder sig om.",pro:"Cassiopeia och Syndra bland de mest contested champs på Worlds 2026; Renata ~70 % presence."},
+ "Full Dive":{win:"Snöbolla tidigt och dyk backline – Vi R och Kai'Sa/Kalista tar ADC innan den gör skada.",risk:"Peel (Lulu), anti-dash (Poppy) och tjocka tanks. Faller av om ni inte ligger före.",fight:"Mid game (1–2 items) när de står isär eller efter en pick.",obj:"Grubs, Herald och tower dives.",tip:"Gå in samtidigt, fokusa ADC. Dyk inte utan wave.",
+  bot:"Kalista R kastar in Rakan/Poppy – direkt engage från range. Kai'Sa R följer Vi-dyket gratis.",js:"Vi Q + Rakan W = dubbel knock-up. Pyke/Rakan roamar mid när Vi gankar – 3v2 vid lvl 4–6.",tm:"Galio R följer Ambessa/Zaahen när de dyker – top/mid kan 2v2:a vid sidlane. Akali är högrisk (23 % WR på Worlds).",pro:"Vi 76 % presence och 67 % WR på Worlds 2026; Galio 71 % WR."},
+ "Catch":{win:"Fånga en och ta objektivet 5 mot 4.",risk:"Grupperade lag med vision och tanks som inte dör av en pick.",fight:"Aldrig frontalt – direkt efter en pick.",obj:"Baron/drake direkt efter en pick, annars torn.",tip:"Djup vision, sweepa deras wards. Noct R inför objektiv.",
+  bot:"Ashe W/E + Bard Q mot vägg = stun. Ashe R + Bard Q är en garanterad catch. Ezreal = säkrare lane.",js:"Bard roamar lvl 2–3 mot mid medan Noct gankar. Bard E-portal tar Noct rakt in i deras jungel för invade.",tm:"Pantheon R + Noct R = två globala hot mot sidlanes. Syndra E på Pantheon W-stun, Ryze R flyttar laget till picken.",pro:"Nocturne högst presence på Worlds 2026 (92 %, 62 % WR). Syndra 20 picks, 60 % WR."},
+ "Artilleri":{win:"Belägra torn med poke – ge aldrig en jämn 5v5.",risk:"Hård engage och dive. Svag om waves inte är pushade.",fight:"Bara när de är under ~60 % HP.",obj:"Torn och drakar som kan pokeas från range.",tip:"Håll waves pushade, warda flanker.",
+  bot:"Ezreal + Karma: dubbel Q-poke i lane, Karma E (R) ger speed att kita bort engage. Corki buffad i 26.22.",js:"Karma E-speed på J4 för engage eller flykt. J4 flagga + Karma hjälper till att sätta vision djupt.",tm:"Sion/Maokai håller fronten och TP:ar in vid siege, Viktor (buffad 26.22) zonar med W. Maokai-plantor = vision i floden.",pro:"Ezreal 25 picks på Worlds 2026, Viktor 17, Karma 14. Mel reworkad i 26.22 – testa innan."},
+ "Hyperbunker":{win:"Skala och fighta front-to-back – Yunara vinner fighten om hon lever.",risk:"Svagt early, dive och assassins på carryn.",fight:"25+ min, grupperat.",obj:"Byt objektiv tidigt, satsa på Baron/Elder.",tip:"Peela först, jaga aldrig.",
+  bot:"Lulu W/R + Yunara/Jinx – Lulu gör carryn odödlig. Milio cleanse mot catch.",js:"Sej R + Lulu W polymorph stoppar divers direkt. Renata R vänder deras dive.",tm:"Ori-sköld på Sion när han går in; Lissandra R på sig själv mot assassins.",pro:"Lulu 21 picks och Yunara 16 picks på Worlds 2026. Yunara dominerade First Stand 2026."},
+ "1-3-1":{win:"Zaahen splittar, resten håller mid – Ryze R tar laget dit de svarar.",risk:"Hård engage 5v4, svag teamfight.",fight:"Undvik fights. Slå när de skickar 2 mot splittern.",obj:"Torn, inhibs och Herald.",tip:"TP-timers och wave management.",
+  bot:"Lucian + Nami: Nami E på Lucian ger extra passiv-skada – klassisk pro-lane. Sivir R för att regruppera.",js:"Nami Q-bubbla direkt efter Vi Q. Udyr/WW gankar sidlane när splittern drar dem dit.",tm:"Ryze R tar laget till Zaahen; Taliyah R-vägg skär av den som kommer för att stoppa honom. Zaahen Q-CD buffad i 26.22.",pro:"Ryze en av 2026 års mest spelade champs i Tier 1; Taliyah 71 % WR på Worlds."},
+ "Early Tempo":{win:"Vinn lanes och roama lvl 3–6. 3 000 guld vid 15 min.",risk:"Faller av sent – måste avsluta tidigt.",fight:"Lvl 3–6 skirmishar och tidiga drakar/grubs.",obj:"Grubs, Herald, första tornet.",tip:"Invade, tracka deras jungler, avsluta före 25 min.",
+  bot:"Kalista + Renata: Kalista R + Renata Q-kast = dubbel engage, tar prio lvl 2.",js:"Elise cocoon + Renata Q på samma mål. Bot har prio – Elise och Simon kan invada tillsammans.",tm:"Taliyah R roamar top medan Pantheon R kommer från andra hållet – tidiga 2v1-dives. Pantheon spelas mest i jungel på pro (14 picks).",pro:"Kalista 16 picks och Renata 71 % presence på Worlds 2026; Pantheon 8–1 på First Stand."}};
+const xinfo=n=>{ const x=COMPX[n]; if(!x) return ""; return `<dl><dt>Wincon</dt><dd>${x.win}</dd><dt>Risker</dt><dd>${x.risk}</dd><dt>Fighta</dt><dd>${x.fight}</dd><dt>Objektiv</dt><dd>${x.obj}</dd><dt>Tips</dt><dd>${x.tip}</dd>${x.bot?`<dt>Bot</dt><dd>${x.bot}</dd>`:""}${x.js?`<dt>Jgl+Sup</dt><dd>${x.js}</dd>`:""}${x.tm?`<dt>Top+Mid</dt><dd>${x.tm}</dd>`:""}${x.pro?`<dt>Pro</dt><dd>${x.pro}</dd>`:""}</dl>`; };
 function evalComp(c,gone,ours,enemy=[]){
   let score=c.s*20, lineup=[], dead=null, match=0, picked=0;
   const oursSet=new Set(ours.filter(Boolean));
@@ -1094,8 +1114,21 @@ function diversify(list,n){ const out=[], seen={}; const pool=list.map(o=>({o,h:
   return out; }
 
 // ---- lane-insikt: våra picks mot deras (gissade) roller ----
+const SRCN={o:"OP.GG",l:"Lolalytics"}, MU_MIN=20;
+function muD(a,b){ // a:s WR mot b, viktad efter games från OP.GG + Lolalytics
+  if(typeof DATA==="undefined"||!DATA||!DATA.champions) return null;
+  const A=DATA.champions[a]||{}, B=DATA.champions[b]||{}, parts=[];
+  for(const s of ["o","l"]){ const x=A.mu&&A.mu[b]&&A.mu[b][s], y=B.mu&&B.mu[a]&&B.mu[a][s]; let p=null;
+    if(x&&(!y||x[1]>=y[1])) p={s,wr:x[0],g:x[1]}; else if(y) p={s,wr:100-y[0],g:y[1]};
+    if(p&&p.g>MU_MIN) parts.push(p); }
+  if(!parts.length) return null;
+  const g=parts.reduce((t,p)=>t+p.g,0); return {wr:parts.reduce((t,p)=>t+p.wr*p.g,0)/g,g,parts};
+}
+const srcTxt=d=>d.parts.map(p=>`${SRCN[p.s]} ${p.wr.toFixed(1)} % · ${p.g.toLocaleString("sv-SE")} games`).join(" | ");
+const wrTip=d=>`<span class="wrh" tabindex="0">${d.wr.toFixed(1)} %<span class="wrs">${srcTxt(d)}</span></span>`;
 function mwr(a,b){ // a:s WR mot b ur data.json, annars null
   if(typeof DATA==="undefined"||!DATA||!DATA.champions) return null;
+  const d=muD(a,b); if(d) return d.wr;
   const A=DATA.champions[a]||{}, B=DATA.champions[b]||{}, v=[];
   const f=(l,ch)=>(l||[]).find(x=>x.ch===ch);
   let x=f(A.counters,b); if(x) v.push(x.wr);
@@ -1104,7 +1137,7 @@ function mwr(a,b){ // a:s WR mot b ur data.json, annars null
   x=f(B.beats,a); if(x) v.push(x.wr<50?x.wr:100-x.wr);
   return v.length?v.reduce((t,y)=>t+y,0)/v.length:null;
 }
-function estWR(a,b){ const m=mwr(a,b); if(m!=null) return {wr:m,src:"stat"};
+function estWR(a,b){ const m=mwr(a,b); if(m!=null) return {wr:m,src:"stat",d:muD(a,b)};
   const e=champVs(a,[b]).v-champVs(b,[a]).v; return {wr:50+Math.max(-4,Math.min(4,e*0.6)),src:"est"}; }
 function renderLanes(ours){
   const box=document.getElementById("lanes"); if(!box) return;
@@ -1112,7 +1145,7 @@ function renderLanes(ours){
   Object.entries(eR).forEach(([c,r])=>{ them[r]=c; });
   const rows=[]; let sum=0,n=0;
   const one=(ri,label)=>{ const a=ours[ri], b=them[ri]; if(!a||!b) return {ri,label,a,b};
-    const m=mwr(a,b); if(m==null) return {ri,label,a,b}; sum+=m; n++; return {ri,label,a,b,wr:m,src:"stat"}; };
+    const m=mwr(a,b); if(m==null) return {ri,label,a,b}; sum+=m; n++; const d=muD(a,b); return {ri,label,a,b,wr:m,src:"stat",tip:d?srcTxt(d):""}; };
   rows.push(one(0,"Top")); rows.push(one(1,"Jungle")); rows.push(one(2,"Mid"));
   // bot 2v2: ADC vs ADC, sup vs sup + duo-synergi
   const ad=ours[3],sp=ours[4],ead=them[3],esp=them[4];
@@ -1120,8 +1153,9 @@ function renderLanes(ours){
     if(ad&&ead){ const m=mwr(ad,ead); if(m!=null){ parts.push(m); src="stat"; } }
     if(sp&&esp){ const m=mwr(sp,esp); if(m!=null){ parts.push(m); src="stat"; } }
     if(parts.length){ let w=parts.reduce((t,y)=>t+y,0)/parts.length;
+    const tp=[[ad,ead],[sp,esp]].map(([x,y])=>{ const d=x&&y&&muD(x,y); return d?`${x} vs ${y}: ${srcTxt(d)}`:""; }).filter(Boolean).join("<br>");
     const syn=(ad&&sp?synW(ad,sp):0)-(ead&&esp?synW(ead,esp):0); w+=syn*1.2;
-    sum+=w; n++; rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + "),wr:w,src,duo:syn}); } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
+    sum+=w; n++; rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + "),wr:w,src,duo:syn,tip:tp}); } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
   } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
   box.innerHTML=rows.map(r=>{
     if(r.wr==null) return `<div class="ln"><div class="h">${r.label}</div><div class="lnempty">${r.a||"?"} <span class="vs">vs</span> ${r.b||"?"}</div></div>`;
@@ -1129,7 +1163,7 @@ function renderLanes(ours){
     return `<div class="ln ${cls}"><div class="h">${r.label}<b>${r.wr.toFixed(1)} %</b></div>
       <div class="m"><span class="nm">${r.a}</span><span class="vs">vs</span><span class="nm">${r.b}</span></div>
       <div class="bar"><i style="width:${Math.max(5,Math.min(95,(r.wr-40)*5))}%"></i></div>
-      <small>${txt} · ${r.src==="stat"?"OP.GG-statistik":"uppskattat från spelstil"}${r.duo?` · duo ${r.duo>0?"+":""}${r.duo}`:""}</small></div>`;
+      <small>${txt} · ${r.src==="stat"?"statistik":"uppskattat från spelstil"}${r.duo?` · duo ${r.duo>0?"+":""}${r.duo}`:""}</small>${r.tip?`<small class="wrs">${r.tip}</small>`:""}</div>`;
   }).join("")+(n?`<div class="lnsum">Snitt: <b>${(sum/n).toFixed(1)} %</b>${(()=>{ const done=rows.filter(r=>r.wr!=null); if(done.length<2) return "";
       const lo=done.reduce((a,b)=>a.wr<b.wr?a:b), hi=done.reduce((a,b)=>a.wr>b.wr?a:b);
       return `<br>Starkast: <b>${hi.label}</b> – spela runt den.<br>Svagast: <b>${lo.label}</b> – ge jungle-hjälp eller spela säkert.`; })()}</div>`:rows.some(r=>r.a&&r.b)?"":`<div class="lnempty">Picka champs på båda sidor för att se lane-matchups.</div>`);
