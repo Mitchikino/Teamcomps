@@ -544,6 +544,10 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 .shotres .sr button.on{border-color:var(--gold);background:#3a3018}
 .shotres .sa{display:flex;gap:8px;margin-top:10px;align-items:center}
 .shotres .sa small{color:var(--muted)}
+/* dropdowns ovanpå allt: lyft rutan man hovrar över över grannarna */
+.comp,.board .side,.btcol,.lncol,.next,.aimcol{position:relative;z-index:1}
+.comp:hover,.comp:focus-within,.board .side:hover,.board .side:focus-within,.btcol:hover,.lncol:hover,.next:hover,.next:focus-within,.aimcol:hover{z-index:60}
+.tpm,.dd{z-index:100}
 </style>
 </head>
 <body>
