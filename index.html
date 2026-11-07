@@ -601,6 +601,25 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 .d15{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:11.5px;line-height:1.35;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums}
 .dpair{display:block;margin:5px 0 2px;font-size:11px;color:#d6b4ff;text-transform:none;letter-spacing:0}
 .dpair:first-child{margin-top:0}
+
+/* ---- sikt-rutan: 5 rutor i höjd med picks, klicka för att byta ---- */
+.aimc .cr{position:relative}
+.aimc .crh .cn{display:flex;flex-direction:column;line-height:1.05;min-width:0}
+.cnote{display:block;font-size:11px;color:#7ff0c0;font-weight:600;letter-spacing:.02em}
+.dd .cnote{display:inline;font-size:11px}
+.aimc .crh .cn.ph{color:#7d88b8;font-size:17px}
+.aimc .crh.own{border-left:3px solid #7ff0c0!important}
+.aimc .cr.editing .crh{visibility:hidden}
+.aimc .cr.editing .tpm{display:none!important}
+.aimc .aedit{position:absolute;left:0;top:0;width:100%;height:var(--btnH);box-sizing:border-box;padding:0 12px;font:inherit;font-size:19px;color:var(--ink);background:rgba(11,18,54,.97);border:1px solid #7ff0c0;border-radius:4px;outline:none;z-index:3}
+.aimc .cr .dd{top:calc(var(--btnH) + 2px);left:0;right:0;z-index:120}
+.aimc .cr .dd .ic.xs{width:26px;height:26px;font-size:26px}
+
+.awarn{display:block;font-size:11px;font-weight:600;color:#ffd24a;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ahint{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px;margin:8px 0 0;padding:6px 8px;font-size:12.5px;line-height:1.35;color:#e8e2d0;background:rgba(127,240,192,.08);border:1px solid rgba(127,240,192,.35);border-radius:4px}
+.ahint b{color:#7ff0c0}
+.ahint button{font:inherit;font-size:12px;border:1px solid #7ff0c0;background:#121c4a;color:#7ff0c0;border-radius:4px;padding:2px 8px;cursor:pointer}
+.ahint button:hover{background:#1b2a63}
 </style>
 </head>
 <body>
@@ -695,22 +714,10 @@ const ALIAS={j4:"Jarvan IV",jarvan:"Jarvan IV",mundo:"Dr. Mundo",tf:"Twisted Fat
 
 const R=["Top","Jgl","Mid","ADC","Sup"];
 const COMPS=[
- {n:"Wombo",k:"shock",t:"Engage / teamfight",s:5,w:"J4 EQ eller Rakan W startar, Ori-bollen sitter på engagern – Ori R + Jhin W städar. Fighta i chokes runt drake/Baron.",
-  p:[["Ambessa","Sion","Maokai"],["Jarvan IV","Vi","Sejuani","Nocturne"],["Orianna","Galio","Lissandra","Yone","Azir","Sylas"],["Jhin","Varus","Ashe","Miss Fortune","Xayah"],["Rakan","Nautilus","Renata Glasc","Seraphine","Thresh"]]},
- {n:"Front-to-back",k:"shock",t:"Kontroll / teamfight",s:5,w:"Varus/Yunara skjuter bakom Sion, Cassio/Syndra zonar, Renata R vänder deras frontline mot dem själva. Ta fighten där de måste gå rakt in.",
-  p:[["Sion","Maokai","Dr. Mundo"],["Jarvan IV","Sejuani","Vi","Cho'Gath"],["Orianna","Cassiopeia","Viktor","Syndra","Azir","Lissandra"],["Varus","Yunara","Xayah","Sivir","Ashe","Jhin","Jinx","Kog'Maw","Zeri","Smolder"],["Renata Glasc","Lulu","Seraphine","Milio","Karma","Nami"]]},
+ {n:"Front-to-back",k:"shock",t:"Kontroll / teamfight",s:5,w:"Yunara/Kog skjuter bakom Ornn/Sion, Cassio/Syndra zonar, Renata R vänder deras frontline mot dem själva. Ta fighten där de måste gå rakt in.",
+  p:[["Ornn","Sion","Renekton","Poppy","Olaf","Dr. Mundo","Galio","Aatrox","Singed","Cho'Gath"],["Jarvan IV","Skarner","Vi","Nocturne","Sejuani","Xin Zhao","Trundle","Dr. Mundo","Lillia","Cho'Gath"],["Orianna","Syndra","Viktor","Anivia","Ziggs","Swain","Cassiopeia","Ryze","Twisted Fate","Hwei","Zilean"],["Yunara","Lucian","Kog'Maw","Sivir","Jinx","Zeri","Ashe","Varus"],["Lulu","Milio","Seraphine","Braum","Neeko","Karma","Rell","Rakan","Nami","Soraka","Zilean","Poppy"]]},
  {n:"Full Dive",k:"dive",t:"Dive",s:5,w:"Vi R låser backline, Galio R och Ambessa följer. Snöbolla tidigt och dyk när de står isär.",
-  p:[["Ambessa","Zaahen","Pantheon"],["Vi","Jarvan IV","Kha'Zix","Nocturne","Elise"],["Galio","Akali","Sylas","Yone","Naafiri","Ahri"],["Kalista","Kai'Sa","Lucian","Samira","Nilah"],["Rakan","Nautilus","Poppy","Pyke"]]},
- {n:"Catch",k:"pick",t:"Pick",s:5,w:"Nocturne R släcker vision, Bard Q/Ashe R/Syndra E fångar en – ta objektivet 5 mot 4.",
-  p:[["Pantheon","Ambessa"],["Nocturne","Elise","Kha'Zix","Vi"],["Syndra","Ahri","Lissandra","Twisted Fate","Ryze"],["Ashe","Jhin","Varus","Ezreal","Caitlyn"],["Bard","Thresh","Pyke","Nautilus"]]},
- {n:"Artilleri",k:"poke",t:"Poke / siege",s:5,w:"Viktor, Ezreal och Karma pokear ner – riv torn och ge aldrig en jämn 5v5.",
-  p:[["Sion","Maokai","Dr. Mundo"],["Jarvan IV","Sejuani","Cho'Gath"],["Viktor","Ziggs","Xerath","Hwei","Mel","Azir"],["Ezreal","Varus","Caitlyn","Corki","Jhin"],["Karma","Seraphine","Lulu","Milio"]]},
- {n:"Hyperbunker",k:"prot",t:"Protect the carry",s:5,w:"Skala till 3 items, Lulu + Ori-sköld håller Yunara vid liv – fighta front-to-back.",
-  p:[["Sion","Maokai","Dr. Mundo"],["Sejuani","Jarvan IV","Cho'Gath"],["Orianna","Lissandra","Galio"],["Yunara","Jinx","Kog'Maw","Zeri","Twitch","Smolder","Vayne"],["Lulu","Milio","Renata Glasc","Nami","Soraka"]]},
- {n:"1-3-1",k:"split",t:"Split push",s:5,w:"Zaahen splittar top, Ryze R tar laget dit motståndaren svarar. Ta torn, inte fights.",
-  p:[["Zaahen","Ambessa"],["Vi","Kha'Zix","Udyr","Warwick"],["Ryze","Taliyah","Twisted Fate","Galio","Aurora"],["Lucian","Sivir","Tristana","Ezreal"],["Nami","Karma","Milio","Bard"]]},
- {n:"Early Tempo",k:"dive",t:"Early skirmish",s:5,w:"Kalista + Renata vinner lane, Elise och Taliyah roamar lvl 3–6. Ha 3 000 guld vid 15 min.",
-  p:[["Pantheon","Ambessa"],["Elise","Jarvan IV","Vi","Kha'Zix"],["Taliyah","Syndra","Sylas","Galio","Ahri"],["Kalista","Lucian","Draven","Caitlyn","Tristana"],["Renata Glasc","Nautilus","Nami","Rakan","Pyke"]]}
+  p:[["Ambessa","Zaahen","Camille","Olaf","Malphite","Dr. Mundo","Shen","Ornn","Galio"],["Vi","Nocturne","Jarvan IV","Lee Sin","Wukong","Xin Zhao","Sejuani","Diana"],["Ahri","Locke","Aurora","Galio","Akali","Yone","Vex","Orianna","Lissandra","Sylas"],["Kai'Sa","Kalista","Sivir","Jhin","Lucian","Draven","Ashe","Xayah"],["Renata Glasc","Rakan","Nautilus","Leona","Rell","Karma","Pyke","Alistar","Nami"]]},
 ];
 const POOL=new Set(COMPS.flatMap(c=>c.p.flat()));
 
@@ -914,7 +921,8 @@ function pickScore(ch,ri,X,target,alive){
 function roleCands(ri,X,target,alive){ // med mål-comp: bara compens egna champs för rollen, inget utfyllnad
   const rp=POOLS[ri]||[], emptyOwn=target&&target.c.custom&&!target.c.p[ri].length; // eget mål, tom roll: spelarens pool
   const base=emptyOwn?(rp.length?rp:CHAMPS):target?target.c.p[ri]:CHAMPS;
-  return base.filter(ch=>playable(ch,ri)).map(ch=>pickScore(ch,ri,X,target,alive))
+  const listed=target&&!emptyOwn; // compens egna listor används som de är
+  return base.filter(ch=>listed||playable(ch,ri)).map(ch=>pickScore(ch,ri,X,target,alive))
     .sort((a,b)=>(b.v-a.v)||(b.pool-a.pool)||a.ch.localeCompare(b.ch)); }
 let SELCOMP=(()=>{ try{ const n=localStorage.getItem("tc-selcomp"); return COMPS.some(c=>c.n===n)?n:null; }catch(e){ return null; } })();
 // Eget sikte: valda champs per roll. Med en vald comp ersätter de compens champ för rollen, utan comp blir de ett eget mål.
@@ -925,10 +933,25 @@ function aimComp(){
   if(!base&&!AIMX.some(Boolean)) return null;
   const chosen=AIMX.filter(Boolean);
   const k=base?base.k:Object.keys(COMPFIT).map(k=>[k,chosen.reduce((s,c)=>s+compFit(k,c),0)]).sort((a,b)=>b[1]-a[1])[0][0];
-  const c=base?{...base}:{n:"Eget mål",k,t:"Eget mål",s:5,w:"Egna champs per roll. Tomma roller får förslag utifrån draften.",custom:true};
+  const c=base?{...base}:{n:"Eget mål",k,t:"Eget mål",s:5,w:"",custom:true};
   c.p=[0,1,2,3,4].map(ri=>{ const b=base?base.p[ri]:[], x=AIMX[ri]; return x?[x,...b.filter(y=>y!==x)]:[...b]; });
   if(base&&chosen.length) c.t=base.t+" · egna val";
   return c;
+}
+const NOTES={"Front-to-back|2|Zilean":"Aga tipsar"};
+const noteOf=(cn,ri,ch)=>NOTES[`${cn}|${ri}|${ch}`]||"";
+const EMPTY_AIM={n:"Siktat mål",k:"shock",t:"Inget valt – klicka en ruta för att söka, eller Sikta på en comp nedan",s:5,w:"",custom:true,empty:true,p:[[],[],[],[],[]]};
+// Hur väl de egna valen passar en comp: utan vald comp föreslås bästa comp (väljs inte automatiskt),
+// och champs som inte ingår i compen som de andra tillhör får en gul varning.
+let AIMMATCH={out:[],hint:null};
+function aimMatch(){
+  const ch=[0,1,2,3,4].filter(ri=>AIMX[ri]);
+  if(SELCOMP){ const c=COMPS.find(x=>x.n===SELCOMP); return c?{comp:c,out:ch.filter(ri=>!c.p[ri].includes(AIMX[ri])),hint:null}:{out:[],hint:null}; }
+  if(ch.length<2) return {out:[],hint:null};
+  const best=COMPS.map(c=>({c,inn:ch.filter(ri=>c.p[ri].includes(AIMX[ri]))})).sort((a,b)=>b.inn.length-a.inn.length||b.c.s-a.c.s)[0];
+  if(best.inn.length<2) return {out:[],hint:null};
+  const out=ch.filter(ri=>!best.inn.includes(ri));
+  return {comp:best.c,out:out.length<best.inn.length?out:[],hint:{c:best.c,n:best.inn.length,tot:ch.length}};
 }
 const clearAim=()=>{ AIMX=[null,null,null,null,null]; saveAimx(); setSel(null); };
 function aimInput(ri){
@@ -960,6 +983,48 @@ function aimInput(ri){
   const ax=cell.querySelector(".ax"); if(ax){ ax.addEventListener("mousedown",e=>e.preventDefault()); ax.addEventListener("click",()=>set(null)); }
   return cell;
 }
+function aimEdit(cell,r,ri,getRank,taken){
+  if(cell.querySelector(".aedit")) return;
+  cell.classList.add("editing");
+  const inp=document.createElement("input"); inp.className="aedit"; inp.type="text"; inp.autocomplete="off"; inp.spellcheck=false;
+  inp.placeholder=`${R[ri]} – skriv champ`; inp.setAttribute("aria-label",`Sikta på champ för ${R[ri]}`);
+  cell.appendChild(inp); let dd=null, hi=0, opts=[];
+  const listed=r.c.p[ri]||[];
+  const pool=[...new Set([...listed,...CHAMPS.filter(c=>playable(c,ri))])];
+  const done=()=>{ if(dd) dd.remove(); inp.remove(); cell.classList.remove("editing"); };
+  const set=c=>{ AIMX[ri]=c; saveAimx(); render(); };
+  const open=()=>{ if(dd) dd.remove(); dd=null; const q=norm(inp.value), a=ALIAS[q];
+    const ranked=getRank().map(o=>o.ch);
+    opts=q?[...new Set([...(a&&pool.includes(a)?[a]:[]),...pool.filter(c=>norm(c).startsWith(q)),...pool.filter(c=>norm(c).includes(q))])].slice(0,10)
+          :[...new Set([...ranked,...listed])].slice(0,10);
+    if(AIMX[ri]&&!q) opts=["__reset",...opts.filter(c=>c!==AIMX[ri])];
+    hi=0; if(!opts.length) return;
+    dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
+    opts.forEach((c,k)=>{ const li=document.createElement("li"); if(k===hi) li.className="on";
+      if(c==="__reset") li.innerHTML=`<span>↺ Återställ till compens förslag</span>`;
+      else { const pl=(POOLS[ri]||[]).includes(c), nt=noteOf(r.c.n,ri,c);
+        li.innerHTML=`${icon(c,"xs")}<span>${c}${nt?` <small class="cnote">${nt}</small>`:""}</span>${taken.has(c)?'<i class="pb no">tagen</i>':pl?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>'}`; }
+      li.addEventListener("mousedown",e=>{ e.preventDefault(); set(c==="__reset"?null:c); }); dd.appendChild(li); });
+    cell.appendChild(dd); };
+  const paint=()=>dd&&dd.querySelectorAll("li").forEach((li,k)=>li.classList.toggle("on",k===hi));
+  inp.addEventListener("input",open);
+  inp.addEventListener("blur",()=>setTimeout(done,100));
+  inp.addEventListener("keydown",e=>{
+    if(e.key==="ArrowDown"){ e.preventDefault(); hi=Math.min(hi+1,opts.length-1); paint(); }
+    else if(e.key==="ArrowUp"){ e.preventDefault(); hi=Math.max(hi-1,0); paint(); }
+    else if(e.key==="Enter"&&opts[hi]){ e.preventDefault(); set(opts[hi]==="__reset"?null:opts[hi]); }
+    else if(e.key==="Escape"){ inp.blur(); } });
+  inp.focus(); open();
+}
+function alignAim(){
+  const line=document.querySelector("#aimcol .aimc .cb > .line"), ps=document.querySelectorAll(".board .us .pick");
+  if(!line||ps.length<2) return; line.style.marginTop=""; line.style.rowGap="";
+  const lt=line.getBoundingClientRect(), a=ps[0].getBoundingClientRect(), b=ps[1].getBoundingClientRect();
+  if(Math.abs(lt.left-a.left)>900||lt.width>a.width*1.6) return; // smal layout: ingen justering
+  const d=a.top-lt.top; if(d>0&&d<400) line.style.marginTop=d+"px";
+  line.style.rowGap=Math.max(0,b.top-a.bottom)+"px";
+}
+window.addEventListener("resize",()=>alignAim());
 function aimBox(selR,X,alive,taken,sw){
   const w=document.createElement("div"); w.className="aimwrap";
   w.innerHTML=`<div class="aimh"><span>Siktat mål</span><button type="button" class="aimclr"${selR?"":" disabled"}>Rensa sikte</button></div><div class="aims"></div>`;
@@ -975,22 +1040,11 @@ const RICO=[{"S":119,"g":"M18.0 116.7C18.0 116.5 22.6 111.8 28.2 106.2L38.4 96.0
 const roleIcon=ri=>{ const o=RICO[ri]; return `<svg class="rico" viewBox="0 0 ${o.S} ${o.S}" aria-hidden="true">${o.g?`<path class="g" fill-rule="evenodd" d="${o.g}"/>`:""}<path class="hl" fill-rule="evenodd" d="${o.h}"/></svg>`; };
 
 const COMPX={
- "Wombo":{win:"Vinn 5v5 runt objektiv – en engage + Ori R avgör fighten.",risk:"Poke och disengage nöter ner er innan engage. Utan ults är ni svaga.",fight:"Lvl 6/11/16 och 1–2 items, i trånga ytor.",obj:"Drakar och Baron – starta objektivet så de måste in i chokes.",tip:"Vänta in deras flash. Warda chokes före objektiv.",
-  bot:"Rakan W/R + Jhin W rotar alla som är CC:ade – stark lvl 2-all-in. Ashe R kan starta fighten från range.",js:"J4 EQ + Rakan W lvl 3–4 gank mid via floden. Rakan Q-heal håller J4 vid liv i invades.",tm:"Ori lägger bollen på Ambessa/Sion – deras R + Ori R = 3-mans wombo. Galio R på Thomas när han går in top.",pro:"Orianna 71 % WR på Worlds 2026 (21 picks), J4 en av årets mest spelade junglers."},
  "Front-to-back":{win:"Ni har mer räckvidd och kontroll i en rak fight – låt dem gå in och straffa.",risk:"Flanker och dive på Cassio. Svag om ni tappar vision runt objektiv.",fight:"Mid–late, runt drake/Baron när de måste gå genom en smal yta.",obj:"Drakar via zonkontroll, Baron när Cassio har 2–3 items.",tip:"Cassio står bakom Sion, aldrig först. Spara Renata R till deras engage.",
-  bot:"Varus + Renata/Lulu: Varus R-kedja följs av Renata Q, Lulu W/R gör honom svår att dyka. Yunara/Xayah är skalningsalternativen, Ashe + Seraphine är en av soloQ:s starkaste duos.",js:"Renata R får deras team att slåss mot varann – J4 R fångar dem samtidigt. Vi R tar ut den som flashar ut.",tm:"Sion håller fronten medan Cassio/Syndra trycker lanen – Sion ultar in, Cassio R stunnar alla som vänder sig om.",pro:"Cassiopeia och Syndra bland de mest contested champs på Worlds 2026; Renata ~70 % presence."},
+  bot:"Yunara/Kog + Lulu: Lulu W/R gör carryn odykbar medan den skalar. Lucian + Milio ger säkra trades och range. Ashe/Varus + Seraphine när ni vill ha mer CC.",js:"Renata R får deras team att slåss mot varann – J4 R fångar dem samtidigt. Vi R tar ut den som flashar ut.",tm:"Sion håller fronten medan Cassio/Syndra trycker lanen – Sion ultar in, Cassio R stunnar alla som vänder sig om.",pro:"Cassiopeia och Syndra bland de mest contested champs på Worlds 2026; Renata ~70 % presence."},
  "Full Dive":{win:"Snöbolla tidigt och dyk backline – Vi R och Kai'Sa/Kalista tar ADC innan den gör skada.",risk:"Peel (Lulu), anti-dash (Poppy) och tjocka tanks. Faller av om ni inte ligger före.",fight:"Mid game (1–2 items) när de står isär eller efter en pick.",obj:"Grubs, Herald och tower dives.",tip:"Gå in samtidigt, fokusa ADC. Dyk inte utan wave.",
-  bot:"Kalista R kastar in Rakan/Poppy – direkt engage från range. Kai'Sa R följer Vi-dyket gratis.",js:"Vi Q + Rakan W = dubbel knock-up. Pyke/Rakan roamar mid när Vi gankar – 3v2 vid lvl 4–6.",tm:"Galio R följer Ambessa/Zaahen när de dyker – top/mid kan 2v2:a vid sidlane. Akali är högrisk (23 % WR på Worlds).",pro:"Vi 76 % presence och 67 % WR på Worlds 2026; Galio 71 % WR."},
- "Catch":{win:"Fånga en och ta objektivet 5 mot 4.",risk:"Grupperade lag med vision och tanks som inte dör av en pick.",fight:"Aldrig frontalt – direkt efter en pick.",obj:"Baron/drake direkt efter en pick, annars torn.",tip:"Djup vision, sweepa deras wards. Noct R inför objektiv.",
-  bot:"Ashe W/E + Bard Q mot vägg = stun. Ashe R + Bard Q är en garanterad catch. Ezreal = säkrare lane.",js:"Bard roamar lvl 2–3 mot mid medan Noct gankar. Bard E-portal tar Noct rakt in i deras jungel för invade.",tm:"Pantheon R + Noct R = två globala hot mot sidlanes. Syndra E på Pantheon W-stun, Ryze R flyttar laget till picken.",pro:"Nocturne högst presence på Worlds 2026 (92 %, 62 % WR). Syndra 20 picks, 60 % WR."},
- "Artilleri":{win:"Belägra torn med poke – ge aldrig en jämn 5v5.",risk:"Hård engage och dive. Svag om waves inte är pushade.",fight:"Bara när de är under ~60 % HP.",obj:"Torn och drakar som kan pokeas från range.",tip:"Håll waves pushade, warda flanker.",
-  bot:"Ezreal + Karma: dubbel Q-poke i lane, Karma E (R) ger speed att kita bort engage. Corki buffad i 26.22.",js:"Karma E-speed på J4 för engage eller flykt. J4 flagga + Karma hjälper till att sätta vision djupt.",tm:"Sion/Maokai håller fronten och TP:ar in vid siege, Viktor (buffad 26.22) zonar med W. Maokai-plantor = vision i floden.",pro:"Ezreal 25 picks på Worlds 2026, Viktor 17, Karma 14. Mel reworkad i 26.22 – testa innan."},
- "Hyperbunker":{win:"Skala och fighta front-to-back – Yunara vinner fighten om hon lever.",risk:"Svagt early, dive och assassins på carryn.",fight:"25+ min, grupperat.",obj:"Byt objektiv tidigt, satsa på Baron/Elder.",tip:"Peela först, jaga aldrig.",
-  bot:"Lulu W/R + Yunara/Jinx – Lulu gör carryn odödlig. Milio cleanse mot catch.",js:"Sej R + Lulu W polymorph stoppar divers direkt. Renata R vänder deras dive.",tm:"Ori-sköld på Sion när han går in; Lissandra R på sig själv mot assassins.",pro:"Lulu 21 picks och Yunara 16 picks på Worlds 2026. Yunara dominerade First Stand 2026."},
- "1-3-1":{win:"Zaahen splittar, resten håller mid – Ryze R tar laget dit de svarar.",risk:"Hård engage 5v4, svag teamfight.",fight:"Undvik fights. Slå när de skickar 2 mot splittern.",obj:"Torn, inhibs och Herald.",tip:"TP-timers och wave management.",
-  bot:"Lucian + Nami: Nami E på Lucian ger extra passiv-skada – klassisk pro-lane. Sivir R för att regruppera.",js:"Nami Q-bubbla direkt efter Vi Q. Udyr/WW gankar sidlane när splittern drar dem dit.",tm:"Ryze R tar laget till Zaahen; Taliyah R-vägg skär av den som kommer för att stoppa honom. Zaahen Q-CD buffad i 26.22.",pro:"Ryze en av 2026 års mest spelade champs i Tier 1; Taliyah 71 % WR på Worlds."},
- "Early Tempo":{win:"Vinn lanes och roama lvl 3–6. 3 000 guld vid 15 min.",risk:"Faller av sent – måste avsluta tidigt.",fight:"Lvl 3–6 skirmishar och tidiga drakar/grubs.",obj:"Grubs, Herald, första tornet.",tip:"Invade, tracka deras jungler, avsluta före 25 min.",
-  bot:"Kalista + Renata: Kalista R + Renata Q-kast = dubbel engage, tar prio lvl 2.",js:"Elise cocoon + Renata Q på samma mål. Bot har prio – Elise och Simon kan invada tillsammans.",tm:"Taliyah R roamar top medan Pantheon R kommer från andra hållet – tidiga 2v1-dives. Pantheon spelas mest i jungel på pro (14 picks).",pro:"Kalista 16 picks och Renata 71 % presence på Worlds 2026; Pantheon 8–1 på First Stand."}};
+  bot:"Kalista + Renata: Kalista R kastar in Renata, Q-kastet följer direkt. Xayah + Rakan: gemensam recall och W/R-engage. Kai'Sa R följer Vi-dyket gratis.",js:"Vi Q + Rakan W = dubbel knock-up. Pyke/Rakan roamar mid när Vi gankar – 3v2 vid lvl 4–6.",tm:"Galio R följer Ambessa/Zaahen när de dyker – top/mid kan 2v2:a vid sidlane. Akali är högrisk (23 % WR på Worlds).",pro:"Vi 76 % presence och 67 % WR på Worlds 2026; Galio 71 % WR."}
+};
 const xinfo=n=>{ const x=COMPX[n]; if(!x) return ""; return `<dl><dt>Wincon</dt><dd>${x.win}</dd><dt>Risker</dt><dd>${x.risk}</dd><dt>Fighta</dt><dd>${x.fight}</dd><dt>Objektiv</dt><dd>${x.obj}</dd><dt>Tips</dt><dd>${x.tip}</dd>${x.bot?`<dt>Bot</dt><dd>${x.bot}</dd>`:""}${x.js?`<dt>Jgl+Sup</dt><dd>${x.js}</dd>`:""}${x.tm?`<dt>Top+Mid</dt><dd>${x.tm}</dd>`:""}${x.pro?`<dt>Pro</dt><dd>${x.pro}</dd>`:""}</dl>`; };
 function evalComp(c,gone,ours,enemy=[]){
   let score=c.s*20, lineup=[], dead=null, match=0, picked=0;
@@ -1004,7 +1058,7 @@ function evalComp(c,gone,ours,enemy=[]){
       lineup.push({r:R[ri],c:mine,lock:j>=0,off:j<0,alts:opts.filter(x=>x!==mine&&free(x)).slice(0,2)}); return;
     }
     if(c.custom&&!opts.length){ lineup.push({r:R[ri],c:"–",alts:[]}); return; }
-    opts=opts.filter(x=>playable(x,ri)||AIMX[ri]===x); let i=opts.findIndex(free);
+    let i=opts.findIndex(free);
     if(i<0){ const fb=fallbackFor(c,ri,free,[]); // alla compens champs borta – bästa champ ur hela listan som passar stilen
       if(!fb.length){ dead=dead||R[ri]; lineup.push({r:R[ri],c:"–",alts:[]}); return; }
       score-=14; if(ri>=3) score-=4;
@@ -1068,7 +1122,7 @@ const lockPick=(ri,ch)=>{ const sl=document.querySelector(`.slot[data-idx="${10+
 const nameCls=o=>o.bad?"bad":o.good?"good":"";
 const poolTag=o=>o.pool?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>';
 const warnOf=o=>[...o.warn,...(o.cv.hurt.length?[`Svag mot ${o.cv.hurt.join(", ")}`]:[])];
-function tipItems(list,X,ri){ const fr=document.createDocumentFragment();
+function tipItems(list,X,ri,onPick){ const fr=document.createDocumentFragment();
   list.forEach((o,k)=>{
     const st=X.banned.has(o.ch)?"bn":X.picked.has(o.ch)?"pk":"";
     const L=[]; if(st==="bn") L.push("Bannad"); if(st==="pk") L.push("Redan pickad");
@@ -1079,20 +1133,36 @@ function tipItems(list,X,ri){ const fr=document.createDocumentFragment();
     b.className="tpi "+(o.pool?"ip":"np")+(st?" "+st:"");
     b.innerHTML=`<span class="n">${k+1}</span>${icon(o.ch,"sm")}<span class="t"><span class="nm"><b class="${st==="pk"?"":nameCls(o)}">${o.ch}</b>${poolTag(o)}</span>${L.map(t=>`<small>${t}</small>`).join("")}</span>`;
     if(st){ b.disabled=true; b.title=`${o.ch} – ${st==="bn"?"bannad":"redan pickad"}`; }
-    else b.addEventListener("click",e=>{ e.stopPropagation(); lockPick(ri,o.ch); });
+    else b.addEventListener("click",e=>{ e.stopPropagation(); onPick?onPick(o.ch):lockPick(ri,o.ch); });
     fr.appendChild(b);
   }); return fr; }
-function roleCell(r,x,ri,X,alive,taken,eager){
+function roleCell(r,x,ri,X,alive,taken,eager,edit){
   const cell=document.createElement("div"); cell.className="col cr";
   const locked=!!X.ours[ri]; let ranked=null;
   const getRank=()=>ranked||(ranked=roleCands(ri,X,{c:r.c},alive).slice(0,10));
   let show=x.c;
-  if(eager&&!locked){ const f=getRank().find(o=>!taken.has(o.ch)); if(f) show=f.ch; }
+  if(eager&&!locked&&!r.c.custom){ const f=getRank().find(o=>!taken.has(o.ch)); if(f) show=f.ch; }
+  if(edit&&!locked&&AIMX[ri]) show=AIMX[ri];
   const rp=POOLS[ri]||[], np=show!=="–"&&rp.length>0&&!rp.includes(show), same=show===x.c;
   const cls="ch crh"+(same&&x.sub?" sub":"")+(x.lock?" lock":"")+(x.off?" off":"")+(np?" np":" ip");
   const tip=(x.lock?`${show} – er pick`:x.off?`${show} – er pick, finns inte i compens plan`:same&&x.fb?`${show} ersätter ${x.was} (passar compens stil)`:same&&x.sub?`${show} ersätter ${x.was}`:`${show} – håll musen över för fler förslag`)+(np?" · ej i spelarens pool":"");
-  cell.innerHTML=`<button type="button" class="${cls}" title="${tip}"${locked?" disabled":""}>${roleIcon(ri)}${show!=="–"?icon(show,"xs"):""}<span class="cn">${show}</span></button>`;
-  if(!locked&&show!=="–"){
+  const note=show!=="–"?noteOf(r.c.n,ri,show):"";
+  const warnOut=edit&&!locked&&AIMX[ri]&&AIMMATCH.comp&&AIMMATCH.out.includes(ri)?`Ingår inte i ${AIMMATCH.comp.n}`:"";
+  const label=show==="–"&&edit?`<span class="cn ph">Sök ${R[ri].toLowerCase()}…</span>`:`<span class="cn">${show}${note?`<small class="cnote">${note}</small>`:""}${warnOut?`<small class="awarn">⚠ ${warnOut}</small>`:""}</span>`;
+  cell.innerHTML=`<button type="button" class="${cls}${edit&&AIMX[ri]?" own":""}" title="${edit?"Klicka för att byta champ":tip}"${locked?" disabled":""}>${roleIcon(ri)}${show!=="–"?icon(show,"xs"):""}${label}</button>`;
+  if(edit&&!locked){ cell.querySelector(".crh").addEventListener("click",()=>aimEdit(cell,r,ri,getRank,taken));
+    if(show!=="–"){ // hover: nästa bästa alternativ för rollen
+      const menu=document.createElement("div"); menu.className="tpm"; menu.setAttribute("role","menu");
+      menu.innerHTML=`<div class="tpt">Nästa bästa · ${R[ri]} – klicka för att sikta på den</div><div class="tpl"></div>`;
+      cell.appendChild(menu);
+      const fill=()=>{ const tpl=menu.querySelector(".tpl"); if(tpl.childElementCount) return;
+        let L=getRank().filter(o=>o.ch!==show);
+        if(L.length<3) L=[...L,...roleCands(ri,X,null,alive).filter(o=>o.ch!==show&&!L.some(y=>y.ch===o.ch))];
+        L=L.slice(0,8);
+        if(L.length) tpl.appendChild(tipItems(L,X,ri,c=>{ AIMX[ri]=c; saveAimx(); render(); }));
+        else tpl.innerHTML='<small class="note">Inga fler alternativ.</small>'; };
+      cell.addEventListener("mouseenter",fill); cell.addEventListener("focusin",fill); } }
+  if(!locked&&show!=="–"&&!edit){
     const menu=document.createElement("div"); menu.className="tpm"; menu.setAttribute("role","menu");
     menu.innerHTML=`<div class="tpt">${R[ri]} · ${r.c.n} – lane, synergi och comp</div><div class="tpl"></div>`;
     cell.appendChild(menu);
@@ -1109,19 +1179,24 @@ function compCard(r,rank,X,alive,taken,isAim,sw){
   const subs=r.lineup.filter(x=>x.sub).length;
   const meta=[r.c.t]; if(r.picked) meta.push(`${r.match}/${r.picked} picks passar`); if(subs) meta.push(`${subs} byte${subs>1?"n":""}`);
   el.innerHTML=`${isAim?"":`<div class="rk">${live?rank:"–"}</div>`}<div class="cb">
-    <div class="head"><span class="name">${r.c.n}</span><span class="type">${meta.join(" · ")}</span>${live?`<span class="score"><span class="bar"><i style="width:${r.score}%"></i></span>${r.score}</span>`:""}<button type="button" class="aim" aria-pressed="${sel}" title="${sel?"Sluta sikta på":"Sikta på"} ${r.c.n}">${sel?"Siktar ✓":"Sikta"}</button></div>
+    <div class="head"><span class="name">${r.c.n}</span><span class="type">${meta.join(" · ")}</span>${live&&!r.c.custom?`<span class="score"><span class="bar"><i style="width:${r.score}%"></i></span>${r.score}</span>`:""}<button type="button" class="aim" aria-pressed="${sel}" title="${sel?"Sluta sikta på":"Sikta på"} ${r.c.n}">${sel?"Siktar ✓":"Sikta"}</button></div>
     <div class="line"></div>
     ${live&&enemy.length&&(r.vs.g||r.vs.b)?`<p class="vs"><b class="${r.vs.adj>0?"up":r.vs.adj<0?"down":""}">${r.vs.adj>0?"+":""}${r.vs.adj}</b> mot deras picks${r.vs.g?` – bra mot ${r.vs.g}`:""}${r.vs.b?`${r.vs.g?";":" –"} svag mot ${r.vs.b}`:""}</p>`:""}
-    ${live?`<p class="win"><button type="button" class="more" aria-expanded="false">Visa mer</button>${r.c.w}</p><div class="xinfo" hidden>${xinfo(r.c.n)}</div>`:`<p class="why">Går inte att spela: inga champs kvar för ${r.dead}.</p>`}
+    ${live&&!r.c.custom?`<p class="win"><button type="button" class="more" aria-expanded="false">Visa mer</button>${r.c.w}</p><div class="xinfo" hidden>${xinfo(r.c.n)}</div>`:`<p class="why">Går inte att spela: inga champs kvar för ${r.dead}.</p>`}
   </div>`;
   const line=el.querySelector(".line");
-  r.lineup.forEach((x,ri)=>line.appendChild(roleCell(r,x,ri,X,alive,taken,isAim)));
-  el.querySelector(".aim").addEventListener("click",()=>isAim?clearAim():setSel(sel?null:r.c.n));
+  r.lineup.forEach((x,ri)=>line.appendChild(roleCell(r,x,ri,X,alive,taken,isAim,isAim)));
+  if(isAim){ const ab=el.querySelector(".aim"); ab.textContent="Rensa sikte"; ab.title="Rensa sikte"; if(r.c.empty) ab.disabled=true;
+    const h=AIMMATCH.hint; if(r.c.custom&&h){ const p=document.createElement("p"); p.className="ahint";
+      p.innerHTML=`<span><b>${h.n} av ${h.tot}</b> valda champs passar <b>${h.c.n}</b>${h.n<h.tot?` – ${h.tot-h.n} ingår inte`:""}.</span><button type="button">Sikta på ${h.c.n}</button>`;
+      p.querySelector("button").addEventListener("click",()=>setSel(h.c.n));
+      line.after(p); } }
+  el.querySelector(".aim").addEventListener("click",()=>{ if(isAim) return clearAim(); AIMX=[null,null,null,null,null]; saveAimx(); setSel(sel?null:r.c.n); });
   if(isAim&&sw){ const openR=[0,1,2,3,4].filter(ri=>!X.ours[ri]);
     const pv=document.createElement("div"); pv.className="pivot"; pv.setAttribute("role","alert");
     pv.innerHTML=`<p class="pw"><span aria-hidden="true">⚠</span> <b>${r.c.n} är counterad</b></p><p class="pr">${sw.why.join(" · ")}</p><p class="pt">Pivot: sikta på <b>${sw.alt.c.n}</b> (+${Math.round(sw.alt.raw-sw.sel.raw)} poäng)${openR.length?` och picka:`:""}</p>${openR.length?'<div class="line"></div>':""}<button type="button" class="go">Byt sikte till ${sw.alt.c.n}</button>`;
     const pl=pv.querySelector(".line"); if(pl) openR.forEach(ri=>pl.appendChild(roleCell(sw.alt,sw.alt.lineup[ri],ri,X,alive,taken,true)));
-    pv.querySelector(".go").addEventListener("click",()=>{ SWDISMISS=""; setSel(sw.alt.c.n); });
+    pv.querySelector(".go").addEventListener("click",()=>{ SWDISMISS=""; AIMX=[null,null,null,null,null]; saveAimx(); setSel(sw.alt.c.n); });
     el.querySelector(".cb").appendChild(pv); }
   const mb=el.querySelector(".more"); if(mb) mb.addEventListener("click",()=>{ const xi=el.querySelector(".xinfo"); xi.hidden=!xi.hidden; mb.textContent=xi.hidden?"Visa mer":"Visa mindre"; mb.setAttribute("aria-expanded",String(!xi.hidden)); });
   return el;
@@ -1137,12 +1212,14 @@ function render(){
   const res=COMPS.map(c=>evalComp(c,gone,ours,enemy)).sort((a,b)=>(!!a.dead-!!b.dead)||(b.raw-a.raw)||(b.c.s-a.c.s));
   paintPortraits();
   renderSwitch(res,gone,ours,enemy);
-  const AC=aimComp(), selR=AC?evalComp(AC,gone,ours,enemy):null;
+  AIMMATCH=aimMatch(); const AC=aimComp(), selR=AC?evalComp(AC,gone,ours,enemy):null;
   renderNext(res,gone,ours,selR);
   renderLanes(ours);
   const X=draftCtx(), alive=res.filter(r=>!r.dead), taken=new Set([...gone,...X.oursP]);
   const aimEl=document.getElementById("aimcol"); document.querySelector(".board").classList.add("aiming");
-  aimEl.hidden=false; aimEl.innerHTML=""; aimEl.appendChild(aimBox(selR,X,alive,taken,SELCOMP?switchInfo(res,gone,ours,enemy):null));
+  aimEl.hidden=false; aimEl.innerHTML="";
+  aimEl.appendChild(compCard(selR||evalComp(EMPTY_AIM,gone,ours,enemy),0,X,alive,taken,true,SELCOMP?switchInfo(res,gone,ours,enemy):null));
+  requestAnimationFrame(alignAim);
   const list=document.getElementById("list"); list.innerHTML="";
   let rank=0;
   res.forEach(r=>{ if(SELCOMP&&r.c.n===SELCOMP) return; if(!r.dead) rank++; list.appendChild(compCard(r,r.dead?null:rank,X,alive,taken,false)); });
@@ -1156,9 +1233,9 @@ const TL=["","B-tier","A-tier","S-tier"];
 const DUOS=[
  // bot-duos
  ["Kog'Maw","Lulu",2],["Kog'Maw","Milio",2],["Kog'Maw","Renata Glasc",1],["Kog'Maw","Janna",1],["Kog'Maw","Yuumi",1],
- ["Xayah","Rakan",2],["Kai'Sa","Rakan",1],["Samira","Rakan",1],
- ["Lucian","Nami",2],["Lucian","Braum",2],["Lucian","Milio",1],["Lucian","Karma",1],
- ["Kalista","Thresh",2],["Kalista","Renata Glasc",2],["Kalista","Nautilus",2],["Kalista","Alistar",2],["Kalista","Rell",1],["Kalista","Leona",1],["Kalista","Braum",1],["Kalista","Taric",1],["Kalista","Poppy",1],
+ ["Xayah","Rakan",3],["Kai'Sa","Rakan",1],["Samira","Rakan",1],
+ ["Lucian","Nami",2],["Lucian","Braum",2],["Lucian","Milio",3],["Lucian","Karma",1],
+ ["Kalista","Thresh",2],["Kalista","Renata Glasc",3],["Kalista","Nautilus",2],["Kalista","Alistar",2],["Kalista","Rell",1],["Kalista","Leona",1],["Kalista","Braum",1],["Kalista","Taric",1],["Kalista","Poppy",1],
  ["Kai'Sa","Nautilus",2],["Kai'Sa","Alistar",1],["Kai'Sa","Rell",1],["Kai'Sa","Leona",1],["Kai'Sa","Poppy",1],
  ["Samira","Rell",2],["Samira","Nautilus",2],["Samira","Alistar",1],["Samira","Leona",1],["Samira","Pyke",1],
  ["Draven","Thresh",2],["Draven","Leona",1],["Draven","Nautilus",1],["Draven","Pyke",1],["Draven","Blitzcrank",1],["Draven","Alistar",1],
@@ -1210,6 +1287,7 @@ const DUO_TIP={
  "Miss Fortune|Rakan":"Rakan R-charm låser alla i MF R",
  "Samira|Nautilus":"Samira behöver engage – Naut ger den direkt",
  "Yunara|Lulu":"Lulu skyddar Yunara medan hon skalar",
+ "Lucian|Milio":"Milio ger range på Lucian-autos och cleanse – säkra trades i lane",
  "Smolder|Milio":"Milio-range och cleanse låter Smolder skala säkert"};
 const DUO_BAD={
  "Jhin|Lulu":"Jhin får lite av Lulus attack speed (fast AS) – passar inte",
