@@ -530,14 +530,6 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 .wrh:hover .wrs,.wrh:focus .wrs,.ln:hover small.wrs,.ln:focus-within small.wrs{display:block}
 /* skärmdump -> draft */
 
-.shotbox{border:2px dashed #3d4c8f;border-radius:8px;padding:12px 14px;margin:0 0 14px;cursor:pointer;font-size:14px;color:var(--muted);background:rgba(16,24,62,.6);outline:none;position:relative}
-.shotbox b{color:var(--ink);font-size:15px}
-.shotbox:hover,.shotbox:focus{border-color:#e7a6ff;background:rgba(40,30,80,.7)}
-.shotbox:focus b::after{content:"  ✓ redo";color:#e7a6ff;font-weight:600}
-.shotbox.busy{border-style:solid;border-color:var(--gold)}
-.shotbox .sst{display:block;margin-top:4px;color:var(--ink);font-size:13px}
-.shotbox .sst:empty{display:none}
-.shotbox .sfile{position:absolute;right:10px;top:10px;font:inherit;font-size:12px;border:1px solid var(--line);background:var(--panel);color:var(--muted);border-radius:5px;padding:2px 8px;cursor:pointer}
 /* dropdowns ovanpå allt: lyft rutan man hovrar över över grannarna */
 .comp,.board .side,.btcol,.lncol,.next,.aimcol{position:relative;z-index:1}
 .comp:hover,.comp:focus-within,.board .side:hover,.board .side:focus-within,.btcol:hover,.lncol:hover,.next:hover,.next:focus-within,.aimcol:hover{z-index:60}
@@ -556,12 +548,7 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
   <h1>Teamcomps</h1>
   <nav class="tabs" aria-label="Flikar"><a href="#draft" data-tab="draft">Draft</a><a href="#spelare" data-tab="spelare">Spelare</a><a href="#karta" data-tab="karta">Karta</a></nav>
   <div id="tab-draft">
-  <p class="intro">Skriv in bans och picks – eller klistra in en skärmdump av champ select (Ctrl+V). Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
-
-  <div class="shotbox" id="shotbox" tabindex="0" role="button" aria-label="Klistra in skärmdump av champ select">
-    <b>📋 Klicka här och tryck Ctrl+V</b> <span>– skärmdump av <u>bara LoL-fönstret</u> (Alt+PrtSc, eller Win+Shift+S → Fönster). Fyller i bans och picks automatiskt.</span>
-    <span class="sst" id="shotst"></span><button type="button" class="sfile" id="shotfb">välj fil</button><input type="file" id="shotf" accept="image/*" hidden>
-  </div>
+  <p class="intro">Skriv in bans och picks. Rankningen räknas om direkt: bannade och fiendens champs byts ut, era picks låses i compsen.</p>
 
   <section class="board" aria-label="Draft">
     <aside class="btcol" aria-label="Ban-tips"><div class="bt" id="bantips"></div></aside>
@@ -1246,116 +1233,6 @@ document.getElementById("reset").addEventListener("click",()=>{
 
 build(); load(); render();
 
-
-// ---- Skärmdump av champ select -> bans/picks (bildigenkänning + OCR, allt i webbläsaren) ----
-// Koordinater mätta på LoL-klienten i 1596x889, skalas till skärmdumpens storlek.
-const SHOT={W:1596,H:889,banR:16,picR:33,
-  bans:[38,88,138,188,238,1364,1414,1464,1514,1564],banY:50,
-  allyX:108,enemyX:1530,rowY:k=>163+100*k,
-  allyName:k=>[155,132+100*k,340,150+100*k],allyRole:k=>[155,152+100*k,300,172+100*k],enemyName:k=>[1270,142+100*k,1485,162+100*k]};
-const SN=20; let SHOTT=null, OCRW=null;
-function featOf(src,sx,sy,sw,sh){
-  const c=document.createElement("canvas"); c.width=c.height=SN; const g=c.getContext("2d",{willReadFrequently:true});
-  g.imageSmoothingEnabled=true; g.imageSmoothingQuality="high"; g.drawImage(src,sx,sy,sw,sh,0,0,SN,SN);
-  const d=g.getImageData(0,0,SN,SN).data, v=[];
-  for(let y=0;y<SN;y++) for(let x=0;x<SN;x++){ if((x-SN/2+.5)**2+(y-SN/2+.5)**2>(SN*.42)**2) continue; const i=(y*SN+x)*4; v.push(d[i],d[i+1],d[i+2]); }
-  const m=v.reduce((t,a)=>t+a,0)/v.length; let n=0; for(let i=0;i<v.length;i++){ v[i]-=m; n+=v[i]*v[i]; } n=Math.sqrt(n)||1;
-  return Float32Array.from(v,a=>a/n);
-}
-function shotTemplates(){ if(SHOTT) return SHOTT;
-  SHOTT=Promise.all(CHAMPS.map(ch=>new Promise(res=>{ const im=new Image(); im.crossOrigin="anonymous";
-    im.onload=()=>{ try{ const s=im.naturalWidth; res([ch,[1,1.12,1.25,1.4].map(z=>{ const c=s/z,o=(s-c)/2; return featOf(im,o,o,c,c); })]); }catch(e){ res(null); } };
-    im.onerror=()=>res(null); im.src=iconUrl(ch); }))).then(l=>Object.fromEntries(l.filter(Boolean)));
-  return SHOTT; }
-function matchIcon(f,T){ const out=[]; for(const ch in T){ let b=-1; for(const t of T[ch]){ let s=0; for(let i=0;i<f.length;i++) s+=f[i]*t[i]; if(s>b) b=s; } out.push({ch,s:b}); }
-  return out.sort((a,b)=>b.s-a.s).slice(0,3); }
-async function ocrWorker(){ if(OCRW) return OCRW;
-  if(!window.Tesseract) await new Promise((res,rej)=>{ const s=document.createElement("script"); s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js"; s.onload=res; s.onerror=rej; document.head.appendChild(s); });
-  const w=await Tesseract.createWorker("eng"); await w.setParameters({tessedit_pageseg_mode:"7"}); OCRW=w; return w; }
-// textutklipp -> svartvit bild för OCR. G = global justering (skala + förskjutning), mode = tröskel-variant
-function txtCanvas(img,[x1,y1,x2,y2],G,mode){
-  const X=v=>(v*G.s+G.dx)*G.fx, Y=v=>(v*G.s+G.dy)*G.fy;
-  const c=document.createElement("canvas"); c.width=Math.round((x2-x1)*3); c.height=Math.round((y2-y1)*3); const g=c.getContext("2d",{willReadFrequently:true});
-  g.imageSmoothingQuality="high"; g.drawImage(img,X(x1),Y(y1),X(x2)-X(x1),Y(y2)-Y(y1),0,0,c.width,c.height);
-  const d=g.getImageData(0,0,c.width,c.height), L=new Float32Array(d.data.length/4), S=new Float32Array(L.length);
-  for(let i=0,j=0;i<d.data.length;i+=4,j++){ const r=d.data[i],gg=d.data[i+1],b=d.data[i+2]; L[j]=.299*r+.587*gg+.114*b; S[j]=Math.max(r,gg,b)-Math.min(r,gg,b); }
-  let th=105; if(mode===3){ const so=Float32Array.from(L).sort(); th=so[Math.floor(so.length*.82)]; }
-  for(let j=0;j<L.length;j++){ const on=mode===1?(L[j]>130&&S[j]<60):mode===2?L[j]>160:L[j]>th; const v=on?0:255; d.data[j*4]=d.data[j*4+1]=d.data[j*4+2]=v; }
-  g.putImageData(d,0,0); return c; }
-function lev(a,b){ const d=Array.from({length:b.length+1},(_,i)=>i); for(let i=1;i<=a.length;i++){ let p=d[0]; d[0]=i; for(let j=1;j<=b.length;j++){ const t=d[j]; d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1)); p=t; } } return d[b.length]; }
-function champFromText(t){ const q=norm(t||""); if(q.length<3) return null; if(ALIAS[q]) return ALIAS[q];
-  let best=null,bd=99; for(const c of CHAMPS){ const d=lev(q,norm(c)); if(d<bd){ bd=d; best=c; } }
-  return best&&bd<=Math.max(1,Math.floor(norm(best).length*.25))?best:null; }
-function roleFromText(t){ const q=norm(t||""); const m=[["top",0],["jungle",1],["mid",2],["bottom",3],["bot",3],["adc",3],["support",4],["utility",4]].find(([k])=>q.startsWith(k)); return m?m[1]:-1; }
-const shotSt=(t,busy)=>{ document.getElementById("shotst").textContent=t; document.getElementById("shotbox").classList.toggle("busy",!!busy); };
-function clearSlot(i){ const sl=document.querySelector(`.slot[data-idx="${i}"]`); bans[i]=null; if(!sl) return; const inp=sl.querySelector("input"); inp.value=""; inp.readOnly=false; sl.classList.remove("filled"); }
-// Alla 20 rutor (10 bans + 10 picks) i referenskoordinater
-const SLOTS=[...SHOT.bans.map((x,i)=>({x,y:SHOT.banY,r:SHOT.banR,ban:true,i})),
-  ...[0,1,2,3,4].map(k=>({x:SHOT.allyX,y:SHOT.rowY(k),r:SHOT.picR,ally:true,k})),
-  ...[0,1,2,3,4].map(k=>({x:SHOT.enemyX,y:SHOT.rowY(k),r:SHOT.picR,enemy:true,k}))];
-// bästa träff bland en delmängd champs (snabbt)
-function subBest(f,C){ let b=-1,ch=null; for(const [n,ts] of C) for(const t of ts){ let v=0; for(let i=0;i<f.length;i++) v+=f[i]*t[i]; if(v>b){ b=v; ch=n; } } return [b,ch]; }
-const tick=()=>new Promise(r=>setTimeout(r,0));
-async function readShot(blob){
-  shotSt("Läser skärmdumpen…",true);
-  let img; try{ img=await createImageBitmap(blob); }catch(e){ shotSt("Kunde inte läsa bilden."); return; }
-  if(Math.abs(img.width/img.height-SHOT.W/SHOT.H)>.07){ shotSt("Bilden är inte bara LoL-fönstret – ta om den med Alt+PrtSc eller Win+Shift+S → Fönster."); return; }
-  const [T,W]=await Promise.all([shotTemplates().catch(()=>({})), ocrWorker().catch(()=>null)]);
-  const fx=img.width/SHOT.W, fy=img.height/SHOT.H;
-  const F=(x,y,r,G)=>featOf(img,((x-r)*G.s+G.dx)*fx,((y-r)*G.s+G.dy)*fy,2*r*G.s*fx,2*r*G.s*fy);
-  const G0={s:1,dx:0,dy:0}, hasT=Object.keys(T).length>0;
-  let G=G0; const fin=[];
-  if(hasT){
-    // 1) kandidat-champs per ruta: grovt rutnät runt förväntad plats
-    shotSt("Letar efter champs…",true); await tick();
-    const C=SLOTS.map(o=>{ const u={}; for(const dx of [-12,-6,0,6,12]) for(const dy of [-12,-6,0,6,12])
-        matchIcon(F(o.x+dx,o.y+dy,o.r,G0),T).forEach(m=>{ if(!(m.ch in u)||m.s>u[m.ch]) u[m.ch]=m.s; });
-      return Object.entries(u).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([n])=>[n,T[n]]); });
-    // 2) global justering: hur skärmdumpen är förskjuten/skalad mot referensen
-    shotSt("Justerar bilden…",true); await tick();
-    let best={v:-9};
-    for(const sc of [.97,1,1.03]) for(let dx=-14;dx<=14;dx+=2) for(let dy=-14;dy<=14;dy+=2){ const g={s:sc,dx,dy};
-      const v=SLOTS.map((o,i)=>subBest(F(o.x,o.y,o.r,g),C[i])[0]).sort((a,b)=>b-a).slice(0,12).reduce((t,x)=>t+x,0)/12;
-      if(v>best.v) best={v,g}; }
-    G=best.g;
-    // 3) finjustera varje ruta för sig och kör full jämförelse på bästa platsen
-    SLOTS.forEach((o,i)=>{ let bb={v:-9};
-      for(const rs of [.9,1,1.1]) for(let dx=-3;dx<=3;dx++) for(let dy=-3;dy<=3;dy++){ const v=subBest(F(o.x+dx/G.s,o.y+dy/G.s,o.r*rs,G),C[i])[0]; if(v>bb.v) bb={v,dx,dy,rs}; }
-      const m=matchIcon(F(o.x+bb.dx/G.s,o.y+bb.dy/G.s,o.r*bb.rs,G),T), s1=m[0]?m[0].s:0, s2=m[1]?m[1].s:0;
-      fin[i]={ch:(s1>=.85&&s1-s2>=.15)||(s1>=.8&&s1-s2>=.25)?m[0].ch:null,s:s1,top:m.slice(0,3).map(x=>x.ch)}; });
-  } else SLOTS.forEach((o,i)=>fin[i]={ch:null,s:0,top:[]});
-  const GG={s:G.s,dx:G.dx,dy:G.dy,fx,fy};
-  // OCR med flera tröskel-varianter tills något matchar
-  const ocrTry=async(box,parse)=>{ if(!W) return null; for(const mode of [0,1,3,2]){ try{ const t=(await W.recognize(txtCanvas(img,box,GG,mode))).data.text.trim(); const v=parse(t); if(v!=null&&v!==-1) return v; }catch(e){} } return null; };
-  // champnamn från text, men godta också en ikon-kandidat som liknar texten
-  const nameOr=async(box,f)=>{ if(f.ch) return f.ch; shotSt("Läser namn…",true);
-    return await ocrTry(box,t=>{ const c=champFromText(t); if(c) return c; const q=norm(t); return f.top.find(n=>q.length>=3&&lev(q.slice(0,norm(n).length+1),norm(n))<=Math.ceil(norm(n).length*.4))||null; }); };
-  const rows=[];
-  SLOTS.forEach((o,i)=>{ if(o.ban&&fin[i].ch) rows.push({idx:o.i,ch:fin[i].ch,ban:true}); });
-  const al=[];
-  for(const [i,o] of SLOTS.entries()){ if(!o.ally) continue;
-    const ch=await nameOr([155,132+100*o.k,290,150+100*o.k],fin[i]); if(!ch) continue;
-    const role=await ocrTry(SHOT.allyRole(o.k),t=>roleFromText(t)); al.push({ch,role:role==null?-1:role}); }
-  const used=new Set(); al.forEach(a=>{ if(a.role>=0&&!used.has(a.role)) used.add(a.role); else a.role=-1; });
-  const noRole=al.filter(a=>a.role<0), guess=enemyRoles(noRole.map(a=>a.ch));
-  noRole.forEach(a=>{ let r=guess[a.ch]; if(r===undefined||used.has(r)) r=[0,1,2,3,4].find(x=>!used.has(x)); if(r!==undefined){ a.role=r; used.add(r); } });
-  al.filter(a=>a.role>=0).forEach(a=>rows.push({idx:10+a.role,ch:a.ch}));
-  for(const [i,o] of SLOTS.entries()){ if(!o.enemy) continue; const ch=await nameOr(SHOT.enemyName(o.k),fin[i]); if(ch) rows.push({idx:15+o.k,ch}); }
-  // fyll i: skriver över rutans innehåll; en pickad champ flyttas om den låg i fel ruta. Samma champ får vara bannad av båda lagen.
-  const done=new Set();
-  rows.forEach(r=>{ const key=(r.ban?(r.idx<5?"b0":"b1"):"p")+r.ch; if(done.has(key)) return; done.add(key);
-    if(!r.ban) bans.forEach((b,i)=>{ if(b===r.ch&&i>=10&&i!==r.idx) clearSlot(i); });
-    clearSlot(r.idx); const sl=document.querySelector(`.slot[data-idx="${r.idx}"]`); if(sl) sl._set(r.ch); });
-  save(); render();
-  const nb=rows.filter(r=>r.ban).length, np=rows.length-nb;
-  shotSt(rows.length?`Klart – ${nb} bans och ${np} picks ifyllda.`:"Hittade inga champs – är det en skärmdump av champ select?");
-}
-document.getElementById("shotfb").addEventListener("click",e=>{ e.stopPropagation(); document.getElementById("shotf").click(); });
-document.getElementById("shotbox").addEventListener("click",()=>document.getElementById("shotbox").focus());
-document.getElementById("shotf").addEventListener("change",e=>{ const f=e.target.files[0]; if(f) readShot(f); e.target.value=""; });
-document.addEventListener("paste",e=>{ if(document.getElementById("tab-draft").hidden) return; const it=[...((e.clipboardData&&e.clipboardData.items)||[])].find(i=>i.type.startsWith("image/")); if(!it) return; e.preventDefault(); readShot(it.getAsFile()); });
-const tabDraft=document.getElementById("tab-draft"); tabDraft.addEventListener("dragover",e=>{ if([...e.dataTransfer.items].some(i=>i.type.startsWith("image/"))) e.preventDefault(); });
-tabDraft.addEventListener("drop",e=>{ const f=[...e.dataTransfer.files].find(f=>f.type.startsWith("image/")); if(!f) return; e.preventDefault(); readShot(f); });
 
 // ---- Ladda data.json (skapas av scripts/update_data.py) ----
 function applyData(){
