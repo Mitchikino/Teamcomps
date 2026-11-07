@@ -422,7 +422,7 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .good{color:#5fd38d!important}.bad{color:#f0c84b!important}
 .tpi .t small,.nx button small,.nx button small.pl,.nx button small.k,.nx button small.w,.btcol .bt button small{color:#e8e2d0}
 .tpi.tg b,.tpi.ctr b{color:inherit}
-.tpi{height:60px}.tpl{max-height:300px}
+.tpi{height:60px}.tpl{max-height:min(70vh,640px)}
 .tpi .nm,.nx button .nm{display:flex;align-items:baseline;gap:6px;min-width:0}
 .tpi .nm b{display:inline;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .nx button .nm b{font-size:18px}
@@ -718,6 +718,8 @@ const COMPS=[
   p:[["Ornn","Sion","Renekton","Poppy","Olaf","Dr. Mundo","Galio","Aatrox","Singed","Cho'Gath"],["Jarvan IV","Skarner","Vi","Nocturne","Sejuani","Xin Zhao","Trundle","Dr. Mundo","Lillia","Cho'Gath"],["Orianna","Syndra","Viktor","Anivia","Ziggs","Swain","Cassiopeia","Ryze","Twisted Fate","Hwei","Zilean"],["Yunara","Lucian","Kog'Maw","Sivir","Jinx","Zeri","Ashe","Varus"],["Lulu","Milio","Seraphine","Braum","Neeko","Karma","Rell","Rakan","Nami","Soraka","Zilean","Poppy"]]},
  {n:"Full Dive",k:"dive",t:"Dive",s:5,w:"Vi R låser backline, Galio R och Ambessa följer. Snöbolla tidigt och dyk när de står isär.",
   p:[["Ambessa","Zaahen","Camille","Olaf","Malphite","Dr. Mundo","Shen","Ornn","Galio"],["Vi","Nocturne","Jarvan IV","Lee Sin","Wukong","Xin Zhao","Sejuani","Diana"],["Ahri","Locke","Aurora","Galio","Akali","Yone","Vex","Orianna","Lissandra","Sylas"],["Kai'Sa","Kalista","Sivir","Jhin","Lucian","Draven","Ashe","Xayah"],["Renata Glasc","Rakan","Nautilus","Leona","Rell","Karma","Pyke","Alistar","Nami"]]},
+ {n:"Catch",k:"pick",t:"Pick / catch",s:5,w:"Nocturne R släcker visionen, Bard/Thresh/Blitz eller Ashe R fångar en – Syndra/LeBlanc tar den direkt. Ta objektivet 5 mot 4.",
+  p:[["Ambessa","Camille","Garen","K'Sante","Galio"],["Nocturne","Vi","Elise","Maokai","Sejuani","Trundle","Jarvan IV","Ambessa","Cho'Gath","Pantheon"],["Syndra","Ahri","LeBlanc","Lissandra","Malzahar","Twisted Fate","Locke","Galio"],["Ashe","Varus","Miss Fortune","Caitlyn","Jhin"],["Bard","Lux","Nautilus","Blitzcrank","Thresh","Pantheon"]]}
 ];
 const POOL=new Set(COMPS.flatMap(c=>c.p.flat()));
 
@@ -996,7 +998,7 @@ function aimEdit(cell,r,ri,getRank,taken){
   const open=()=>{ if(dd) dd.remove(); dd=null; const q=norm(inp.value), a=ALIAS[q];
     const ranked=getRank().map(o=>o.ch);
     opts=q?[...new Set([...(a&&pool.includes(a)?[a]:[]),...pool.filter(c=>norm(c).startsWith(q)),...pool.filter(c=>norm(c).includes(q))])].slice(0,10)
-          :[...new Set([...ranked,...listed])].slice(0,10);
+          :[...new Set([...ranked,...listed])];
     if(AIMX[ri]&&!q) opts=["__reset",...opts.filter(c=>c!==AIMX[ri])];
     hi=0; if(!opts.length) return;
     dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
@@ -1043,7 +1045,9 @@ const COMPX={
  "Front-to-back":{win:"Ni har mer räckvidd och kontroll i en rak fight – låt dem gå in och straffa.",risk:"Flanker och dive på Cassio. Svag om ni tappar vision runt objektiv.",fight:"Mid–late, runt drake/Baron när de måste gå genom en smal yta.",obj:"Drakar via zonkontroll, Baron när Cassio har 2–3 items.",tip:"Cassio står bakom Sion, aldrig först. Spara Renata R till deras engage.",
   bot:"Yunara/Kog + Lulu: Lulu W/R gör carryn odykbar medan den skalar. Lucian + Milio ger säkra trades och range. Ashe/Varus + Seraphine när ni vill ha mer CC.",js:"Renata R får deras team att slåss mot varann – J4 R fångar dem samtidigt. Vi R tar ut den som flashar ut.",tm:"Sion håller fronten medan Cassio/Syndra trycker lanen – Sion ultar in, Cassio R stunnar alla som vänder sig om.",pro:"Cassiopeia och Syndra bland de mest contested champs på Worlds 2026; Renata ~70 % presence."},
  "Full Dive":{win:"Snöbolla tidigt och dyk backline – Vi R och Kai'Sa/Kalista tar ADC innan den gör skada.",risk:"Peel (Lulu), anti-dash (Poppy) och tjocka tanks. Faller av om ni inte ligger före.",fight:"Mid game (1–2 items) när de står isär eller efter en pick.",obj:"Grubs, Herald och tower dives.",tip:"Gå in samtidigt, fokusa ADC. Dyk inte utan wave.",
-  bot:"Kalista + Renata: Kalista R kastar in Renata, Q-kastet följer direkt. Xayah + Rakan: gemensam recall och W/R-engage. Kai'Sa R följer Vi-dyket gratis.",js:"Vi Q + Rakan W = dubbel knock-up. Pyke/Rakan roamar mid när Vi gankar – 3v2 vid lvl 4–6.",tm:"Galio R följer Ambessa/Zaahen när de dyker – top/mid kan 2v2:a vid sidlane. Akali är högrisk (23 % WR på Worlds).",pro:"Vi 76 % presence och 67 % WR på Worlds 2026; Galio 71 % WR."}
+  bot:"Kalista + Renata: Kalista R kastar in Renata, Q-kastet följer direkt. Xayah + Rakan: gemensam recall och W/R-engage. Kai'Sa R följer Vi-dyket gratis.",js:"Vi Q + Rakan W = dubbel knock-up. Pyke/Rakan roamar mid när Vi gankar – 3v2 vid lvl 4–6.",tm:"Galio R följer Ambessa/Zaahen när de dyker – top/mid kan 2v2:a vid sidlane. Akali är högrisk (23 % WR på Worlds).",pro:"Vi 76 % presence och 67 % WR på Worlds 2026; Galio 71 % WR."},
+ "Catch":{win:"Fånga en utan vision och ta objektivet 5 mot 4 innan de hinner regruppera.",risk:"Grupperade lag med bra vision, cleanse/QSS och tanks som överlever första CC:n.",fight:"Mid game runt drake/Herald när de måste gå in i mörka delar av kartan.",obj:"Drakar och torn direkt efter en pick – Baron efter två.",tip:"Vision och svep före objektiv. Gå bara när fångsten sitter, jaga inte in i fog.",
+  bot:"Ashe/Varus + Thresh/Naut: Ashe R eller Varus R följs av hook direkt. Caitlyn + Lux: Lux-root låter Cait lägga trap under målet. Jhin W rootar alla Bard/Lux redan träffat.",js:"Nocturne R + Bard/Thresh: släck vision och kasta in supporten. Elise cocoon + Blitz/Naut-hook på samma mål.",tm:"Ambessa går in efter första CC:n. Twisted Fate R och Nocturne R ger globala picks på sidlanes; Malzahar/Lissandra R håller kvar den som fångats."}
 };
 const xinfo=n=>{ const x=COMPX[n]; if(!x) return ""; return `<dl><dt>Wincon</dt><dd>${x.win}</dd><dt>Risker</dt><dd>${x.risk}</dd><dt>Fighta</dt><dd>${x.fight}</dd><dt>Objektiv</dt><dd>${x.obj}</dd><dt>Tips</dt><dd>${x.tip}</dd>${x.bot?`<dt>Bot</dt><dd>${x.bot}</dd>`:""}${x.js?`<dt>Jgl+Sup</dt><dd>${x.js}</dd>`:""}${x.tm?`<dt>Top+Mid</dt><dd>${x.tm}</dd>`:""}${x.pro?`<dt>Pro</dt><dd>${x.pro}</dd>`:""}</dl>`; };
 function evalComp(c,gone,ours,enemy=[]){
@@ -1139,7 +1143,7 @@ function tipItems(list,X,ri,onPick){ const fr=document.createDocumentFragment();
 function roleCell(r,x,ri,X,alive,taken,eager,edit){
   const cell=document.createElement("div"); cell.className="col cr";
   const locked=!!X.ours[ri]; let ranked=null;
-  const getRank=()=>ranked||(ranked=roleCands(ri,X,{c:r.c},alive).slice(0,10));
+  const getRank=()=>ranked||(ranked=roleCands(ri,X,{c:r.c},alive).slice(0,Math.max(10,(r.c.p[ri]||[]).length)));
   let show=x.c;
   if(eager&&!locked&&!r.c.custom){ const f=getRank().find(o=>!taken.has(o.ch)); if(f) show=f.ch; }
   if(edit&&!locked&&AIMX[ri]) show=AIMX[ri];
@@ -1158,7 +1162,7 @@ function roleCell(r,x,ri,X,alive,taken,eager,edit){
       const fill=()=>{ const tpl=menu.querySelector(".tpl"); if(tpl.childElementCount) return;
         let L=getRank().filter(o=>o.ch!==show);
         if(L.length<3) L=[...L,...roleCands(ri,X,null,alive).filter(o=>o.ch!==show&&!L.some(y=>y.ch===o.ch))];
-        L=L.slice(0,8);
+        L=L.slice(0,Math.max(8,(r.c.p[ri]||[]).length));
         if(L.length) tpl.appendChild(tipItems(L,X,ri,c=>{ AIMX[ri]=c; saveAimx(); render(); }));
         else tpl.innerHTML='<small class="note">Inga fler alternativ.</small>'; };
       cell.addEventListener("mouseenter",fill); cell.addEventListener("focusin",fill); } }
@@ -1287,6 +1291,10 @@ const DUO_TIP={
  "Miss Fortune|Rakan":"Rakan R-charm låser alla i MF R",
  "Samira|Nautilus":"Samira behöver engage – Naut ger den direkt",
  "Yunara|Lulu":"Lulu skyddar Yunara medan hon skalar",
+ "Caitlyn|Lux":"Lux Q-root låter Caitlyn lägga trap rakt under målet",
+ "Ashe|Thresh":"Ashe R/slow sätter upp hooken, lantern drar in Ashe säkert",
+ "Varus|Thresh":"Varus R-kedja följs av Thresh-hook och flay",
+ "Jhin|Lux":"Lux-binding räknas som slow/CC – Jhin W rootar direkt",
  "Lucian|Milio":"Milio ger range på Lucian-autos och cleanse – säkra trades i lane",
  "Smolder|Milio":"Milio-range och cleanse låter Smolder skala säkert"};
 const DUO_BAD={
