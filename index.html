@@ -538,6 +538,7 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 #list .ch.crh{min-height:61px;gap:8px}
 #list .crh .ic.xs{width:40px;height:40px;font-size:40px;border-radius:4px}
 #list .crh .rico{width:22px;height:22px}
+.ln small.g15{display:block;color:var(--gold);margin-top:2px}
 </style>
 </head>
 <body>
@@ -823,7 +824,9 @@ function synRaw(a,b){ if(!DATA||!DATA.champions) return null; const f=(p,q)=>((D
 function pickScore(ch,ri,X,target,alive){
   let v=0, laneD=0; const plan=[], warn=[]; const opp=X.them[ri];
   if(opp){ const r=estWR(ch,opp), d=r.wr-50; laneD=d; v+=d*(r.src==="stat"?4:3);
-    const pc=r.d?` (${wrTip(r.d)})`:r.src==="stat"?` (${r.wr.toFixed(1)} %)`:""; if(d>=1) plan.push(`Vinner lane mot ${opp}${pc}`); else if(d<=-1) warn.push(`Förlorar lane mot ${opp}${pc}`); }
+    const pc=r.d?` (${wrTip(r.d)})`:r.src==="stat"?` (${r.wr.toFixed(1)} %)`:""; const gt=r.d&&r.d.gd!=null&&Math.abs(r.d.gd)>=150?`, ${sgn(r.d.gd)} guld @15`:"";
+    if(d>=1) plan.push(`Vinner lane mot ${opp}${pc}${gt}`); else if(d<=-1) warn.push(`Förlorar lane mot ${opp}${pc}${gt}`);
+    else if(gt) (r.d.gd>0?plan:warn).push(`Jämn WR mot ${opp} men ${sgn(r.d.gd)} guld @15`); }
   if(ri>=3){ const o2=X.them[ri===3?4:3]; if(o2) v+=(estWR(ch,o2).wr-50)*1.5; }
   const cv=champVs(ch,X.enemy); v+=cv.v*1.5;
   const syn=X.oursP.filter(p=>synW(p,ch));
@@ -1179,12 +1182,13 @@ function diversify(list,n){ const out=[], seen={}; const pool=list.map(o=>({o,h:
   return out; }
 
 // ---- lane-insikt: våra picks mot deras (gissade) roller ----
-const SRCN={o:"OP.GG",l:"Lolalytics"}, MU_MIN=20;
+const SRCN={o:"OP.GG",l:"Lolalytics",u:"U.GG"}, MU_MIN=20;
 function muD(a,b){ // a:s WR mot b, viktad efter games från OP.GG + Lolalytics
   if(typeof DATA==="undefined"||!DATA||!DATA.champions) return null;
   const A=DATA.champions[a]||{}, B=DATA.champions[b]||{}, parts=[];
-  for(const s of ["o","l"]){ const x=A.mu&&A.mu[b]&&A.mu[b][s], y=B.mu&&B.mu[a]&&B.mu[a][s]; let p=null;
-    if(x&&(!y||x[1]>=y[1])) p={s,wr:x[0],g:x[1]}; else if(y) p={s,wr:100-y[0],g:y[1]};
+  for(const s of ["o","l","u"]){ const x=A.mu&&A.mu[b]&&A.mu[b][s], y=B.mu&&B.mu[a]&&B.mu[a][s]; let p=null;
+    const neg=v=>v==null?null:-v; // U.GG: [wr, games, guld@15, xp@15, cs@15]
+    if(x&&(!y||x[1]>=y[1])) p={s,wr:x[0],g:x[1],gd:x[2],xd:x[3],cd:x[4]}; else if(y) p={s,wr:100-y[0],g:y[1],gd:neg(y[2]),xd:neg(y[3]),cd:neg(y[4])};
     if(p&&p.g>MU_MIN) parts.push(p); }
   if(!parts.length){ // äldre data.json utan "mu": använd counters/beats (har games + källa)
     const best={}, add=(x,wr)=>{ if(!x||!(x.games>MU_MIN)) return; const k=x.src==="lolalytics"?"l":"o"; if(!best[k]||x.games>best[k].g) best[k]={s:k,wr,g:x.games}; };
@@ -1193,9 +1197,12 @@ function muD(a,b){ // a:s WR mot b, viktad efter games från OP.GG + Lolalytics
     x=f(B.counters,a); add(x,x&&100-x.wr); x=f(B.beats,a); add(x,x&&(x.wr<50?x.wr:100-x.wr));
     parts.push(...Object.values(best)); }
   if(!parts.length) return null;
-  const g=parts.reduce((t,p)=>t+p.g,0); return {wr:parts.reduce((t,p)=>t+p.wr*p.g,0)/g,g,parts};
+  const g=parts.reduce((t,p)=>t+p.g,0), u=parts.find(p=>p.s==="u"&&p.gd!=null);
+  return {wr:parts.reduce((t,p)=>t+p.wr*p.g,0)/g,g,parts,gd:u?u.gd:null,xd:u?u.xd:null,cd:u?u.cd:null};
 }
-const srcTxt=d=>d.parts.map(p=>`${SRCN[p.s]} ${p.wr.toFixed(1)} % · ${p.g.toLocaleString("sv-SE")} games`).join(" | ");
+const sgn=(v,d=0)=>(v>0?"+":"")+v.toFixed(d);
+const at15=d=>d&&d.gd!=null?`${sgn(d.gd)} guld @15${d.cd!=null?` · ${sgn(d.cd,1)} cs`:""}${d.xd!=null?` · ${sgn(d.xd)} xp`:""}`:"";
+const srcTxt=d=>d.parts.map(p=>`${SRCN[p.s]} ${p.wr.toFixed(1)} % · ${p.g.toLocaleString("sv-SE")} games`).join(" | ")+(d.gd!=null?` | U.GG @15: ${at15(d)}`:"");
 const wrTip=d=>`<span class="wrh" tabindex="0">${d.wr.toFixed(1)} %<span class="wrs">${srcTxt(d)}</span></span>`;
 function mwr(a,b){ // a:s WR mot b ur data.json, annars null
   if(typeof DATA==="undefined"||!DATA||!DATA.champions) return null;
@@ -1216,7 +1223,7 @@ function renderLanes(ours){
   Object.entries(eR).forEach(([c,r])=>{ them[r]=c; });
   const rows=[]; let sum=0,n=0;
   const one=(ri,label)=>{ const a=ours[ri], b=them[ri]; if(!a||!b) return {ri,label,a,b};
-    const m=mwr(a,b); if(m==null) return {ri,label,a,b}; sum+=m; n++; const d=muD(a,b); return {ri,label,a,b,wr:m,src:"stat",tip:d?srcTxt(d):""}; };
+    const m=mwr(a,b); if(m==null) return {ri,label,a,b}; sum+=m; n++; const d=muD(a,b); return {ri,label,a,b,wr:m,src:"stat",tip:d?srcTxt(d):"",g15:at15(d)}; };
   rows.push(one(0,"Top")); rows.push(one(1,"Jungle")); rows.push(one(2,"Mid"));
   // bot 2v2: ADC vs ADC, sup vs sup + duo-synergi
   const ad=ours[3],sp=ours[4],ead=them[3],esp=them[4];
@@ -1226,7 +1233,8 @@ function renderLanes(ours){
     if(parts.length){ let w=parts.reduce((t,y)=>t+y,0)/parts.length;
     const tp=[[ad,ead],[sp,esp]].map(([x,y])=>{ const d=x&&y&&muD(x,y); return d?`${x} vs ${y}: ${srcTxt(d)}`:""; }).filter(Boolean).join("<br>");
     const syn=(ad&&sp?synW(ad,sp):0)-(ead&&esp?synW(ead,esp):0); w+=syn*1.2;
-    sum+=w; n++; rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + "),wr:w,src,duo:syn,tip:tp}); } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
+    const g15=[[ad,ead],[sp,esp]].map(([x,y])=>{ const d=x&&y&&muD(x,y); return d&&d.gd!=null?`${x}: ${sgn(d.gd)} g`:""; }).filter(Boolean).join(" · ");
+    sum+=w; n++; rows.push({g15:g15?g15+" @15":"",ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + "),wr:w,src,duo:syn,tip:tp}); } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
   } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
   box.innerHTML=rows.map(r=>{
     if(r.wr==null) return `<div class="ln"><div class="h">${r.label}</div><div class="lnempty">${r.a||"?"} <span class="vs">vs</span> ${r.b||"?"}</div></div>`;
@@ -1234,7 +1242,7 @@ function renderLanes(ours){
     return `<div class="ln ${cls}"><div class="h">${r.label}<b>${r.wr.toFixed(1)} %</b></div>
       <div class="m"><span class="nm">${r.a}</span><span class="vs">vs</span><span class="nm">${r.b}</span></div>
       <div class="bar"><i style="width:${Math.max(5,Math.min(95,(r.wr-40)*5))}%"></i></div>
-      <small>${txt} · ${r.src==="stat"?"statistik":"uppskattat från spelstil"}${r.duo?` · duo ${r.duo>0?"+":""}${r.duo}`:""}</small>${r.tip?`<small class="wrs">${r.tip}</small>`:""}</div>`;
+      <small>${txt} · ${r.src==="stat"?"statistik":"uppskattat från spelstil"}${r.duo?` · duo ${r.duo>0?"+":""}${r.duo}`:""}</small>${r.g15?`<small class="g15">${r.g15}</small>`:""}${r.tip?`<small class="wrs">${r.tip}</small>`:""}</div>`;
   }).join("")+(n?`<div class="lnsum">Snitt: <b>${(sum/n).toFixed(1)} %</b>${(()=>{ const done=rows.filter(r=>r.wr!=null); if(done.length<2) return "";
       const lo=done.reduce((a,b)=>a.wr<b.wr?a:b), hi=done.reduce((a,b)=>a.wr>b.wr?a:b);
       return `<br>Starkast: <b>${hi.label}</b> – spela runt den.<br>Svagast: <b>${lo.label}</b> – ge jungle-hjälp eller spela säkert.`; })()}</div>`:rows.some(r=>r.a&&r.b)?"":`<div class="lnempty">Picka champs på båda sidor för att se lane-matchups.</div>`);
