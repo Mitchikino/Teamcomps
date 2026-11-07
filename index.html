@@ -539,6 +539,68 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 #list .crh .ic.xs{width:40px;height:40px;font-size:40px;border-radius:4px}
 #list .crh .rico{width:22px;height:22px}
 .ln small.g15{display:block;color:var(--gold);margin-top:2px}
+
+/* ---- enhetliga knappar – mall: siktad comp ---- */
+:root{--btnH:56px;--btnIc:36px}
+.aimc .ch.crh,#list .ch.crh,.btcol .bt button,.btcol .itb,.board .pick{min-height:var(--btnH);height:var(--btnH);box-sizing:border-box;border-radius:4px}
+#list .ch.crh{padding:7px 10px;gap:9px;font-size:21px}
+#list .crh .ic.xs,.btcol .bt .ic.sm{width:var(--btnIc);height:var(--btnIc);font-size:var(--btnIc);border-radius:4px;margin-right:0}
+#list .crh .rico{width:32px;height:32px;padding:2px}
+.btcol .bt button,.btcol .itb{display:flex;align-items:center;gap:9px;padding:7px 10px;width:100%}
+.btcol .bt button b,.btcol .itb b{display:block;font-size:19px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btcol .bt button>span:last-child,.btcol .itb>span:last-child{min-width:0;flex:1}
+.btcol .itb{background:linear-gradient(180deg,rgba(36,48,112,.9),rgba(14,18,54,.92));border:1px solid #33407a;border-left:3px solid #7ff0c0;color:var(--ink);cursor:help}
+.btcol .itb:hover,.btcol .itb:focus-visible{border-color:#7ff0c0;outline:none}
+.btcol .itb small{display:block;font-size:11px;color:#e8e2d0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.btcol .itb .iis{display:flex;flex:none}
+.btcol .itb .ic.ii{width:var(--btnIc);height:var(--btnIc);border-radius:4px}
+.btcol .itb .iis .ic.ii+.ic.ii{margin-left:-14px;box-shadow:-2px 0 4px rgba(0,0,0,.6)}
+.btcol .itb .ic.ii img{transform:none}
+.board .pick{padding:0 10px;gap:0 9px;grid-template-columns:var(--btnIc) 42px 1fr}
+.board .us .pick{grid-template-columns:var(--btnIc) 76px 1fr}
+.board .pick .pf{width:var(--btnIc);height:var(--btnIc)}
+.board .banrow{display:flex;gap:6px;justify-content:space-between}
+.board .ban{width:var(--btnH);height:var(--btnH);flex:none;padding:0;justify-content:center;box-sizing:border-box}
+.board .ban .pf{width:40px;height:40px}
+.board .banrow .ban input{position:absolute;inset:0;width:100%;height:100%;opacity:0;font-size:13px;padding:0 3px;z-index:2}
+.board .banrow .ban input:focus{opacity:1;background:rgba(11,18,54,.96)!important;border-color:var(--gold)!important}
+.board .ban .dd{min-width:190px}
+.board .ban.filled:hover::after{align-items:center;padding-top:0;font-size:34px;line-height:1}
+
+/* ---- sikt-rutan: alltid framme, sök per roll ---- */
+.aimwrap{display:flex;flex-direction:column;gap:8px;background:radial-gradient(120% 70% at 50% 0%,rgba(40,54,128,.88) 0%,rgba(12,16,48,.92) 72%);border:1px solid #34407c;border-top:3px solid #7ff0c0;border-radius:8px;padding:10px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.aimwrap .comp.aimc{background:none!important;border:0!important;padding:0!important;backdrop-filter:none!important;box-shadow:none!important}
+.aimh{display:flex;justify-content:space-between;align-items:center;gap:6px;font:400 17px/1.2 Marcellus,Georgia,serif;letter-spacing:.06em;text-transform:uppercase;color:#7ff0c0}
+.aimclr{font:inherit;font-family:inherit;font-size:12.5px;letter-spacing:0;text-transform:none;border:1px solid #33407a;background:#121c4a;color:var(--ink);border-radius:4px;padding:3px 9px;cursor:pointer}
+.aimclr:hover:not(:disabled){border-color:#7ff0c0}.aimclr:disabled{opacity:.4;cursor:default}
+.aims{display:grid;grid-template-columns:1fr;gap:5px}
+.aimi{position:relative;display:flex;align-items:center;gap:7px;height:40px;box-sizing:border-box;padding:0 8px;background:linear-gradient(180deg,rgba(36,48,112,.9),rgba(14,18,54,.92));border:1px solid #33407a;border-radius:4px}
+.aimi.set{border-left:3px solid #7ff0c0}
+.aimi:focus-within{border-color:#7ff0c0}
+.aimi .rico{width:24px;height:24px;flex:none;color:#e8e2d0}
+.aimi .ic.xs{width:26px;height:26px;font-size:26px;margin:0;border-radius:3px}
+.aimi input{flex:1;min-width:0;background:transparent;border:0;color:var(--ink);font:inherit;font-size:16px;outline:none}
+.aimi input::placeholder{color:#7d88b8}
+.aimi .ax{border:0;background:none;color:#a9b4e0;font-size:20px;line-height:1;cursor:pointer;padding:0 2px}
+.aimi .ax:hover{color:#fff}
+.aimi .dd{left:0;right:0;top:100%;z-index:40}
+.aimi .dd .ic.xs{width:24px;height:24px;font-size:24px}
+.aimnote{font-size:13px;color:var(--muted);margin:0;line-height:1.35}
+
+/* ---- lanes: guld@15 synligt, detaljer vid hover ---- */
+.ln .wrs{display:none;margin-top:5px;font-size:11.5px;color:#e8e2d0}
+.ln:hover .wrs,.ln:focus-within .wrs{display:block}
+.ln{cursor:default}
+.dt{display:flex;gap:8px;justify-content:space-between;align-items:flex-start;padding-top:4px;border-top:1px solid #33407a}
+.wrh .wrs .dt{border-top:0;padding-top:2px}
+.dsrc{display:flex;flex-direction:column;gap:2px;min-width:0}
+.sr{display:grid;grid-template-columns:58px 44px auto;gap:5px;font-size:11.5px;line-height:1.35;white-space:nowrap}
+.sr i{font-style:normal;color:#a9b4e0}
+.sr b{color:#fff!important;font-size:11.5px!important;font-weight:700;font-variant-numeric:tabular-nums;text-align:right}
+.sr em{font-style:normal;color:#8d9aa8;font-variant-numeric:tabular-nums}
+.d15{display:flex;flex-direction:column;align-items:flex-end;gap:2px;font-size:11.5px;line-height:1.35;color:var(--gold);white-space:nowrap;font-variant-numeric:tabular-nums}
+.dpair{display:block;margin:5px 0 2px;font-size:11px;color:#d6b4ff;text-transform:none;letter-spacing:0}
+.dpair:first-child{margin-top:0}
 </style>
 </head>
 <body>
@@ -553,7 +615,7 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 
   <section class="board" aria-label="Draft">
     <aside class="btcol" aria-label="Ban-tips"><div class="bt" id="bantips"></div></aside>
-    <aside class="aimcol" id="aimcol" aria-label="Siktad comp" hidden></aside>
+    <aside class="aimcol" id="aimcol" aria-label="Siktad comp"></aside>
     <div class="side us">
       <h2>GD</h2>
       <p class="grp">Bans</p>
@@ -850,10 +912,63 @@ function pickScore(ch,ri,X,target,alive){
   return {ch,ri,v,plan,warn,cv,tg,laneD,good,bad,pool:(POOLS[ri]||[]).includes(ch)};
 }
 function roleCands(ri,X,target,alive){ // med mål-comp: bara compens egna champs för rollen, inget utfyllnad
-  const base=target?target.c.p[ri]:CHAMPS;
+  const rp=POOLS[ri]||[], emptyOwn=target&&target.c.custom&&!target.c.p[ri].length; // eget mål, tom roll: spelarens pool
+  const base=emptyOwn?(rp.length?rp:CHAMPS):target?target.c.p[ri]:CHAMPS;
   return base.filter(ch=>playable(ch,ri)).map(ch=>pickScore(ch,ri,X,target,alive))
     .sort((a,b)=>(b.v-a.v)||(b.pool-a.pool)||a.ch.localeCompare(b.ch)); }
 let SELCOMP=(()=>{ try{ const n=localStorage.getItem("tc-selcomp"); return COMPS.some(c=>c.n===n)?n:null; }catch(e){ return null; } })();
+// Eget sikte: valda champs per roll. Med en vald comp ersätter de compens champ för rollen, utan comp blir de ett eget mål.
+let AIMX=(()=>{ try{ const a=JSON.parse(localStorage.getItem("tc-aimx")||"null"); if(Array.isArray(a)&&a.length===5) return a.map(x=>CHAMPS.includes(x)?x:null); }catch(e){} return [null,null,null,null,null]; })();
+const saveAimx=()=>{ try{ localStorage.setItem("tc-aimx",JSON.stringify(AIMX)) }catch(e){} };
+function aimComp(){
+  const base=SELCOMP?COMPS.find(c=>c.n===SELCOMP):null;
+  if(!base&&!AIMX.some(Boolean)) return null;
+  const chosen=AIMX.filter(Boolean);
+  const k=base?base.k:Object.keys(COMPFIT).map(k=>[k,chosen.reduce((s,c)=>s+compFit(k,c),0)]).sort((a,b)=>b[1]-a[1])[0][0];
+  const c=base?{...base}:{n:"Eget mål",k,t:"Eget mål",s:5,w:"Egna champs per roll. Tomma roller får förslag utifrån draften.",custom:true};
+  c.p=[0,1,2,3,4].map(ri=>{ const b=base?base.p[ri]:[], x=AIMX[ri]; return x?[x,...b.filter(y=>y!==x)]:[...b]; });
+  if(base&&chosen.length) c.t=base.t+" · egna val";
+  return c;
+}
+const clearAim=()=>{ AIMX=[null,null,null,null,null]; saveAimx(); setSel(null); };
+function aimInput(ri){
+  const cell=document.createElement("div"); cell.className="aimi"+(AIMX[ri]?" set":"");
+  const cur=AIMX[ri];
+  cell.innerHTML=`${roleIcon(ri)}${cur?icon(cur,"xs"):""}<input type="text" autocomplete="off" spellcheck="false" placeholder="${R[ri]} – sök champ" aria-label="Sikta på champ för ${R[ri]}" value="${cur||""}">${cur?'<button type="button" class="ax" aria-label="Ta bort">×</button>':""}`;
+  const inp=cell.querySelector("input"); let dd=null, hi=0, opts=[];
+  const close=()=>{ if(dd){ dd.remove(); dd=null; } };
+  const set=c=>{ AIMX[ri]=c; saveAimx(); render(); };
+  const open=()=>{ close(); const q=norm(inp.value===cur?"":inp.value);
+    const pool=CHAMPS.filter(c=>playable(c,ri)), a=ALIAS[q];
+    opts=q?[...new Set([...(a&&pool.includes(a)?[a]:[]),...pool.filter(c=>norm(c).startsWith(q)),...pool.filter(c=>norm(c).includes(q))])].slice(0,8)
+          :[...new Set([...(LASTRANK[ri]||[]),...(POOLS[ri]||[])])].filter(c=>pool.includes(c)).slice(0,8);
+    hi=0; if(!opts.length) return;
+    dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
+    opts.forEach((c,k)=>{ const li=document.createElement("li"); if(k===hi) li.className="on";
+      const pl=(POOLS[ri]||[]).includes(c); li.innerHTML=`${icon(c,"xs")}<span>${c}</span>${pl?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>'}`;
+      li.addEventListener("mousedown",e=>{ e.preventDefault(); set(c); }); dd.appendChild(li); });
+    cell.appendChild(dd); };
+  const paint=()=>dd&&dd.querySelectorAll("li").forEach((li,k)=>li.classList.toggle("on",k===hi));
+  inp.addEventListener("focus",()=>{ inp.select(); open(); });
+  inp.addEventListener("input",open);
+  inp.addEventListener("blur",()=>setTimeout(()=>{ close(); inp.value=cur||""; },80));
+  inp.addEventListener("keydown",e=>{
+    if(e.key==="ArrowDown"){ e.preventDefault(); if(!dd) open(); else { hi=Math.min(hi+1,opts.length-1); paint(); } }
+    else if(e.key==="ArrowUp"){ e.preventDefault(); hi=Math.max(hi-1,0); paint(); }
+    else if(e.key==="Enter"&&opts[hi]){ e.preventDefault(); set(opts[hi]); }
+    else if(e.key==="Escape"){ close(); inp.blur(); } });
+  const ax=cell.querySelector(".ax"); if(ax){ ax.addEventListener("mousedown",e=>e.preventDefault()); ax.addEventListener("click",()=>set(null)); }
+  return cell;
+}
+function aimBox(selR,X,alive,taken,sw){
+  const w=document.createElement("div"); w.className="aimwrap";
+  w.innerHTML=`<div class="aimh"><span>Siktat mål</span><button type="button" class="aimclr"${selR?"":" disabled"}>Rensa sikte</button></div><div class="aims"></div>`;
+  const row=w.querySelector(".aims"); R.forEach((_,ri)=>row.appendChild(aimInput(ri)));
+  w.querySelector(".aimclr").addEventListener("click",clearAim);
+  if(selR) w.appendChild(compCard(selR,0,X,alive,taken,true,sw));
+  else { const p=document.createElement("p"); p.className="aimnote"; p.textContent="Sikta på en comp nedan, eller sök champs per roll för ett eget mål."; w.appendChild(p); }
+  return w;
+}
 const setSel=n=>{ SELCOMP=n; try{ n?localStorage.setItem("tc-selcomp",n):localStorage.removeItem("tc-selcomp"); }catch(e){} render(); };
 let SWDISMISS="", NXROLE=-1, LASTX=null, LASTT=null, LASTA=[]; const LASTRANK=[[],[],[],[],[]], LASTRANKO=[[],[],[],[],[]];
 const RICO=[{"S":119,"g":"M18.0 116.7C18.0 116.5 22.6 111.8 28.2 106.2L38.4 96.0L67.2 96.0L96.0 96.0L96.0 67.2L96.0 38.5L106.3 28.2C112.0 22.6 116.9 18.2 117.3 18.6C118.2 19.5 118.2 113.2 117.4 115.4C116.9 116.8 111.5 117.0 67.4 117.0C40.2 117.0 18.0 116.9 18.0 116.7ZM7.5 101.0C10.2 98.2 12.6 96.0 12.9 96.0C13.2 96.0 11.2 98.2 8.5 101.0C5.8 103.8 3.4 106.0 3.1 106.0C2.8 106.0 4.8 103.8 7.5 101.0ZM45.7 75.4C45.3 75.0 45.0 68.2 45.0 60.3L45.0 46.0L59.0 46.0C66.7 46.0 73.3 46.0 73.8 46.0C74.2 46.0 74.5 52.6 74.5 60.8L74.5 75.5L60.4 75.8C52.7 75.9 46.1 75.7 45.7 75.4ZM39.8 25.3C48.2 25.1 61.7 25.1 69.8 25.3C77.9 25.4 71.0 25.6 54.5 25.6C38.0 25.6 31.4 25.4 39.8 25.3ZM93.5 15.0C96.2 12.2 98.6 10.0 98.9 10.0C99.2 10.0 97.2 12.2 94.5 15.0C91.8 17.8 89.4 20.0 89.1 20.0C88.8 20.0 90.8 17.8 93.5 15.0ZM53.0 4.0L1.5 3.5L52.7 3.2C86.0 3.1 104.1 3.3 104.5 4.0C104.8 4.5 105.0 4.9 104.8 4.8C104.6 4.6 81.3 4.3 53.0 4.0Z","h":"M2.2 54.8L2.5 4.5L52.8 4.2C80.4 4.1 103.0 4.3 103.0 4.8C103.0 5.2 98.6 9.9 93.2 15.3L83.5 25.0L54.0 25.2L24.5 25.5L24.2 55.0L24.0 84.5L13.8 94.7C8.1 100.4 3.2 105.0 2.8 105.0C2.3 105.0 2.1 82.4 2.2 54.8Z"},{"S":130,"g":"M48.5 108.8L41.5 101.5L48.8 108.5C55.5 114.9 56.5 116.0 55.7 116.0C55.6 116.0 52.3 112.7 48.5 108.8ZM102.3 86.0C102.3 82.4 102.5 81.0 102.7 82.8C102.9 84.5 102.9 87.5 102.7 89.2C102.5 91.0 102.3 89.6 102.3 86.0Z","h":"M61.2 122.2C55.9 114.9 42.3 101.4 34.8 95.8C29.6 92.1 29.0 91.2 29.0 88.1C29.0 86.1 28.1 79.7 27.1 73.8C25.1 62.2 22.2 55.5 14.4 44.3C12.0 40.8 10.3 38.0 10.6 38.0C10.9 38.0 13.0 39.0 15.3 40.1C27.8 46.5 38.2 56.2 43.3 66.4C44.9 69.5 46.4 72.0 46.7 72.0C47.0 72.0 46.9 66.3 46.5 59.2C45.7 44.5 43.2 33.9 36.7 16.5C32.7 5.9 32.4 4.9 34.6 7.5C40.2 14.2 49.4 29.2 55.0 40.5C70.3 71.7 73.6 90.8 68.5 117.7C66.4 128.7 66.1 128.9 61.2 122.2ZM83.0 100.3C83.0 80.6 97.0 53.2 112.2 43.0C118.6 38.8 120.7 38.4 117.3 42.3C114.1 45.9 107.1 58.9 104.8 65.4C103.5 69.4 102.6 75.2 102.2 82.2L101.7 92.9L97.1 96.1C94.6 97.9 90.4 101.4 87.8 103.9L83.0 108.4L83.0 100.3ZM77.5 72.2C77.1 69.8 75.0 64.2 72.7 59.7L68.7 51.6L73.8 42.0C78.7 32.8 96.9 5.6 97.7 6.4C97.9 6.6 96.0 12.2 93.5 18.9C86.7 37.1 84.0 48.0 83.8 56.8C83.7 62.8 83.0 65.8 81.0 70.5L78.3 76.5L77.5 72.2Z"},{"S":120,"g":"M75.8 117.2C52.8 117.1 34.0 116.8 34.0 116.6C34.0 116.4 38.6 111.6 44.1 106.1L54.3 96.0L74.9 95.8L95.5 95.5L95.8 75.0L96.1 54.5L106.5 43.5C112.2 37.5 117.1 32.8 117.5 33.1C117.8 33.4 117.9 52.5 117.8 75.6L117.5 117.5L75.8 117.2ZM3.0 46.8L3.0 4.0L45.0 4.0C68.1 4.0 87.0 4.3 87.0 4.8C87.0 5.2 82.6 9.9 77.2 15.3L67.5 25.0L46.2 25.0L25.0 25.0L25.0 46.2L25.0 67.3L14.0 78.4L3.0 89.5L3.0 46.8ZM25.0 75.5C28.0 72.5 30.7 70.0 30.9 70.0C31.2 70.0 29.0 72.5 26.0 75.5C23.0 78.5 20.3 81.0 20.1 81.0C19.8 81.0 22.0 78.5 25.0 75.5ZM42.0 58.8C44.4 56.1 46.5 54.0 46.7 54.0C47.5 54.0 46.7 54.9 42.2 59.0L37.5 63.5L42.0 58.8ZM55.5 45.0C58.8 41.7 61.7 39.0 61.9 39.0C62.2 39.0 59.8 41.7 56.5 45.0C53.2 48.3 50.3 51.0 50.1 51.0C49.8 51.0 52.2 48.3 55.5 45.0ZM118.2 13.8L118.0 4.0L107.7 4.0C100.9 4.0 96.9 4.4 96.0 5.3C94.8 6.3 94.8 6.2 95.9 4.7C97.6 2.5 117.7 2.1 118.6 4.3C118.9 5.1 118.9 9.7 118.7 14.6L118.4 23.5L118.2 13.8ZM83.0 17.8C87.1 13.3 88.0 12.5 88.0 13.3C88.0 13.5 85.9 15.6 83.2 18.0L78.5 22.5L83.0 17.8Z","h":"M3.0 107.8L3.0 98.5L50.4 51.3L97.8 4.0L107.9 4.0L118.0 4.0L118.0 13.3L118.0 22.5L70.7 69.8L23.5 117.0L13.2 117.0L3.0 117.0L3.0 107.8Z"},{"S":119,"g":"M15.0 116.4C15.0 115.9 19.8 110.7 25.8 105.0L36.5 94.5L26.0 105.5C20.2 111.5 15.4 116.6 15.2 116.9C15.1 117.1 15.0 116.9 15.0 116.4ZM2.2 52.8L2.5 3.5L51.8 3.2C80.5 3.1 101.0 3.4 100.8 3.9C100.7 4.4 96.4 9.1 91.4 14.4L82.3 24.0L53.4 24.2L24.5 24.5L24.2 53.1L24.0 81.7L13.8 91.9C8.3 97.4 3.3 102.0 2.8 102.0C2.4 102.0 2.1 79.9 2.2 52.8ZM45.0 60.0L45.0 45.0L60.0 45.0L75.1 45.0L74.8 59.8L74.5 74.5L59.8 74.8L45.0 75.1L45.0 60.0ZM105.7 25.0C111.9 18.7 117.1 13.8 117.2 14.0C117.4 14.3 112.3 19.4 106.0 25.5L94.5 36.5L105.7 25.0Z","h":"M17.0 115.2C17.0 114.8 21.4 110.1 26.8 104.7L36.5 95.0L65.8 95.0L95.0 95.0L95.0 65.7L95.0 36.5L106.0 25.5L117.0 14.5L117.0 65.3L117.0 116.0L67.0 116.0C39.5 116.0 17.0 115.7 17.0 115.2Z"},{"S":141,"g":"M52.5 43.8L46.5 37.5L52.8 43.5C58.6 49.0 59.5 50.0 58.7 50.0C58.6 50.0 55.8 47.2 52.5 43.8ZM138.0 40.8C139.9 38.5 139.0 38.0 133.2 37.8L127.5 37.6L132.9 37.3C139.0 36.8 141.4 38.2 138.7 40.5C137.8 41.3 137.5 41.5 138.0 40.8ZM101.8 36.3C104.1 36.1 107.7 36.1 109.8 36.3C111.8 36.5 109.9 36.7 105.5 36.7C101.1 36.7 99.4 36.5 101.8 36.3ZM62.2 13.3C67.1 13.1 74.9 13.1 79.8 13.3C84.6 13.4 80.6 13.6 71.0 13.6C61.4 13.6 57.4 13.4 62.2 13.3Z","h":"M62.3 122.5C58.0 118.9 54.6 115.4 54.7 114.7C55.1 111.8 65.3 57.3 65.7 56.0C66.0 55.0 66.7 55.3 68.4 57.4L70.6 60.3L72.8 57.5C74.0 56.0 75.2 54.9 75.4 55.1C75.6 55.3 78.4 69.1 81.7 85.6L87.6 115.8L80.1 121.6C76.0 124.9 72.1 127.8 71.4 128.2C70.7 128.7 67.2 126.5 62.3 122.5ZM40.0 75.4C35.3 73.5 31.2 71.6 30.8 71.2C30.4 70.8 32.6 66.9 35.6 62.5L41.1 54.5L33.3 53.9C22.9 53.2 13.3 49.1 5.8 42.2C4.2 40.8 3.0 39.3 3.0 38.8C3.0 38.4 12.8 38.0 24.8 38.0L46.6 38.0L52.7 44.2L58.9 50.5L55.1 64.5C52.6 73.6 50.8 78.6 49.9 78.7C49.1 78.8 44.7 77.3 40.0 75.4ZM90.1 76.6C89.6 75.3 87.5 69.0 85.5 62.5L81.8 50.7L88.7 43.8L95.7 36.8L117.3 37.6C129.3 38.0 139.0 38.6 138.9 38.9C138.8 40.3 128.6 47.9 123.2 50.6C118.6 53.0 115.9 53.6 109.2 53.9C99.6 54.3 99.7 53.9 106.5 63.4C109.0 66.9 111.0 70.2 111.0 70.7C111.0 71.5 93.7 79.0 91.7 79.0C91.3 79.0 90.5 77.9 90.1 76.6ZM60.2 35.0L50.0 23.1L52.2 18.6L54.4 14.0L71.1 14.0L87.8 14.0L89.4 18.0C90.3 20.2 91.0 22.4 91.0 22.9C91.0 23.4 86.4 28.9 80.9 35.1C75.3 41.4 70.6 46.6 70.6 46.7C70.5 46.8 65.8 41.5 60.2 35.0Z"}];
@@ -888,7 +1003,8 @@ function evalComp(c,gone,ours,enemy=[]){
       if(j===0){score+=18; match++} else if(j>0){score+=9; match++} else score-=20-Math.min(10,compFit(c.k,mine)*2);
       lineup.push({r:R[ri],c:mine,lock:j>=0,off:j<0,alts:opts.filter(x=>x!==mine&&free(x)).slice(0,2)}); return;
     }
-    opts=opts.filter(x=>playable(x,ri)); let i=opts.findIndex(free);
+    if(c.custom&&!opts.length){ lineup.push({r:R[ri],c:"–",alts:[]}); return; }
+    opts=opts.filter(x=>playable(x,ri)||AIMX[ri]===x); let i=opts.findIndex(free);
     if(i<0){ const fb=fallbackFor(c,ri,free,[]); // alla compens champs borta – bästa champ ur hela listan som passar stilen
       if(!fb.length){ dead=dead||R[ri]; lineup.push({r:R[ri],c:"–",alts:[]}); return; }
       score-=14; if(ri>=3) score-=4;
@@ -938,6 +1054,9 @@ function icErr(img){ const alt=img.dataset.alt; if(alt&&!img.dataset.tried){ img
   const v=(await (await fetch("https://ddragon.leagueoflegends.com/api/versions.json")).json())[0];
   const d=(await (await fetch(`https://ddragon.leagueoflegends.com/cdn/${v}/data/en_US/champion.json`)).json()).data;
   DDV=v; Object.values(d).forEach(x=>{ DDMAP[x.name]={id:x.id,key:x.key}; });
+  try{ const it=(await (await fetch(`https://ddragon.leagueoflegends.com/cdn/${v}/data/en_US/item.json`)).json()).data;
+    Object.entries(it).forEach(([id,x])=>{ if(!x.maps||!x.maps["11"]||(x.gold&&x.gold.purchasable===false)||x.requiredChampion||x.requiredAlly) return;
+      const k=norm(x.name); if(!ITEMS[k]||+id<+ITEMS[k].id) ITEMS[k]={id,name:x.name,img:x.image&&x.image.full}; }); ITEMS_OK=true; }catch(e){}
   document.querySelectorAll(".pf").forEach(pf=>pf.dataset.c="__"); render();
 }catch(e){} })();
 const ini=c=>c.replace(/[^A-Za-z ]/g,"").split(" ").map(w=>w[0]).join("").slice(0,2).toUpperCase()||c.slice(0,2);
@@ -984,7 +1103,7 @@ function roleCell(r,x,ri,X,alive,taken,eager){
   return cell;
 }
 function compCard(r,rank,X,alive,taken,isAim,sw){
-  const live=!r.dead, sel=r.c.n===SELCOMP, enemy=X.enemy;
+  const live=!r.dead, sel=isAim||(!r.c.custom&&r.c.n===SELCOMP), enemy=X.enemy;
   const el=document.createElement(isAim?"div":"li");
   el.className="comp"+(isAim?" aimc":"")+(rank===1?" top":"")+(live?"":" dead")+(sel?" sel":"");
   const subs=r.lineup.filter(x=>x.sub).length;
@@ -997,7 +1116,7 @@ function compCard(r,rank,X,alive,taken,isAim,sw){
   </div>`;
   const line=el.querySelector(".line");
   r.lineup.forEach((x,ri)=>line.appendChild(roleCell(r,x,ri,X,alive,taken,isAim)));
-  el.querySelector(".aim").addEventListener("click",()=>setSel(sel?null:r.c.n));
+  el.querySelector(".aim").addEventListener("click",()=>isAim?clearAim():setSel(sel?null:r.c.n));
   if(isAim&&sw){ const openR=[0,1,2,3,4].filter(ri=>!X.ours[ri]);
     const pv=document.createElement("div"); pv.className="pivot"; pv.setAttribute("role","alert");
     pv.innerHTML=`<p class="pw"><span aria-hidden="true">⚠</span> <b>${r.c.n} är counterad</b></p><p class="pr">${sw.why.join(" · ")}</p><p class="pt">Pivot: sikta på <b>${sw.alt.c.n}</b> (+${Math.round(sw.alt.raw-sw.sel.raw)} poäng)${openR.length?` och picka:`:""}</p>${openR.length?'<div class="line"></div>':""}<button type="button" class="go">Byt sikte till ${sw.alt.c.n}</button>`;
@@ -1018,15 +1137,15 @@ function render(){
   const res=COMPS.map(c=>evalComp(c,gone,ours,enemy)).sort((a,b)=>(!!a.dead-!!b.dead)||(b.raw-a.raw)||(b.c.s-a.c.s));
   paintPortraits();
   renderSwitch(res,gone,ours,enemy);
-  renderNext(res,gone,ours);
+  const AC=aimComp(), selR=AC?evalComp(AC,gone,ours,enemy):null;
+  renderNext(res,gone,ours,selR);
   renderLanes(ours);
   const X=draftCtx(), alive=res.filter(r=>!r.dead), taken=new Set([...gone,...X.oursP]);
-  const selR=SELCOMP?res.find(r=>r.c.n===SELCOMP):null;
-  const aimEl=document.getElementById("aimcol"); document.querySelector(".board").classList.toggle("aiming",!!selR);
-  aimEl.hidden=!selR; aimEl.innerHTML=""; if(selR) aimEl.appendChild(compCard(selR,0,X,alive,taken,true,switchInfo(res,gone,ours,enemy)));
+  const aimEl=document.getElementById("aimcol"); document.querySelector(".board").classList.add("aiming");
+  aimEl.hidden=false; aimEl.innerHTML=""; aimEl.appendChild(aimBox(selR,X,alive,taken,SELCOMP?switchInfo(res,gone,ours,enemy):null));
   const list=document.getElementById("list"); list.innerHTML="";
   let rank=0;
-  res.forEach(r=>{ if(r===selR) return; if(!r.dead) rank++; list.appendChild(compCard(r,r.dead?null:rank,X,alive,taken,false)); });
+  res.forEach(r=>{ if(SELCOMP&&r.c.n===SELCOMP) return; if(!r.dead) rank++; list.appendChild(compCard(r,r.dead?null:rank,X,alive,taken,false)); });
 }
 
 const TIER={"Nocturne":3,"Vi":3,"Jarvan IV":3,"Orianna":3,"Syndra":3,"Cassiopeia":3,"Renata Glasc":3,"Ezreal":3,"Galio":2,"Viktor":2,"Ambessa":2,"Pantheon":2,"Jhin":2,"Lucian":2,"Ashe":2,"Kalista":2,"Yunara":2,"Varus":2,"Corki":2,"Lulu":2,"Karma":2,"Akali":2,"Ryze":2,"Zaahen":1,"Maokai":1,"Sejuani":1,"Taliyah":1,"Sylas":1,"Naafiri":1,"Caitlyn":1,"Kai'Sa":1,"Xayah":1,"Tristana":1,"Draven":1,"Sivir":1,"Milio":1,"Rakan":1,"Poppy":1,"Bard":1};
@@ -1136,6 +1255,67 @@ function enemyRoles(enemy){
     if(pick!==undefined) filled[ch]=pick; });
   return filled; // champ -> rollindex
 }
+// ---- Item-tips (visas när alla 10 är pickade) ----
+let ITEMS={}, ITEMS_OK=false;
+const itemOf=n=>ITEMS[norm(n)];
+const itemIcon=n=>{ const i=itemOf(n); return i&&i.img?`<span class="ic ii"><img src="https://ddragon.leagueoflegends.com/cdn/${DDV}/img/item/${i.img}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()"></span>`:""; };
+const W=(s)=>Object.fromEntries(s.split(",").map(x=>{ const [n,w]=x.split(":"); return [n.trim(),+(w||1)]; }));
+// items: [roll-etikett, itemnamn]. champs: champ -> vikt. Visas när vikten mot fiendelaget >= min.
+const ITEM_RULES=[
+ {t:"Anti-heal",why:"Halverar deras healing",min:2,
+  items:[["Tank","Thornmail"],["ADC","Mortal Reminder"],["Bruiser","Chempunk Chainsword"],["AP","Morellonomicon"],["Tidigt","Bramble Vest"],["Tidigt","Executioner's Calling"],["Tidigt","Oblivion Orb"]],
+  champs:W("Soraka:2,Yuumi:2,Dr. Mundo:2,Warwick:2,Vladimir:2,Swain:2,Sylas:2,Aatrox:2,Zaahen:2,Briar:2,Fiddlesticks:2,Illaoi:2,Sona,Milio,Nami,Olaf,Volibear,Fiora,Gwen,Nasus,Trundle,Samira,Kayn,Viego,Darius,Renekton,Sett,Mordekaiser,Udyr,Maokai,Ambessa,Bel'Veth,Seraphine,Cho'Gath")},
+ {t:"Anti-crit",why:"Minskar crit-skada och slowar attackerna",min:2,
+  items:[["Tank","Randuin's Omen"]],
+  champs:W("Yasuo:2,Yone:2,Tryndamere:2,Jhin,Caitlyn,Miss Fortune,Jinx,Draven,Tristana,Ashe,Xayah,Aphelios,Sivir,Samira,Nilah,Yunara,Smolder,Lucian,Akshan,Gangplank,Kai'Sa,Zeri,Quinn")},
+ {t:"Anti-attack speed",why:"Sänker attack speed på alla runt dig",min:2,
+  items:[["Tank","Frozen Heart"]],
+  champs:W("Master Yi:2,Kog'Maw:2,Twitch:2,Kayle:2,Bel'Veth:2,Jinx,Vayne,Varus,Kalista,Zeri,Jax,Kindred,Xayah,Vi,Warwick")},
+ {t:"Mot DoT / utdragen magisk skada",why:"Tar mindre skada ju längre de skadar dig",min:2,
+  items:[["Tank/bruiser","Force of Nature"]],
+  champs:W("Cassiopeia:2,Brand:2,Malzahar:2,Teemo:2,Rumble:2,Singed:2,Zyra:2,Lillia:2,Karthus:2,Swain,Anivia,Ryze,Vladimir,Mordekaiser,Aurelion Sol,Gwen,Kennen,Hwei")},
+ {t:"Mot AP-burst",why:"Magisk sköld som äter första combon",min:2,
+  items:[["Tank/bruiser","Kaenic Rookern"],["Alla","Mercury's Treads"]],
+  champs:W("Syndra,LeBlanc,Veigar,Annie,Fizz,Ahri,Lux,Xerath,Vex,Diana,Evelynn,Kassadin,Katarina,Neeko,Ekko,Akali,Elise,Aurora,Naafiri:0,Mel,Zoe,Orianna:0")},
+ {t:"Mot suppression / hård single-target CC",why:"Rensar ulten innan den hinner verka",min:1,
+  items:[["ADC","Mercurial Scimitar"],["Tidigt","Quicksilver Sash"],["Support","Mikael's Blessing"]],
+  champs:W("Malzahar,Warwick,Skarner,Urgot,Mordekaiser")},
+ {t:"Mot hooks / pick-spells",why:"Blockerar första skillshoten",min:2,
+  items:[["AP","Banshee's Veil"],["AD","Edge of Night"]],
+  champs:W("Blitzcrank,Thresh,Pyke,Nautilus,Morgana,Ashe,Lux,Xerath,Bard,Ezreal:0,Lissandra,Syndra:0")},
+ {t:"Mot assassins / dödande ults",why:"Stasis eller återupplivning när de går in",min:2,
+  items:[["AP","Zhonya's Hourglass"],["AD","Guardian Angel"]],
+  champs:W("Zed:2,Fizz:2,Karthus:2,Talon,Rengar,Kha'Zix,Akali,LeBlanc,Qiyana,Naafiri,Evelynn,Nocturne,Vi,Diana,Kassadin")},
+ {t:"Mot sköldar",why:"Skär ner deras sköldar kraftigt",min:3,
+  items:[["AD","Serpent's Fang"]],
+  champs:W("Lulu:2,Karma:2,Janna:2,Seraphine,Milio,Sona,Lux,Ivern,Orianna,Taric,Sett,Yone,Riven,Morgana,Rell,Zeri,Renata Glasc,Braum")},
+ {t:"Mot många tanks",why:"Penetration eller %-skada mot hög armor/MR",min:3,
+  items:[["AD","Lord Dominik's Regards"],["AD","Serylda's Grudge"],["Bruiser","Black Cleaver"],["AP","Void Staff"],["AP","Cryptbloom"],["AP","Liandry's Torment"]],
+  champs:W("Sion,Malphite,Ornn,Cho'Gath,Dr. Mundo,Sejuani,Rammus,K'Sante,Maokai,Zac,Nautilus,Leona,Alistar,Shen,Poppy,Tahm Kench,Rell,Skarner,Galio,Braum,Nunu & Willump,Amumu")},
+ {t:"Mot många auto-attackers",why:"Mindre skada från varje auto",min:3,
+  items:[["Alla","Plated Steelcaps"],["Tank","Thornmail"]],
+  champs:W("Master Yi,Tryndamere,Jax,Fiora,Yasuo,Yone,Kayle,Vayne,Jinx,Kog'Maw,Twitch,Caitlyn,Draven,Tristana,Ashe,Xayah,Sivir,Kalista,Zeri,Lucian,Samira,Nilah,Miss Fortune,Aphelios,Smolder,Varus,Kindred,Bel'Veth,Yunara,Jhin")},
+ {t:"Mot osynliga champs",why:"Hittar dem och deras wards/fällor",min:2,
+  items:[["Alla","Oracle Lens"],["Alla","Control Ward"]],
+  champs:W("Twitch:2,Evelynn:2,Shaco:2,Teemo:2,Akshan,Pyke,Rengar,Kha'Zix,Vayne,Talon,Wukong,Senna,Neeko,Kled,Nidalee,Jhin:0,Caitlyn:0")}];
+function itemTips(enemy){
+  const out=[];
+  ITEM_RULES.forEach(r=>{ const hit=enemy.filter(c=>(r.champs[c]||0)>0), w=hit.reduce((s,c)=>s+r.champs[c],0);
+    if(w<r.min) return;
+    const its=r.items.filter(([,n])=>!ITEMS_OK||itemOf(n)); if(!its.length) return;
+    out.push({r,hit,w,its}); });
+  return out.sort((a,b)=>b.w-a.w).slice(0,8);
+}
+function renderItemTips(box,enemy){
+  const lab=document.createElement("span"); lab.className="btl"; lab.textContent="Item-tips"; box.appendChild(lab);
+  const list=itemTips(enemy);
+  if(!list.length){ const t=document.createElement("span"); t.className="note"; t.style.fontSize="12.5px"; t.textContent="Inga nischade items behövs mot det här laget."; box.appendChild(t); return; }
+  list.forEach(o=>{ const d=document.createElement("div"); d.className="itb"; d.tabIndex=0;
+    const names=[...new Set(o.its.map(([,n])=>(itemOf(n)||{}).name||n))];
+    d.title=`${o.r.t}: ${o.r.why}\n`+o.its.map(([l,n])=>`${l}: ${(itemOf(n)||{}).name||n}`).join("\n")+`\nMot: ${o.hit.join(", ")}`;
+    d.innerHTML=`<span class="iis">${[...new Set(o.its.map(([,n])=>n))].slice(0,3).map(itemIcon).join("")}</span><span><b>${o.r.t}</b><small>${names.slice(0,2).join(" / ")} · mot ${o.hit.slice(0,3).join(", ")}</small></span>`;
+    box.appendChild(d); });
+}
 function banTips(X,target){
   const enemy=X.enemy, filledR=new Set(Object.values(enemyRoles(enemy)));
   const taken=new Set([...X.banned,...X.picked]);
@@ -1166,6 +1346,7 @@ function banTips(X,target){
   });
   out.sort((a,b)=>b.s-a.s);
   const box=document.getElementById("bantips"); box.innerHTML="";
+  if(bans.slice(10,20).every(Boolean)){ box.style.display=""; renderItemTips(box,X.enemy); return; }
   const free=[0,1,2,3,4].filter(i=>!bans[i]);
   if(!free.length){ box.style.display="none"; return; } box.style.display="";
   const lab=document.createElement("span"); lab.className="btl"; lab.textContent=SELCOMP&&target?`Ban-tips · ${target.c.n}`:"Ban-tips"; box.appendChild(lab);
@@ -1203,7 +1384,12 @@ function muD(a,b){ // a:s WR mot b, viktad efter games från OP.GG + Lolalytics
 const sgn=(v,d=0)=>(v>0?"+":"")+v.toFixed(d);
 const at15=d=>d&&d.gd!=null?`${sgn(d.gd)} guld @15${d.cd!=null?` · ${sgn(d.cd,1)} cs`:""}${d.xd!=null?` · ${sgn(d.xd)} xp`:""}`:"";
 const srcTxt=d=>d.parts.map(p=>`${SRCN[p.s]} ${p.wr.toFixed(1)} % · ${p.g.toLocaleString("sv-SE")} games`).join(" | ")+(d.gd!=null?` | U.GG @15: ${at15(d)}`:"");
-const wrTip=d=>`<span class="wrh" tabindex="0">${d.wr.toFixed(1)} %<span class="wrs">${srcTxt(d)}</span></span>`;
+// Detaljer vid hover: en rad per källa (WR + games) till vänster, cs/xp @15 till höger
+const srcRows=d=>d.parts.map(p=>`<span class="sr"><i>${SRCN[p.s]}</i><b>${p.wr.toFixed(1)} %</b><em>${p.g.toLocaleString("sv-SE")} g</em></span>`).join("");
+const d15=d=>d.cd!=null||d.xd!=null?`<span class="d15">${d.cd!=null?`<span>${sgn(d.cd,1)} cs</span>`:""}${d.xd!=null?`<span>${sgn(d.xd)} xp</span>`:""}</span>`:"";
+const detail=d=>`<span class="dt"><span class="dsrc">${srcRows(d)}</span>${d15(d)}</span>`;
+const g15Txt=d=>d&&d.gd!=null?`${sgn(d.gd)} guld @15`:"";
+const wrTip=d=>`<span class="wrh" tabindex="0">${d.wr.toFixed(1)} %<span class="wrs">${detail(d)}</span></span>`;
 function mwr(a,b){ // a:s WR mot b ur data.json, annars null
   if(typeof DATA==="undefined"||!DATA||!DATA.champions) return null;
   const d=muD(a,b); if(d) return d.wr;
@@ -1223,7 +1409,7 @@ function renderLanes(ours){
   Object.entries(eR).forEach(([c,r])=>{ them[r]=c; });
   const rows=[]; let sum=0,n=0;
   const one=(ri,label)=>{ const a=ours[ri], b=them[ri]; if(!a||!b) return {ri,label,a,b};
-    const m=mwr(a,b); if(m==null) return {ri,label,a,b}; sum+=m; n++; const d=muD(a,b); return {ri,label,a,b,wr:m,src:"stat",tip:d?srcTxt(d):"",g15:at15(d)}; };
+    const m=mwr(a,b); if(m==null) return {ri,label,a,b}; sum+=m; n++; const d=muD(a,b); return {ri,label,a,b,wr:m,src:"stat",tip:d?detail(d):"",g15:g15Txt(d)}; };
   rows.push(one(0,"Top")); rows.push(one(1,"Jungle")); rows.push(one(2,"Mid"));
   // bot 2v2: ADC vs ADC, sup vs sup + duo-synergi
   const ad=ours[3],sp=ours[4],ead=them[3],esp=them[4];
@@ -1231,7 +1417,7 @@ function renderLanes(ours){
     if(ad&&ead){ const m=mwr(ad,ead); if(m!=null){ parts.push(m); src="stat"; } }
     if(sp&&esp){ const m=mwr(sp,esp); if(m!=null){ parts.push(m); src="stat"; } }
     if(parts.length){ let w=parts.reduce((t,y)=>t+y,0)/parts.length;
-    const tp=[[ad,ead],[sp,esp]].map(([x,y])=>{ const d=x&&y&&muD(x,y); return d?`${x} vs ${y}: ${srcTxt(d)}`:""; }).filter(Boolean).join("<br>");
+    const tp=[[ad,ead],[sp,esp]].map(([x,y])=>{ const d=x&&y&&muD(x,y); return d?`<span class="dpair">${x} vs ${y}</span>${detail(d)}`:""; }).filter(Boolean).join("");
     const syn=(ad&&sp?synW(ad,sp):0)-(ead&&esp?synW(ead,esp):0); w+=syn*1.2;
     const g15=[[ad,ead],[sp,esp]].map(([x,y])=>{ const d=x&&y&&muD(x,y); return d&&d.gd!=null?`${x}: ${sgn(d.gd)} g`:""; }).filter(Boolean).join(" · ");
     sum+=w; n++; rows.push({g15:g15?g15+" @15":"",ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + "),wr:w,src,duo:syn,tip:tp}); } else rows.push({ri:3,label:"Bot (2v2)",a:[ad,sp].filter(Boolean).join(" + "),b:[ead,esp].filter(Boolean).join(" + ")});
@@ -1242,16 +1428,16 @@ function renderLanes(ours){
     return `<div class="ln ${cls}"><div class="h">${r.label}<b>${r.wr.toFixed(1)} %</b></div>
       <div class="m"><span class="nm">${r.a}</span><span class="vs">vs</span><span class="nm">${r.b}</span></div>
       <div class="bar"><i style="width:${Math.max(5,Math.min(95,(r.wr-40)*5))}%"></i></div>
-      <small>${txt} · ${r.src==="stat"?"statistik":"uppskattat från spelstil"}${r.duo?` · duo ${r.duo>0?"+":""}${r.duo}`:""}</small>${r.g15?`<small class="g15">${r.g15}</small>`:""}${r.tip?`<small class="wrs">${r.tip}</small>`:""}</div>`;
+      <small>${txt} · ${r.src==="stat"?"statistik":"uppskattat från spelstil"}${r.duo?` · duo ${r.duo>0?"+":""}${r.duo}`:""}</small>${r.g15?`<small class="g15">${r.g15}</small>`:""}${r.tip?`<div class="wrs">${r.tip}</div>`:""}</div>`;
   }).join("")+(n?`<div class="lnsum">Snitt: <b>${(sum/n).toFixed(1)} %</b>${(()=>{ const done=rows.filter(r=>r.wr!=null); if(done.length<2) return "";
       const lo=done.reduce((a,b)=>a.wr<b.wr?a:b), hi=done.reduce((a,b)=>a.wr>b.wr?a:b);
       return `<br>Starkast: <b>${hi.label}</b> – spela runt den.<br>Svagast: <b>${lo.label}</b> – ge jungle-hjälp eller spela säkert.`; })()}</div>`:rows.some(r=>r.a&&r.b)?"":`<div class="lnempty">Picka champs på båda sidor för att se lane-matchups.</div>`);
 }
-function renderNext(res,gone,ours){
+function renderNext(res,gone,ours,selR){
   const X=draftCtx(); const taken=new Set([...gone,...X.oursP]);
   const alive=res.filter(r=>!r.dead);
   const wOf=r=>Math.pow(Math.max(0,r.raw)/100,2)*(1+(r.match||0)*1.5)*(r.picked&&!r.match?0.3:1);
-  const sel=SELCOMP?alive.find(r=>r.c.n===SELCOMP):null;
+  const sel=selR||null;
   const target=sel||(X.oursP.length?[...alive].sort((a,b)=>wOf(b)-wOf(a))[0]:null);
   const open=[0,1,2,3,4].filter(ri=>!ours[ri]);
   const rank=[0,1,2,3,4].map(ri=>roleCands(ri,X,target,alive).filter(o=>o.ch!==ours[ri])); // förslag för rollen även när den är ifylld
