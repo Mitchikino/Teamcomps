@@ -5,7 +5,7 @@ Hämtar champ-statistik och skriver data.json som index.html läser.
 Källor (varje källa misslyckas för sig – resten körs ändå):
   1. Data Dragon (Riot)   – patch + champ-lista (officiellt, stabilt)
   2. Leaguepedia          – pro-picks/bans/WR senaste X dagarna
-  3. OP.GG MCP            – soloQ WR/pick/ban per roll + ALLA matchups (WR + games)
+  3. OP.GG                – MCP: soloQ WR/pick/ban + synergier; counters-sidan: alla matchups (WR + games)
   4. Lolalytics           – matchups (WR + games) via sajtens JSON, HTML som reserv
 
 Matchups sparas per champ som  "mu": {"Motståndare": {"o": [wr, games], "l": [wr, games]}}
@@ -283,7 +283,48 @@ def games_of(e):
         if isinstance(v, (int, float)): return int(v)
     return None
 
-def opgg(champs, idx, delay):
+# OP.GG MCP ger bara ~10 matchups per champ -> läs hela listan från OP.GG:s counters-sida.
+OPGG_UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+           "Accept": "text/html,application/xhtml+xml", "Accept-Language": "en-US,en;q=0.9"}
+OPGG_WEB = {"ok": 0, "fail": 0, "err": ""}
+
+def opgg_web(name, cid, pos, idx, top, tier):
+    """Alla motståndare (> 20 games) för name i pos. top = {champ: (wr, g)} från MCP, används för att
+    välja rätt lista i sidans data och kolla att WR är champens egen (inte motståndarens)."""
+    for slug in dict.fromkeys([cid.lower(), norm(name)]):
+        try:
+            r = S.get(f"https://op.gg/lol/champions/{slug}/counters/{pos}", params={"region": "global", "tier": tier},
+                      headers=OPGG_UA, timeout=30)
+        except Exception as ex:
+            OPGG_WEB["err"] = str(ex)[:150]; continue
+        if r.status_code != 200: OPGG_WEB["err"] = f"http {r.status_code}"; continue
+        txt = r.text
+        # Next.js lägger datan i self.__next_f.push([1,"..."]) – avkoda strängarna
+        for s in re.findall(r'self\.__next_f\.push\(\[\d+,\s*"((?:[^"\\]|\\.)*)"\]\)', txt):
+            try: txt += "\n" + json.loads('"' + s + '"')
+            except Exception: pass
+        groups = {}
+        for mm in re.finditer(r"\{[^{}]{10,1500}\}", txt):
+            try: e = json.loads(mm.group(0))
+            except Exception: continue
+            if not isinstance(e, dict): continue
+            nw = entry_name_wr(e, idx); g = games_of(e)
+            if not nw or nw[0] == name or nw[1] is None or not g or g < MIN_GAMES: continue
+            groups.setdefault(tuple(sorted(e)), {})
+            G = groups[tuple(sorted(e))]
+            if nw[0] not in G or g > G[nw[0]][1]: G[nw[0]] = (nw[1], g)
+        if not groups: OPGG_WEB["err"] = "hittade ingen lista i sidan"; continue
+        # välj listan som överlappar mest med MCP:s topp-lista (annars den största)
+        best = max(groups.values(), key=lambda G: (sum(1 for c in G if c in top), len(G)))
+        same = [abs(w - top[c][0]) for c, (w, _) in best.items() if c in top]
+        flip = [abs((100 - w) - top[c][0]) for c, (w, _) in best.items() if c in top]
+        if same and sum(flip) < sum(same): best = {c: (100 - w, g) for c, (w, g) in best.items()}
+        OPGG_WEB["ok"] += 1
+        return best
+    OPGG_WEB["fail"] += 1
+    return {}
+
+def opgg(champs, idx, delay, tier="emerald_plus"):
     m = MCP(); tools = m.start()
     log("OP.GG verktyg:", ", ".join(tools))
     meta_tool, ana_tool, syn_tool = "lol_list_lane_meta_champions", "lol_get_champion_analysis", "lol_get_champion_synergies"
@@ -351,8 +392,10 @@ def opgg(champs, idx, delay):
             flip = [abs((100 - w) - top[c][0]) for c, w, _ in full if c in top]
             if same and sum(flip) < sum(same):
                 full = [(c, 100 - w, g) for c, w, g in full]; flips += 1
+            web = opgg_web(name, champs[name]["id"], pos, idx, top, tier)
+            full += [(c, w, g) for c, (w, g) in web.items()]
             if logged < 2:
-                log(f"OP.GG matchups {name} ({pos}): topp {len(top)}, hela listan {len(full)}"); logged += 1
+                log(f"OP.GG matchups {name} ({pos}): topp {len(top)}, sidan {len(web)}, totalt {len(set(c for c, _, _ in full) | set(top))}"); logged += 1
             M = mu.setdefault(name, {})
             for c, w, g in full + [(c, w, g) for c, (w, g) in top.items()]:
                 if c not in M or g > M[c][1]: M[c] = [round(w, 2), g]
@@ -375,6 +418,7 @@ def opgg(champs, idx, delay):
                 if len(synergies) == 0: log("OP.GG synergies", name, "fel:", str(ex)[:200])
             time.sleep(delay)
     n_mu = sum(len(v) for v in mu.values())
+    log(f"OP.GG counters-sida: {OPGG_WEB['ok']} ok, {OPGG_WEB['fail']} misslyckade" + (f" (senaste fel: {OPGG_WEB['err']})" if OPGG_WEB['fail'] else ""))
     log(f"OP.GG: soloQ {len(soloq)} champs, matchups {n_mu} (för {len(mu)} champs), synergier {len(synergies)}, vända listor {flips}, analys-fel {ana_err}")
     if not soloq and not mu: raise RuntimeError("tomt svar – se exempel i loggen")
     return soloq, mu, synergies, {n: v[0] for n, v in main.items()}, {n: [p for p, _ in v] for n, v in roles.items()}
@@ -438,17 +482,20 @@ def ll_parse_html(text, idx, me, slug):
         if pct and g >= MIN_GAMES: out[opp] = [round(float(pct.group(1)), 2), g]
     return out
 
-def lolalytics(champs, idx, plan, tier, delay):
+def lolalytics(champs, idx, plan, tier, delay, patch="30"):
     """plan = {champ: [lanes]} i OP.GG-format (top/jungle/mid/adc/support)."""
     mu, fails, how, shown = {}, 0, {"json": 0, "html": 0}, 0
     for name, lanes in plan.items():
         slug = lol_slug(name, champs[name]["id"])
         for lane in lanes:
             ll = LL_LANE.get(lane, lane); got, err = {}, ""
-            for host in ("https://a1.lolalytics.com/mega/", "https://ax.lolalytics.com/mega/"):
+            tries = [(h, pt) for pt in ([patch, None] if patch else [None])
+                     for h in ("https://a1.lolalytics.com/mega/", "https://ax.lolalytics.com/mega/")]
+            for host, pt in tries:
                 try:
-                    r = S.get(host, params={"ep": "counter", "v": "1", "c": slug, "lane": ll, "tier": tier,
-                                            "queue": "ranked", "region": "all"}, headers=LL_UA, timeout=30)
+                    q = {"ep": "counter", "v": "1", "c": slug, "lane": ll, "tier": tier, "queue": "ranked", "region": "all"}
+                    if pt: q["patch"] = pt
+                    r = S.get(host, params=q, headers=LL_UA, timeout=30)
                     if r.status_code == 200 and r.text.strip().startswith(("{", "[")):
                         j = r.json()
                         if shown < 1: log("Lolalytics exempel (json):", first_text(j, 500)); shown += 1
@@ -483,6 +530,7 @@ def main():
     ap.add_argument("--only", default="ddragon,pro,opgg,lolalytics")
     ap.add_argument("--pro-days", type=int, default=60)
     ap.add_argument("--tier", default="emerald_plus", help="lolalytics-tier, t.ex. emerald_plus, diamond_plus")
+    ap.add_argument("--ll-patch", default="30", help="lolalytics-period: 30/14/7 = senaste X dagarna, tomt = bara nuvarande patch")
     ap.add_argument("--delay", type=float, default=1.0, help="sekunder mellan anrop (var snäll mot sajterna)")
     a = ap.parse_args(); only = set(a.only.split(","))
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
@@ -503,14 +551,14 @@ def main():
         except Exception as ex:
             log(f"{key} misslyckades: {ex}"); out["sources"][key] = f"fel: {ex}"[:200]; return None
 
-    og = run("opgg", lambda: opgg(champs, idx, a.delay))
+    og = run("opgg", lambda: opgg(champs, idx, a.delay, a.tier))
     # lolalytics hämtas för samma roller som OP.GG hittade (annars förra körningens main_role)
     plan = {}
     for n in champs:
         lanes = (og[4].get(n) if og else None) or ([og[3][n]] if og and n in og[3] else None) or \
                 ([old.get("champions", {}).get(n, {}).get("main_role")] if old.get("champions", {}).get(n, {}).get("main_role") else [])
         if lanes: plan[n] = lanes[:2]
-    ll = run("lolalytics", lambda: lolalytics(champs, idx, plan, a.tier, a.delay))
+    ll = run("lolalytics", lambda: lolalytics(champs, idx, plan, a.tier, a.delay, a.ll_patch))
     pro = run("pro", lambda: leaguepedia(a.pro_days, idx))
 
     # Slå ihop. Saknas en källa denna körning behålls förra körningens värden för den källan.
