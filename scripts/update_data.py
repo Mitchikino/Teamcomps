@@ -7,9 +7,10 @@ Källor (varje källa misslyckas för sig – resten körs ändå):
   2. Leaguepedia          – pro-picks/bans/WR senaste X dagarna
   3. OP.GG                – MCP: soloQ WR/pick/ban + synergier; counters-sidan: alla matchups (WR + games)
   4. Lolalytics           – matchups (WR + games) via sajtens JSON, HTML som reserv
+  5. U.GG                 – matchups (WR + games + guld/xp/cs-diff @15) via statiska JSON-filer
 
 Matchups sparas per champ som  "mu": {"Motståndare": {"o": [wr, games], "l": [wr, games]}}
-(o = OP.GG, l = Lolalytics, wr = champens WR mot motståndaren). Bara par med > 20 games sparas.
+(o = OP.GG, l = Lolalytics, u = U.GG [wr, games, guld@15, xp@15, cs@15], wr = champens WR mot motståndaren). Bara par med > 20 games sparas.
 index.html väger ihop källorna efter antal games.
 
 Kör:  pip install -r requirements.txt && python scripts/update_data.py
@@ -286,7 +287,7 @@ def games_of(e):
 # OP.GG MCP ger bara ~10 matchups per champ -> läs hela listan från OP.GG:s counters-sida.
 OPGG_UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
            "Accept": "text/html,application/xhtml+xml", "Accept-Language": "en-US,en;q=0.9"}
-OPGG_WEB = {"ok": 0, "fail": 0, "err": ""}
+OPGG_WEB = {"ok": 0, "fail": 0, "err": "", "on": False}
 
 def opgg_web(name, cid, pos, idx, top, tier):
     """Alla motståndare (> 20 games) för name i pos. top = {champ: (wr, g)} från MCP, används för att
@@ -392,7 +393,7 @@ def opgg(champs, idx, delay, tier="emerald_plus"):
             flip = [abs((100 - w) - top[c][0]) for c, w, _ in full if c in top]
             if same and sum(flip) < sum(same):
                 full = [(c, 100 - w, g) for c, w, g in full]; flips += 1
-            web = opgg_web(name, champs[name]["id"], pos, idx, top, tier)
+            web = opgg_web(name, champs[name]["id"], pos, idx, top, tier) if OPGG_WEB.get("on") else {}
             full += [(c, w, g) for c, (w, g) in web.items()]
             if logged < 2:
                 log(f"OP.GG matchups {name} ({pos}): topp {len(top)}, sidan {len(web)}, totalt {len(set(c for c, _, _ in full) | set(top))}"); logged += 1
@@ -418,7 +419,7 @@ def opgg(champs, idx, delay, tier="emerald_plus"):
                 if len(synergies) == 0: log("OP.GG synergies", name, "fel:", str(ex)[:200])
             time.sleep(delay)
     n_mu = sum(len(v) for v in mu.values())
-    log(f"OP.GG counters-sida: {OPGG_WEB['ok']} ok, {OPGG_WEB['fail']} misslyckade" + (f" (senaste fel: {OPGG_WEB['err']})" if OPGG_WEB['fail'] else ""))
+    if OPGG_WEB["on"]: log(f"OP.GG counters-sida: {OPGG_WEB['ok']} ok, {OPGG_WEB['fail']} misslyckade" + (f" (senaste fel: {OPGG_WEB['err']})" if OPGG_WEB['fail'] else ""))
     log(f"OP.GG: soloQ {len(soloq)} champs, matchups {n_mu} (för {len(mu)} champs), synergier {len(synergies)}, vända listor {flips}, analys-fel {ana_err}")
     if not soloq and not mu: raise RuntimeError("tomt svar – se exempel i loggen")
     return soloq, mu, synergies, {n: v[0] for n, v in main.items()}, {n: [p for p, _ in v] for n, v in roles.items()}
@@ -443,8 +444,8 @@ def ll_parse_json(j, idx, me):
                 if k in o and idx.get(norm(str(o[k]))): name = idx[norm(str(o[k]))]; break
             if not name and key_hint is not None and idx.get(norm(str(key_hint))): name = idx[norm(str(key_hint))]
             wr = None
-            for k in ("vsWr", "vs_wr"):  # Lolalytics: vsWr = MOTSTÅNDARENS WR mot champen -> vänd
-                if k in o and num(o[k]) is not None: wr = 100 - (o[k] * 100 if o[k] <= 1 else o[k]); break
+            for k in ("vsWr", "vs_wr"):  # Lolalytics: vsWr = champens EGEN WR mot motståndaren
+                if k in o and num(o[k]) is not None: wr = o[k] * 100 if o[k] <= 1 else o[k]; break
             if wr is None:
                 wr = next((num(o[k]) for k in ("wr", "winRate", "win_rate", "winrate") if k in o and num(o[k]) is not None), None)
             g = next((num(o[k]) for k in ("n", "games", "gamesPlayed", "play", "count") if k in o and num(o[k]) is not None), None)
@@ -461,11 +462,11 @@ def ll_parse_json(j, idx, me):
                 if name != me and wr and g and g >= MIN_GAMES and 0 < wr < 100: out.setdefault(name, [round(wr, 2), int(g)])
             for v in o: walk(v, key_hint)
     walk(j)
-    # Kontroll: "strong"-counters ska slå champen (champens WR < 50). Är det tvärtom är listan spegelvänd.
+    # Kontroll: "strong" = champs vi slår (vår WR > 50). Ligger de under 50 är listan spegelvänd.
     strong = []
     for lst in find_lists(j, ["strong"]): strong += [x for x in lst if not isinstance(x, (dict, list))]
     sw = [out[idx[norm(str(c))]][0] for c in strong if idx.get(norm(str(c))) in out]
-    if sw and sum(sw) / len(sw) > 50:
+    if sw and sum(sw) / len(sw) < 50:
         for v in out.values(): v[0] = round(100 - v[0], 2)
     return out
 
@@ -524,15 +525,84 @@ def lolalytics(champs, idx, plan, tier, delay, patch="30"):
     if not mu: raise RuntimeError(f"inga matchups ({fails} fel) – se exempel i loggen")
     return mu
 
+# ---------- 5. U.GG ----------
+# Statiska JSON-filer: stats2.u.gg/lol/1.5/matchups/<patch>/ranked_solo_5x5/<champ-id>/<ver>.json
+# Struktur: {region: {tier: {roll: [[[opp_id, wins, games, xp@15, gold@15, ...], ...], ts]}}}
+# Fält efter games är SUMMOR över alla games -> delas med games. Ordningen loggas en gång så den kan kollas.
+UGG_ROLE = {"jungle": "1", "support": "2", "adc": "3", "top": "4", "mid": "5"}
+UGG_REGION = "12"  # world
+UGG_TIERS = ["17", "10", "11", "8"]  # emerald+ / plat+ / dia+ / alla – första som finns används
+UGG_F = {"xp": 3, "gold": 4, "cs": 6}
+
+def ugg(champs, idx, plan, ddv, delay):
+    mj, mn = ddv.split(".")[:2]
+    patches = [f"{mj}_{mn}", f"{mj}_{int(mn) - 1}"] if mn.isdigit() and int(mn) > 1 else [f"{mj}_{mn}"]
+    vers = ["1.5.0", "1.4.0"]
+    mu, fails, shown, used = {}, 0, 0, {}
+    base = None  # (patch, ver) som fungerade
+    for name, lanes in plan.items():
+        key = champs[name]["key"]; j = None
+        for pt, v in ([base] if base else [(pt, v) for pt in patches for v in vers]):
+            try:
+                r = S.get(f"https://stats2.u.gg/lol/1.5/matchups/{pt}/ranked_solo_5x5/{key}/{v}.json",
+                          headers=LL_UA, timeout=30)
+                if r.status_code == 200 and r.text.strip().startswith("{"):
+                    j = r.json(); base = (pt, v); break
+                err = f"http {r.status_code}"
+            except Exception as ex: err = str(ex)[:150]
+        if j is None:
+            fails += 1
+            if fails <= 3: log("U.GG", name, "fel:", err)
+            time.sleep(delay); continue
+        reg = j.get(UGG_REGION) or next(iter(j.values()), {})
+        tier = next((t for t in UGG_TIERS if t in reg), None)
+        if not tier: fails += 1; continue
+        used[tier] = used.get(tier, 0) + 1
+        M = mu.setdefault(name, {})
+        for lane in lanes:
+            node = reg[tier].get(UGG_ROLE.get(lane, ""))
+            rows = node[0] if isinstance(node, list) and node and isinstance(node[0], list) else []
+            if shown < 1 and rows:
+                log(f"U.GG exempel {name} {lane} (patch {base[0]}, tier {tier}): {rows[:2]}"); shown += 1
+            for row in rows:
+                if not isinstance(row, list) or len(row) < 3: continue
+                opp = idx.get(norm(str(row[0]))); w, g = row[1], row[2]
+                if not opp or opp == name or not isinstance(g, (int, float)) or g < MIN_GAMES or not (0 <= w <= g): continue
+                e = [round(100 * w / g, 2), int(g)]
+                for f in ("gold", "xp", "cs"):
+                    i = UGG_F[f]
+                    e.append(round(row[i] / g, 1) if len(row) > i and isinstance(row[i], (int, float)) else None)
+                if opp not in M or g > M[opp][1]: M[opp] = e
+        time.sleep(delay)
+    n_mu = sum(len(v) for v in mu.values())
+    log(f"U.GG: matchups {n_mu} (för {len(mu)} champs), patch {base[0] if base else '?'}, tiers {used}, {fails} misslyckade")
+    if not mu: raise RuntimeError(f"inga matchups ({fails} fel)")
+    return mu
+
+def ugg_orient(ug, ll):
+    """Jämför mot Lolalytics: om U.GG-WR är spegelvänd, vänd WR och guld/xp/cs."""
+    same, flip = 0.0, 0.0
+    for n, M in ug.items():
+        for c, e in M.items():
+            l = (ll or {}).get(n, {}).get(c)
+            if l and l[1] >= 200 and e[1] >= 200: same += abs(e[0] - l[0]); flip += abs(100 - e[0] - l[0])
+    if flip < same:
+        log("U.GG: listorna är spegelvända – vänder")
+        for M in ug.values():
+            for e in M.values():
+                e[0] = round(100 - e[0], 2); e[2:] = [(-x if x is not None else None) for x in e[2:]]
+    return ug
+
 # ---------- main ----------
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", default="ddragon,pro,opgg,lolalytics")
+    ap.add_argument("--only", default="ddragon,pro,opgg,lolalytics,ugg")
+    ap.add_argument("--opgg-web", action="store_true", help="försök läsa OP.GG:s counters-sida (funkar oftast inte)")
     ap.add_argument("--pro-days", type=int, default=60)
     ap.add_argument("--tier", default="emerald_plus", help="lolalytics-tier, t.ex. emerald_plus, diamond_plus")
     ap.add_argument("--ll-patch", default="30", help="lolalytics-period: 30/14/7 = senaste X dagarna, tomt = bara nuvarande patch")
     ap.add_argument("--delay", type=float, default=1.0, help="sekunder mellan anrop (var snäll mot sajterna)")
-    a = ap.parse_args(); only = set(a.only.split(","))
+    a = ap.parse_args(); only = set(a.only.split(",")); OPGG_WEB["on"] = a.opgg_web
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
     out = {"updated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "sources": {}, "champions": {}}
     ver, champs = ddragon()
@@ -559,6 +629,7 @@ def main():
                 ([old.get("champions", {}).get(n, {}).get("main_role")] if old.get("champions", {}).get(n, {}).get("main_role") else [])
         if lanes: plan[n] = lanes[:2]
     ll = run("lolalytics", lambda: lolalytics(champs, idx, plan, a.tier, a.delay, a.ll_patch))
+    ug = run("ugg", lambda: ugg_orient(ugg(champs, idx, plan, ver, a.delay), ll))
     pro = run("pro", lambda: leaguepedia(a.pro_days, idx))
 
     # Slå ihop. Saknas en källa denna körning behålls förra körningens värden för den källan.
@@ -570,7 +641,7 @@ def main():
         C[n]["soloq"] = sq
         prev_mu = prev.get("mu") or {}
         M = {}
-        for key, src in (("o", og[1] if og else None), ("l", ll)):
+        for key, src in (("o", og[1] if og else None), ("l", ll), ("u", ug)):
             if src is not None:
                 for c, v in (src.get(n) or {}).items(): M.setdefault(c, {})[key] = v
             else:
@@ -588,8 +659,10 @@ def main():
         C[n]["main_role"] = (og[3].get(n) if og else None) or prev.get("main_role")
         C[n] = {k: v for k, v in C[n].items() if v}
     tot = sum(len(c.get("mu", {})) for c in C.values())
-    both = sum(1 for c in C.values() for v in c.get("mu", {}).values() if len(v) == 2)
-    log(f"Matchups totalt: {tot}, varav {both} med båda källorna")
+    both = sum(1 for c in C.values() for v in c.get("mu", {}).values() if len(v) >= 2)
+    three = sum(1 for c in C.values() for v in c.get("mu", {}).values() if len(v) == 3)
+    gold = sum(1 for c in C.values() for v in c.get("mu", {}).values() if "u" in v and v["u"][2] is not None)
+    log(f"Matchups totalt: {tot}, {both} med minst 2 källor, {three} med alla 3, {gold} med Gold@15")
     OUT.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")))
     log(f"Skrev {OUT} – patch {out['patch']}, källor: {out['sources']}")
 
