@@ -620,6 +620,35 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 .ahint b{color:#7ff0c0}
 .ahint button{font:inherit;font-size:12px;border:1px solid #7ff0c0;background:#121c4a;color:#7ff0c0;border-radius:4px;padding:2px 8px;cursor:pointer}
 .ahint button:hover{background:#1b2a63}
+/* ---- U.GG-build vid hover på pickad champ ---- */
+.bpop{position:fixed;z-index:60;width:min(470px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto;background:var(--panel);border:1px solid var(--gold);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:10px 12px;font-size:13px;color:var(--ink)}
+.bpop[hidden]{display:none}
+.bpop .bh{display:flex;gap:8px;align-items:center;margin-bottom:6px}
+.bpop .bm{color:var(--muted);font-size:12px}
+.bpop .bs{border-top:1px solid var(--line);padding:6px 0}
+.bpop .bt{font:700 12px "Barlow Semi Condensed",sans-serif;color:var(--gold);text-transform:uppercase;letter-spacing:.04em;margin-bottom:4px;display:flex;gap:8px;align-items:baseline}
+.bpop .bw{color:var(--muted);font:500 11.5px "Barlow Semi Condensed",sans-serif;text-transform:none;letter-spacing:0;white-space:nowrap}
+.bpop .bw b{color:var(--ink)}
+.bpop .bi{width:28px;height:28px;border-radius:4px;border:1px solid var(--line);background:var(--bg);vertical-align:middle}
+.bpop .bi.sm{width:22px;height:22px}
+.bpop .bi.sh{width:18px;height:18px;border-radius:50%}
+.bpop .brun{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+.bpop .brun .bi{border-radius:50%}
+.bpop .brun .key .bi{width:36px;height:36px;border-color:var(--gold)}
+.bpop .bsep{width:1px;height:24px;background:var(--line);margin:0 4px}
+.bpop .b2,.bpop .b3{display:grid;gap:10px}
+.bpop .b2{grid-template-columns:auto 1fr}
+.bpop .b3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bpop .bico{display:flex;gap:3px;align-items:center;flex-wrap:wrap;margin-bottom:2px}
+.bpop .ar{color:var(--muted);font-weight:700}
+.bpop .bo{display:flex;align-items:center;gap:5px;margin-bottom:3px}
+.bpop .bpri{display:flex;align-items:center;gap:4px;margin-bottom:5px}
+.bpop .bpri span{display:inline-flex;align-items:center;gap:2px}
+.bpop .bpath{display:grid;grid-template-columns:16px repeat(18,minmax(0,1fr));gap:1px;font:600 10.5px "Barlow Semi Condensed",sans-serif}
+.bpop .bpath span{height:16px;display:flex;align-items:center;justify-content:center;background:var(--bg);border-radius:2px;color:var(--muted)}
+.bpop .bpath .bl{background:none;color:var(--ink);font-weight:700}
+.bpop .bpath .on{background:var(--gold);color:var(--panel)}
+.bpop .bnote{margin:0;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -1567,6 +1596,56 @@ document.getElementById("reset").addEventListener("click",()=>{
 });
 
 build(); load(); render();
+/* ---- U.GG-build vid hover på pickad champ (filer: builds/<id>.json från update_data.py) ---- */
+const BLANE=["top","jungle","mid","adc","support"], BTIER={"17":"Emerald+","10":"Platinum+","11":"Diamond+","8":"Alla ranks"};
+const SHARD={5008:["StatModsAdaptiveForceIcon","Adaptive force"],5005:["StatModsAttackSpeedIcon","Attack speed"],5007:["StatModsCDRScalingIcon","Ability haste"],5001:["StatModsHealthScalingIcon","HP (skalande)"],5010:["StatModsMovementSpeedIcon","Movement speed"],5011:["StatModsHealthPlusIcon","HP"],5013:["StatModsTenacityIcon","Tenacity"]};
+const BCACHE={}, BSK={}; let BDD=null, BT=null, BSLOT=null;
+const BCDN="https://ddragon.leagueoflegends.com/cdn/";
+function bVer(){ return DDV||(typeof DATA!=="undefined"&&DATA&&DATA.ddragon)||"16.22.1"; }
+function bDD(){ if(BDD) return BDD; const v=bVer(), u=f=>fetch(`${BCDN}${v}/data/en_US/${f}.json`).then(r=>r.json());
+  BDD=Promise.all([u("runesReforged"),u("summoner"),u("item")]).then(([ru,su,it])=>{
+    const P={},T={}; ru.forEach(t=>{ T[t.id]={n:t.name,i:t.icon}; t.slots.forEach((s,si)=>s.runes.forEach(r=>{ P[r.id]={n:r.name,i:r.icon,t:t.id,s:si}; })); });
+    const S={}; Object.values(su.data).forEach(s=>{ S[s.key]={n:s.name,f:s.image.full}; });
+    const I={}; Object.entries(it.data).forEach(([id,x])=>{ I[id]=x.name; });
+    return {v,P,T,S,I}; }).catch(e=>{ BDD=null; throw e; });
+  return BDD; }
+function bSkills(c,v){ const id=ddId(c); return BSK[id]||(BSK[id]=fetch(`${BCDN}${v}/data/en_US/champion/${id}.json`).then(r=>r.json()).then(j=>j.data[id].spells.map(s=>({n:s.name,f:s.image.full}))).catch(()=>[])); }
+function bLoad(c){ const id=ddId(c); return BCACHE[id]||(BCACHE[id]=fetch(`builds/${id}.json`,{cache:"no-cache"}).then(r=>r.ok?r.json():null).catch(()=>null)); }
+const bImg=(src,t,cls)=>`<img class="bi ${cls||""}" src="${src}" alt="${t}" title="${t}" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.visibility='hidden'">`;
+const bWr=a=>a&&a[1]?`<span class="bw"><b>${String(a[0]).replace(".",",")} %</b> · ${a[1].toLocaleString("sv-SE")}</span>`:"";
+function bHtml(c,ri,d,dd,sk){
+  const v=dd.v, want=BLANE[ri]; let lane=want, b=d.r&&d.r[want];
+  if(!b&&d.r){ lane=Object.keys(d.r).sort((x,y)=>d.r[y].g[1]-d.r[x].g[1])[0]; b=d.r[lane]; }
+  if(!b) return `<p class="bnote">Ingen build-data för ${c}.</p>`;
+  const item=id=>bImg(`${BCDN}${v}/img/item/${id}.png`,dd.I[id]||id);
+  const perk=id=>{ const p=dd.P[id]; return p?bImg(BCDN+"img/"+p.i,p.n):""; };
+  const tree=id=>dd.T[id]?bImg(BCDN+"img/"+dd.T[id].i,dd.T[id].n,"sm"):"";
+  let h=`<div class="bh">${icon(c)}<div><b>${c}</b> <span class="bm">${R[BLANE.indexOf(lane)]}${lane!==want?` – ingen data som ${R[ri]}`:""}</span><div class="bm">${bWr(b.g)} matcher · ${BTIER[d.tier]||""} · patch ${String(d.patch).replace("_",".")}</div></div></div>`;
+  if(b.ru){ const [p,s,ids]=b.ru, by=t=>ids.filter(i=>dd.P[i]&&dd.P[i].t===t).sort((x,y)=>dd.P[x].s-dd.P[y].s);
+    h+=`<div class="bs"><div class="bt">Runor ${bWr(b.ru.slice(3))}</div><div class="brun">${tree(p)}${by(p).map((i,k)=>`<span class="${k?"":"key"}">${perk(i)}</span>`).join("")}<span class="bsep"></span>${tree(s)}${by(s).map(perk).join("")}${b.sh?`<span class="bsep"></span>${b.sh[0].map(i=>SHARD[i]?bImg(`${BCDN}img/perk-images/StatMods/${SHARD[i][0]}.png`,SHARD[i][1],"sh"):"").join("")}`:""}</div></div>`; }
+  const row=(t,a,f)=>a?`<div><div class="bt">${t}</div><div class="bico">${a[0].map(f).join("")}</div>${bWr(a.slice(1))}</div>`:"";
+  h+=`<div class="bs b2">${row("Spells",b.sp,id=>{ const s=dd.S[id]; return s?bImg(`${BCDN}${v}/img/spell/${s.f}`,s.n):""; })}${row("Start",b.st,item)}</div>`;
+  if(b.co) h+=`<div class="bs"><div class="bt">Core build ${bWr(b.co.slice(1))}</div><div class="bico">${b.co[0].map(item).join('<span class="ar">›</span>')}</div></div>`;
+  const opt=k=>b[k]?`<div><div class="bt">${k[1]}:e item</div>${b[k].map(o=>`<div class="bo">${item(o[0])}${bWr(o.slice(1))}</div>`).join("")}</div>`:"";
+  if(b.o4||b.o5||b.o6) h+=`<div class="bs b3">${opt("o4")}${opt("o5")}${opt("o6")}</div>`;
+  if(b.sk){ const [ord,mx]=b.sk, L="QWER", ic=x=>{ const s=sk[L.indexOf(x)]; return s?bImg(`${BCDN}${v}/img/spell/${s.f}`,`${x} – ${s.n}`,"sm"):""; };
+    h+=`<div class="bs"><div class="bt">Skills ${bWr(b.sk.slice(2))}</div><div class="bpri">${[...mx].map(x=>`<span>${ic(x)}<b>${x}</b></span>`).join('<span class="ar">›</span>')}</div><div class="bpath">${[...L].map(x=>`<span class="bl">${x}</span>`+Array.from({length:18},(_,i)=>`<span class="${ord[i]===x?"on":""}">${ord[i]===x?i+1:""}</span>`).join("")).join("")}</div></div>`; }
+  return h; }
+const BP=document.createElement("div"); BP.className="bpop"; BP.hidden=true; document.body.appendChild(BP);
+function bRole(idx){ if(idx<15) return idx-10; const c=bans[idx], eR=enemyRoles(bans.slice(15,20).filter(Boolean)); return eR[c]!==undefined?eR[c]:(MAINROLE[c]!==undefined?MAINROLE[c]:0); }
+function bPos(slot){ const r=slot.getBoundingClientRect(), w=BP.offsetWidth, h=BP.offsetHeight; let x=r.right+8; if(x+w>innerWidth-8) x=r.left-w-8; if(x<8) x=Math.max(8,(innerWidth-w)/2); BP.style.left=x+"px"; BP.style.top=Math.max(8,Math.min(r.top,innerHeight-h-8))+"px"; }
+async function bShow(slot){ const idx=+slot.dataset.idx, c=bans[idx]; if(!c) return; BSLOT=slot; const ri=bRole(idx);
+  BP.innerHTML=`<p class="bnote">Laddar build för ${c}…</p>`; BP.hidden=false; bPos(slot);
+  try{ const [d,dd]=await Promise.all([bLoad(c),bDD()]); if(BSLOT!==slot) return;
+    if(!d){ BP.innerHTML=`<p class="bnote">Ingen build-fil för ${c} än – kör update_data.py.</p>`; return; }
+    const sk=await bSkills(c,dd.v); if(BSLOT!==slot) return; BP.innerHTML=bHtml(c,ri,d,dd,sk); bPos(slot);
+  }catch(e){ if(BSLOT===slot) BP.innerHTML=`<p class="bnote">Kunde inte ladda build.</p>`; } }
+function bHide(){ clearTimeout(BT); BT=setTimeout(()=>{ BP.hidden=true; BSLOT=null; },150); }
+document.querySelectorAll(".slot.pick").forEach(s=>{
+  s.addEventListener("mouseenter",()=>{ if(!bans[+s.dataset.idx]) return; clearTimeout(BT); BT=setTimeout(()=>bShow(s),250); });
+  s.addEventListener("mouseleave",bHide); });
+BP.addEventListener("mouseenter",()=>clearTimeout(BT)); BP.addEventListener("mouseleave",bHide);
+
 
 
 // ---- Ladda data.json (skapas av scripts/update_data.py) ----
