@@ -620,6 +620,12 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
 .ahint b{color:#7ff0c0}
 .ahint button{font:inherit;font-size:12px;border:1px solid #7ff0c0;background:#121c4a;color:#7ff0c0;border-radius:4px;padding:2px 8px;cursor:pointer}
 .ahint button:hover{background:#1b2a63}
+/* Aga-tips bredvid pool-märket */
+.aga{flex:none;margin-left:6px;font-size:12px;font-weight:600;color:var(--gold);white-space:nowrap}
+/* dropdowns: alltid 5 champs höga, scrolla för fler; sidan hoppar inte när de öppnas */
+html{overflow-anchor:none}
+.tpl{max-height:calc(5 * 60px)!important}
+#tab-draft{padding-bottom:340px}
 /* ---- U.GG-build vid hover på pickad champ ---- */
 .bpop{position:fixed;z-index:60;width:min(470px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto;background:var(--panel);border:1px solid var(--gold);border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:10px 12px;font-size:13px;color:var(--ink)}
 .bpop[hidden]{display:none}
@@ -688,7 +694,7 @@ h1{font-size:40px;background:linear-gradient(100deg,#9fd0ff 0%,#c9b6ff 45%,#ff9f
   <div class="next" aria-live="polite"><h3>Tips: nästa pick<span id="nxsub">klicka för att låsa · tar hänsyn till fiendens picks</span></h3><div class="nxr" id="nxr" role="group" aria-label="Roll för tips"></div><div class="nx" id="nx"></div><p class="nxh" id="nicheh" style="display:none">Nisch / counterpicks mot deras picks</p><div class="nx" id="niche"></div><p class="last" id="last"></p></div>
   <ol class="comps" id="list"></ol>
   <p class="legend" id="datasrc">Ingen data.json hittad – sidan använder inbyggd data.</p>
-  <p class="legend">Håll musen över en champ i en comp för 10 förslag bland alla champs, rankade efter lane-matchup, synergi med era picks och compen. Vitt namn = normal pick, grönt = passar era picks eller kontrar deras, gult = dålig ihop med era picks eller kontras. Guld "pool"-märke = i spelarens pool, streckad och nedtonad = ej i pool, rött kryss = bannad, mörkgrå = redan pickad. Klicka "Sikta" på en comp för att lägga den mellan ban-tips och era picks och styra picks, bans och byt-förslag. Ban-tips under era bans väger fiendens synergier och vad som kontrar er bästa comp. Fiendens picks justerar poängen: compen får plus om den kontrar deras stil (dive, poke, engage …) och minus om den kontras. Blå champ = er låsta pick. Röd streckad = er pick finns inte i compens plan (avdrag). Under varje pick visas de två närmaste alternativen som inte är bannade. Guldmarkerad champ = alternativ som ersätter en bannad champ (överstruket namn). Poäng = meta-vikt minus avdrag för varje byte; byte i bot-paret drar extra eftersom synergin sitter i paret.</p>
+  <p class="legend">Håll musen över en champ i en comp för upp till 15 förslag (5 syns, scrolla för fler) bland alla champs, rankade efter lane-matchup, synergi med era picks och compen. Vitt namn = normal pick, grönt = passar era picks eller kontrar deras, gult = dålig ihop med era picks eller kontras. Guld "pool"-märke = i spelarens pool, streckad och nedtonad = ej i pool, rött kryss = bannad, mörkgrå = redan pickad. Klicka "Sikta" på en comp för att lägga den mellan ban-tips och era picks och styra picks, bans och byt-förslag. Ban-tips under era bans väger fiendens synergier och vad som kontrar er bästa comp. Fiendens picks justerar poängen: compen får plus om den kontrar deras stil (dive, poke, engage …) och minus om den kontras. Blå champ = er låsta pick. Röd streckad = er pick finns inte i compens plan (avdrag). Under varje pick visas de två närmaste alternativen som inte är bannade. Guldmarkerad champ = alternativ som ersätter en bannad champ (överstruket namn). Poäng = meta-vikt minus avdrag för varje byte; byte i bot-paret drar extra eftersom synergin sitter i paret.</p>
   </div>
   <div id="tab-spelare" hidden>
     <p class="intro">Välj vem som spelar vilken roll. Draft-fliken använder sedan spelarens champs för just den rollen. Profilerna sparas i din webbläsare.</p>
@@ -797,7 +803,7 @@ function build(){
         dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
         items.forEach(it=>{ const li=document.createElement("li"), t=tk(it.c), k=opts.indexOf(it.c);
           const pool=ri>=0&&(POOLS[ri]||[]).includes(it.c);
-          li.innerHTML=`<span class="${t?"":it.o?nameCls(it.o):""}">${it.c}</span>${ri>=0?(pool?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>'):""}`;
+          li.innerHTML=`<span class="${t?"":it.o?nameCls(it.o):""}">${it.c}</span>${ri>=0?(pool?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>')+AGA(it.c):""}`;
           if(t){ li.className="gr"; li.setAttribute("aria-disabled","true"); li.addEventListener("mousedown",e=>e.preventDefault()); }
           else { li.dataset.k=k; if(k===hi) li.className="on"; li.addEventListener("mousedown",e=>{e.preventDefault(); pick(it.c)}); }
           dd.appendChild(li)});
@@ -969,7 +975,7 @@ function aimComp(){
   if(base&&chosen.length) c.t=base.t+" · egna val";
   return c;
 }
-const NOTES={"Front-to-back|2|Zilean":"Aga tipsar"};
+const NOTES={"Front-to-back|2|Zilean":"Aga tipsar👍"};
 const noteOf=(cn,ri,ch)=>NOTES[`${cn}|${ri}|${ch}`]||"";
 const EMPTY_AIM={n:"Siktat mål",k:"shock",t:"Inget valt – klicka en ruta för att söka, eller Sikta på en comp nedan",s:5,w:"",custom:true,empty:true,p:[[],[],[],[],[]]};
 // Hur väl de egna valen passar en comp: utan vald comp föreslås bästa comp (väljs inte automatiskt),
@@ -999,7 +1005,7 @@ function aimInput(ri){
     hi=0; if(!opts.length) return;
     dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
     opts.forEach((c,k)=>{ const li=document.createElement("li"); if(k===hi) li.className="on";
-      const pl=(POOLS[ri]||[]).includes(c); li.innerHTML=`${icon(c,"xs")}<span>${c}</span>${pl?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>'}`;
+      const pl=(POOLS[ri]||[]).includes(c); li.innerHTML=`${icon(c,"xs")}<span>${c}</span>${pl?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>'}${AGA(c)}`;
       li.addEventListener("mousedown",e=>{ e.preventDefault(); set(c); }); dd.appendChild(li); });
     cell.appendChild(dd); };
   const paint=()=>dd&&dd.querySelectorAll("li").forEach((li,k)=>li.classList.toggle("on",k===hi));
@@ -1034,7 +1040,7 @@ function aimEdit(cell,r,ri,getRank,taken){
     opts.forEach((c,k)=>{ const li=document.createElement("li"); if(k===hi) li.className="on";
       if(c==="__reset") li.innerHTML=`<span>↺ Återställ till compens förslag</span>`;
       else { const pl=(POOLS[ri]||[]).includes(c), nt=noteOf(r.c.n,ri,c);
-        li.innerHTML=`${icon(c,"xs")}<span>${c}${nt?` <small class="cnote">${nt}</small>`:""}</span>${taken.has(c)?'<i class="pb no">tagen</i>':pl?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>'}`; }
+        li.innerHTML=`${icon(c,"xs")}<span>${c}${nt&&c!=="Zilean"?` <small class="cnote">${nt}</small>`:""}</span>${taken.has(c)?'<i class="pb no">tagen</i>':pl?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>'}${AGA(c)}`; }
       li.addEventListener("mousedown",e=>{ e.preventDefault(); set(c==="__reset"?null:c); }); dd.appendChild(li); });
     cell.appendChild(dd); };
   const paint=()=>dd&&dd.querySelectorAll("li").forEach((li,k)=>li.classList.toggle("on",k===hi));
@@ -1153,7 +1159,8 @@ function paintPortraits(){ document.querySelectorAll(".slot").forEach(sl=>{ cons
   if(pf.dataset.c===key) return; pf.dataset.c=key; pf.innerHTML=c?icon(c,"big"):(rI>=0?roleIcon(rI):""); }); }
 const lockPick=(ri,ch)=>{ const sl=document.querySelector(`.slot[data-idx="${10+ri}"]`); if(!sl) return; sl._set(ch); save(); render(); };
 const nameCls=o=>o.bad?"bad":o.good?"good":"";
-const poolTag=o=>o.pool?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>';
+const AGA=c=>c==="Zilean"?'<small class="aga">Aga tipsar👍</small>':"";
+const poolTag=o=>(o.pool?'<i class="pb">pool</i>':'<i class="pb no">ej pool</i>')+AGA(o.ch);
 const warnOf=o=>[...o.warn,...(o.cv.hurt.length?[`Svag mot ${o.cv.hurt.join(", ")}`]:[])];
 function tipItems(list,X,ri,onPick){ const fr=document.createDocumentFragment();
   list.forEach((o,k)=>{
@@ -1172,7 +1179,7 @@ function tipItems(list,X,ri,onPick){ const fr=document.createDocumentFragment();
 function roleCell(r,x,ri,X,alive,taken,eager,edit){
   const cell=document.createElement("div"); cell.className="col cr";
   const locked=!!X.ours[ri]; let ranked=null;
-  const getRank=()=>ranked||(ranked=roleCands(ri,X,{c:r.c},alive).slice(0,Math.max(10,(r.c.p[ri]||[]).length)));
+  const getRank=()=>ranked||(ranked=roleCands(ri,X,{c:r.c},alive).slice(0,Math.max(15,(r.c.p[ri]||[]).length)));
   let show=x.c;
   if(eager&&!locked&&!r.c.custom){ const f=getRank().find(o=>!taken.has(o.ch)); if(f) show=f.ch; }
   if(edit&&!locked&&AIMX[ri]) show=AIMX[ri];
@@ -1191,7 +1198,7 @@ function roleCell(r,x,ri,X,alive,taken,eager,edit){
       const fill=()=>{ const tpl=menu.querySelector(".tpl"); if(tpl.childElementCount) return;
         let L=getRank().filter(o=>o.ch!==show);
         if(L.length<3) L=[...L,...roleCands(ri,X,null,alive).filter(o=>o.ch!==show&&!L.some(y=>y.ch===o.ch))];
-        L=L.slice(0,Math.max(8,(r.c.p[ri]||[]).length));
+        L=L.slice(0,Math.max(15,(r.c.p[ri]||[]).length));
         if(L.length) tpl.appendChild(tipItems(L,X,ri,c=>{ AIMX[ri]=c; saveAimx(); render(); }));
         else tpl.innerHTML='<small class="note">Inga fler alternativ.</small>'; };
       cell.addEventListener("mouseenter",fill); cell.addEventListener("focusin",fill); } }
@@ -1645,6 +1652,12 @@ document.querySelectorAll(".slot.pick").forEach(s=>{
   s.addEventListener("mouseenter",()=>{ if(!bans[+s.dataset.idx]) return; clearTimeout(BT); BT=setTimeout(()=>bShow(s),250); });
   s.addEventListener("mouseleave",bHide); });
 BP.addEventListener("mouseenter",()=>clearTimeout(BT)); BP.addEventListener("mouseleave",bHide);
+/* dropdowns öppnas alltid scrollade längst upp */
+let TPCUR=null;
+const tpTop=el=>el&&el.querySelectorAll(".tpl").forEach(t=>{ t.scrollTop=0; });
+document.addEventListener("mouseover",e=>{ const c=e.target.closest&&e.target.closest(".cr,.pick"); if(c!==TPCUR){ TPCUR=c; tpTop(c); } });
+document.addEventListener("focusin",e=>{ const c=e.target.closest&&e.target.closest(".cr,.pick"); if(c&&c!==TPCUR){ TPCUR=c; tpTop(c); } });
+
 
 
 
