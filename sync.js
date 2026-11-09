@@ -56,6 +56,17 @@ function pushProf() {
 // index.html anropar TCSYNC("draft" | "sel" | "aim" | "prof") när något ändras lokalt
 window.TCSYNC = k => { if (APPLY || !UID) return; ({ draft: pushDraft, sel: pushSel, aim: pushAim, prof: pushProf })[k]?.(); };
 
+// ---------- omritning: vänta medan någon skriver i ett fält, så inmatning inte försvinner ----------
+const PEND = { players: false, render: false }; let PT = null;
+const busy = () => { const a = document.activeElement; return !!(a && /^(INPUT|SELECT)$/.test(a.tagName) && a.closest("#tab-spelare,#aimcol,#list,.board")); };
+function refresh(o) { if (o.players) PEND.players = true; if (o.render) PEND.render = true; clearTimeout(PT); PT = setTimeout(flush, 80); }
+function flush() {
+  if (!PEND.players && !PEND.render) return;
+  if (busy()) { document.addEventListener("focusout", () => { clearTimeout(PT); PT = setTimeout(flush, 200); }, { once: true }); return; }
+  const p = PEND.players, r = PEND.render; PEND.players = PEND.render = false;
+  APPLY = true; try { if (p) renderPlayers(); if (r) render(); } finally { APPLY = false; }
+}
+
 // ---------- ta emot ändringar ----------
 function applyRoom(v) {
   APPLY = true;
@@ -77,9 +88,9 @@ function applyRoom(v) {
     if (v.lu) {
       let lc = false;
       for (let i = 0; i < 5; i++) { const id = typeof v.lu[i] === "string" ? v.lu[i] : null; if (!id) continue; LAST.lu[i] = id; if (PROF.lineup[i] !== id) { PROF.lineup[i] = id; lc = true; } }
-      if (lc) { saveProf(); applyProfiles(); renderPlayers(); ch = true; }
+      if (lc) { saveProf(); applyProfiles(); refresh({ players: true }); ch = true; }
     }
-    if (ch) { save(); saveAimx(); render(); }
+    if (ch) { save(); saveAimx(); refresh({ render: true }); }
   } finally { APPLY = false; }
 }
 const profSig = list => JSON.stringify(list.filter(p => !p.builtin).map(p => [p.id, p.name, p.pools]).sort((a, b) => a[0] < b[0] ? -1 : 1));
@@ -97,6 +108,7 @@ function startProfiles() {
     else if (MYUID && prof(MYUID)) list.push(prof(MYUID));     // nyss skapad lokalt, inte i databasen än
     if (profSig(list) === profSig(PROF.profiles)) return;      // inget nytt (t.ex. ekot av ens egen ändring)
     APPLY = true; try { setProfiles(list); } finally { APPLY = false; }
+    refresh({ players: true, render: true });
   }, err);
 }
 window.TCDELPROF = () => { if (!MYUID) return; LAST.prof = null; set(ref(db, "profiles/" + MYUID), null).catch(err); };

@@ -1864,7 +1864,7 @@ function setProfiles(list){
   list=list.filter(p=>p.id!=="alla").sort((a,b)=>a.name.localeCompare(b.name,"sv"));
   PROF.profiles=[...list,allaProfile()];
   if(!prof(PSEL)) PSEL=MYUID&&prof(MYUID)?MYUID:PROF.profiles[0].id;
-  applyProfiles(); renderPlayers(); render();
+  applyProfiles(); // sync.js ritar om listan/compsen när ingen skriver i ett fält
 }
 // Profiltext: {"name":"…","pools":[[top],[jgl],[mid],[adc],[sup]]} – "*" i en roll = alla champs
 function parseProfile(t){ const d=JSON.parse(t), src=d&&d.pools; if(!Array.isArray(src)||src.length!==5) throw 0;
