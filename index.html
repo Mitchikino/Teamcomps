@@ -1248,7 +1248,7 @@ function compCard(r,rank,X,alive,taken,isAim,sw){
     <div class="head"><span class="name">${r.c.n}</span><span class="type">${meta.join(" · ")}</span>${live&&!r.c.custom?`<span class="score"><span class="bar"><i style="width:${r.score}%"></i></span>${r.score}</span>`:""}<button type="button" class="aim" aria-pressed="${sel}" title="${sel?"Sluta sikta på":"Sikta på"} ${r.c.n}">${sel?"Siktar ✓":"Sikta"}</button></div>
     <div class="line"></div>
     ${live&&enemy.length&&(r.vs.g||r.vs.b)?`<p class="vs"><b class="${r.vs.adj>0?"up":r.vs.adj<0?"down":""}">${r.vs.adj>0?"+":""}${r.vs.adj}</b> mot deras picks${r.vs.g?` – bra mot ${r.vs.g}`:""}${r.vs.b?`${r.vs.g?";":" –"} svag mot ${r.vs.b}`:""}</p>`:""}
-    ${live&&!r.c.custom?`<p class="win"><button type="button" class="more" aria-expanded="false">Visa mer</button>${r.c.w}</p><div class="xinfo" hidden>${xinfo(r.c.n)}</div>`:`<p class="why">Går inte att spela: inga champs kvar för ${r.dead}.</p>`}
+    ${r.c.custom?"":live?`<p class="win"><button type="button" class="more" aria-expanded="false">Visa mer</button>${r.c.w}</p><div class="xinfo" hidden>${xinfo(r.c.n)}</div>`:`<p class="why">Går inte att spela: inga champs kvar för ${r.dead}.</p>`}
   </div>`;
   const line=el.querySelector(".line");
   r.lineup.forEach((x,ri)=>line.appendChild(roleCell(r,x,ri,X,alive,taken,isAim,isAim)));
