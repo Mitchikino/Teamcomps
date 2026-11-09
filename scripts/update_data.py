@@ -8,13 +8,14 @@ Källor (varje källa misslyckas för sig – resten körs ändå):
   3. OP.GG                – MCP: soloQ WR/pick/ban + synergier; counters-sidan: alla matchups (WR + games)
   4. Lolalytics           – matchups (WR + games) via sajtens JSON, HTML som reserv
   5. U.GG                 – matchups (WR + games + guld/xp/cs-diff @15) via statiska JSON-filer
+  6. U.GG builds          – runor/spells/items/skills per roll -> builds/<id>.json (laddas vid hover)
 
 Matchups sparas per champ som  "mu": {"Motståndare": {"o": [wr, games], "l": [wr, games]}}
 (o = OP.GG, l = Lolalytics, u = U.GG [wr, games, guld@15, xp@15, cs@15], wr = champens WR mot motståndaren). Bara par med > 20 games sparas.
 index.html väger ihop källorna efter antal games.
 
 Kör:  pip install -r requirements.txt && python scripts/update_data.py
-Flaggor: --only ddragon,pro,opgg,lolalytics   --pro-days 60   --tier emerald_plus   --delay 1.0
+Flaggor: --only ddragon,pro,opgg,lolalytics,ugg,builds   --pro-days 60   --tier emerald_plus   --delay 1.0
 """
 import argparse, datetime as dt, json, os, re, sys, time, unicodedata
 from pathlib import Path
@@ -593,10 +594,80 @@ def ugg_orient(ug, ll):
                 e[0] = round(100 - e[0], 2); e[2:] = [(-x if x is not None else None) for x in e[2:]]
     return ug
 
+# ---------- 6. U.GG builds (overview) -> builds/<id>.json ----------
+# Format enligt ugg-parser/ugg-types: [0 runor, 1 spells, 2 start, 3 core, 4 skills, 5 item 4/5/6, 6 [wins, matcher], 7 -, 8 shards]
+BUILDS = ROOT / "builds"
+UGG_OV_ROLE = {v: k for k, v in UGG_ROLE.items()}  # "4" -> "top"
+BUILD_MIN = 200  # roll måste ha minst så många matcher för att sparas
+
+def _wg(a, b):
+    w, g = min(a, b), max(a, b)  # wins <= matcher, oavsett ordning i U.GG-listan
+    return [round(100 * w / g, 1) if g else None, int(g)]
+
+def ugg_parse_build(d):
+    L = lambda i: d[i] if len(d) > i and isinstance(d[i], list) else []
+    ru, sp, st, co, ab, late, mi = (L(i) for i in range(7)); sh = L(8)
+    b = {}
+    if len(mi) >= 2: b["g"] = _wg(mi[0], mi[1])
+    if len(ru) >= 5: b["ru"] = [ru[2], ru[3], list(ru[4])] + _wg(ru[0], ru[1])
+    if len(sh) >= 3: b["sh"] = [[int(x) for x in sh[2]]] + _wg(sh[0], sh[1])
+    for k, x in (("sp", sp), ("st", st), ("co", co)):
+        if len(x) >= 3 and x[2]: b[k] = [list(x[2])] + _wg(x[0], x[1])
+    if len(ab) >= 4: b["sk"] = ["".join(ab[2]), str(ab[3])] + _wg(ab[0], ab[1])
+    for i, k in enumerate(("o4", "o5", "o6")):
+        opts = late[i] if len(late) > i and isinstance(late[i], list) else []
+        rows = [[o[0]] + _wg(o[1], o[2]) for o in opts if isinstance(o, list) and len(o) >= 3 and max(o[1], o[2]) > 0]
+        if rows: b[k] = sorted(rows, key=lambda r: -r[2])[:5]
+    return b
+
+def ugg_builds(champs, ddv, delay):
+    mj, mn = ddv.split(".")[:2]
+    patches = [f"{mj}_{mn}", f"{mj}_{int(mn) - 1}"] if mn.isdigit() and int(mn) > 1 else [f"{mj}_{mn}"]
+    vers = ["1.5.0", "1.4.0"]
+    BUILDS.mkdir(exist_ok=True)
+    base, ok, fails, shown, err = None, 0, 0, 0, ""
+    for name, info in champs.items():
+        j = None
+        for pt, v in ([base] if base else [(p, v) for p in patches for v in vers]):
+            try:
+                r = S.get(f"https://stats2.u.gg/lol/1.5/overview/{pt}/ranked_solo_5x5/{info['key']}/{v}.json",
+                          headers=LL_UA, timeout=30)
+                if r.status_code == 200 and r.text.strip().startswith("{"):
+                    j = r.json(); base = (pt, v); break
+                err = f"http {r.status_code}"
+            except Exception as ex: err = str(ex)[:150]
+        if j is None:
+            fails += 1
+            if fails <= 3: log("U.GG build", name, "fel:", err)
+            time.sleep(delay); continue
+        reg = j.get(UGG_REGION) or next(iter(j.values()), {})
+        tier = next((t for t in UGG_TIERS if t in reg), None)
+        roles = {}
+        for rid, node in (reg.get(tier) or {}).items():
+            lane = UGG_OV_ROLE.get(rid)
+            d = node[0] if isinstance(node, list) and node and isinstance(node[0], list) else None
+            if not lane or not d: continue
+            if shown < 1: log(f"U.GG build-exempel {name} {lane}: {json.dumps(d)[:400]}"); shown += 1
+            try: b = ugg_parse_build(d)
+            except Exception as ex: log("U.GG build parse", name, lane, ex); continue
+            if b.get("g"): roles[lane] = b
+        keep = {l: b for l, b in roles.items() if b["g"][1] >= BUILD_MIN}
+        if not keep and roles:
+            l = max(roles, key=lambda x: roles[x]["g"][1]); keep = {l: roles[l]}
+        if keep:
+            (BUILDS / f"{info['id']}.json").write_text(
+                json.dumps({"patch": base[0], "tier": tier, "r": keep}, ensure_ascii=False, separators=(",", ":")))
+            ok += 1
+        else: fails += 1
+        time.sleep(delay)
+    log(f"U.GG builds: {ok} filer i {BUILDS.name}/, patch {base[0] if base else '?'}, {fails} misslyckade")
+    if not ok: raise RuntimeError(f"inga builds ({fails} fel)")
+    return ok
+
 # ---------- main ----------
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--only", default="ddragon,pro,opgg,lolalytics,ugg")
+    ap.add_argument("--only", default="ddragon,pro,opgg,lolalytics,ugg,builds")
     ap.add_argument("--opgg-web", action="store_true", help="försök läsa OP.GG:s counters-sida (funkar oftast inte)")
     ap.add_argument("--pro-days", type=int, default=60)
     ap.add_argument("--tier", default="emerald_plus", help="lolalytics-tier, t.ex. emerald_plus, diamond_plus")
@@ -631,6 +702,7 @@ def main():
     ll = run("lolalytics", lambda: lolalytics(champs, idx, plan, a.tier, a.delay, a.ll_patch))
     ug = run("ugg", lambda: ugg_orient(ugg(champs, idx, plan, ver, a.delay), ll))
     pro = run("pro", lambda: leaguepedia(a.pro_days, idx))
+    run("builds", lambda: ugg_builds(champs, ver, a.delay))
 
     # Slå ihop. Saknas en källa denna körning behålls förra körningens värden för den källan.
     for n in C:
