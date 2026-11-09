@@ -537,7 +537,7 @@ UGG_F = {"xp": 3, "gold": 4, "cs": 6}
 
 def ugg(champs, idx, plan, ddv, delay):
     mj, mn = ddv.split(".")[:2]
-    patches = [f"{mj}_{mn}", f"{mj}_{int(mn) - 1}"] if mn.isdigit() and int(mn) > 1 else [f"{mj}_{mn}"]
+    patches = [f"{mj}_{mn}"]  # bara nuvarande patch
     vers = ["1.5.0", "1.4.0"]
     mu, fails, shown, used = {}, 0, 0, {}
     base = None  # (patch, ver) som fungerade
@@ -671,7 +671,7 @@ def main():
     ap.add_argument("--opgg-web", action="store_true", help="försök läsa OP.GG:s counters-sida (funkar oftast inte)")
     ap.add_argument("--pro-days", type=int, default=60)
     ap.add_argument("--tier", default="emerald_plus", help="lolalytics-tier, t.ex. emerald_plus, diamond_plus")
-    ap.add_argument("--ll-patch", default="30", help="lolalytics-period: 30/14/7 = senaste X dagarna, tomt = bara nuvarande patch")
+    ap.add_argument("--ll-patch", default="cur", help="lolalytics-period: cur = bara nuvarande patch (standard), 30/14/7 = senaste X dagarna")
     ap.add_argument("--delay", type=float, default=1.0, help="sekunder mellan anrop (var snäll mot sajterna)")
     a = ap.parse_args(); only = set(a.only.split(",")); OPGG_WEB["on"] = a.opgg_web
     old = json.loads(OUT.read_text()) if OUT.exists() else {}
@@ -699,7 +699,8 @@ def main():
         lanes = (og[4].get(n) if og else None) or ([og[3][n]] if og and n in og[3] else None) or \
                 ([old.get("champions", {}).get(n, {}).get("main_role")] if old.get("champions", {}).get(n, {}).get("main_role") else [])
         if lanes: plan[n] = lanes[:2]
-    ll = run("lolalytics", lambda: lolalytics(champs, idx, plan, a.tier, a.delay, a.ll_patch))
+    ll_pt = f"{mj}.{mn}" if a.ll_patch in ("", "cur") else a.ll_patch  # t.ex. "16.22" = bara denna patch
+    ll = run("lolalytics", lambda: lolalytics(champs, idx, plan, a.tier, a.delay, ll_pt))
     ug = run("ugg", lambda: ugg_orient(ugg(champs, idx, plan, ver, a.delay), ll))
     pro = run("pro", lambda: leaguepedia(a.pro_days, idx))
     run("builds", lambda: ugg_builds(champs, ver, a.delay))
@@ -711,7 +712,7 @@ def main():
         sq = {f"opgg_{k}": v for k, v in og[0].get(n, {}).items()} if og else \
              {k: v for k, v in (prev.get("soloq") or {}).items() if k.startswith("opgg_")}
         C[n]["soloq"] = sq
-        prev_mu = prev.get("mu") or {}
+        prev_mu = (prev.get("mu") or {}) if old.get("patch") == out["patch"] else {}  # gammal patch = släng
         M = {}
         for key, src in (("o", og[1] if og else None), ("l", ll), ("u", ug)):
             if src is not None:
