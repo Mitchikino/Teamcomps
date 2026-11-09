@@ -171,6 +171,11 @@ ol.comps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .plist button.on{border-color:var(--blue);background:var(--blue-soft);font-weight:700}
 .plist button.add{border-style:dashed;color:var(--muted)}
 .plist button small{display:block;color:var(--muted);font-size:12px;font-weight:500}
+.plist em.me{font-style:normal;font-size:11px;font-weight:700;color:var(--gold);border:1px solid var(--gold);border-radius:3px;padding:0 4px;margin-left:6px}
+.plist .pacc{display:flex;flex-direction:column;gap:4px;margin-top:4px}
+.plist .pacc small{color:var(--muted);font-size:12px}
+.plist .pacc a{color:var(--blue)}
+.pedit .pname{margin:0;font-size:18px}
 .pedit .top{display:flex;gap:8px;align-items:center;margin-bottom:10px}
 .pedit .top input{flex:1}
 .pedit .top button,.ptools button,.prole .add button{font:inherit;font-size:14px;font-weight:600;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:5px;padding:6px 11px;cursor:pointer}
@@ -721,11 +726,11 @@ html{overflow-anchor:none}
   <p class="legend">Håll musen över en champ i en comp för upp till 15 förslag (5 syns, scrolla för fler) bland alla champs, rankade efter lane-matchup, synergi med era picks och compen. Vitt namn = normal pick, grönt = passar era picks eller kontrar deras, gult = dålig ihop med era picks eller kontras. Guld "pool"-märke = i spelarens pool, streckad och nedtonad = ej i pool, rött kryss = bannad, mörkgrå = redan pickad. Klicka "Sikta" på en comp för att lägga den mellan ban-tips och era picks och styra picks, bans och byt-förslag. Ban-tips under era bans väger fiendens synergier och vad som kontrar er bästa comp. Fiendens picks justerar poängen: compen får plus om den kontrar deras stil (dive, poke, engage …) och minus om den kontras. Blå champ = er låsta pick. Röd streckad = er pick finns inte i compens plan (avdrag). Under varje pick visas de två närmaste alternativen som inte är bannade. Guldmarkerad champ = alternativ som ersätter en bannad champ (överstruket namn). Poäng = meta-vikt minus avdrag för varje byte; byte i bot-paret drar extra eftersom synergin sitter i paret.</p>
   </div>
   <div id="tab-spelare" hidden>
-    <p class="intro">Välj vem som spelar vilken roll. Draft-fliken använder sedan spelarens champs för just den rollen. Profilerna sparas i din webbläsare.</p>
+    <p class="intro">Välj vem som spelar vilken roll. Draft-fliken använder sedan spelarens champs för just den rollen. Profilerna sparas för hela laget – logga in med Google för att skapa och ändra din egen. Lineupen följer med rummet.</p>
     <section class="pcard"><h2>Lineup</h2><div class="lineup" id="lineup"></div></section>
     <section class="pcard"><h2>Profiler</h2>
       <div class="profs"><div class="plist" id="plist"></div><div class="pedit" id="pedit"></div></div>
-      <div class="ptools"><button type="button" id="pExport">Kopiera profiler</button><button type="button" id="pImport">Klistra in profiler</button><button type="button" id="pReset">Återställ standard</button><span class="note" id="pMsg"></span></div>
+      <div class="ptools"><button type="button" id="pExport">Kopiera vald profil</button><button type="button" id="pImport">Klistra in i min profil</button><span class="note" id="pMsg"></span></div>
     </section>
   </div>
 
@@ -883,12 +888,7 @@ const CNT={
 "Akali":{c:3,p:3},"Naafiri":{c:3,p:2},"Sylas":{e:2,p:1},"Yone":{c:2,p:2},"Ryze":{t:2},"Xerath":{c:3},"Ziggs":{c:2},
 "Rakan":{p:3,c:3},"Pyke":{c:3,p:2},"Thresh":{c:3,p:2},"Bard":{c:3,p:2},"Nami":{d:2,s:2},"Karma":{d:3,e:2}};
 // Era fulla pooler per roll
-let POOLS=[
- ["Sion","Zaahen","Ambessa","Pantheon","Maokai","Dr. Mundo"],
- ["Jarvan IV","Elise","Warwick","Sejuani","Cho'Gath","Kha'Zix","Udyr","Nocturne","Vi"],
- ["Orianna","Swain","Sylas","Ryze","Syndra","Akali","Lissandra","Yone","Ziggs","Naafiri","Vex","Taliyah","Mel","Aurora","Xerath","Galio","Cassiopeia","Viktor"],
- ["Ashe","Caitlyn","Corki","Draven","Ezreal","Jhin","Jinx","Kai'Sa","Kalista","Kog'Maw","Lucian","Miss Fortune","Nilah","Samira","Senna","Sivir","Smolder","Tristana","Twitch","Varus","Vayne","Xayah","Yunara","Zeri"],
- ["Bard","Thresh","Poppy","Pyke","Milio","Lulu","Rakan","Karma","Renata Glasc","Soraka","Nami","Nautilus","Seraphine"]];
+let POOLS=[[],[],[],[],[]]; // fylls från spelarprofilerna i Firebase
 const tr=ch=>TR[ch]||"";
 function compVs(c,enemy){
   if(!enemy.length) return {adj:0,g:"",b:""};
@@ -1026,7 +1026,8 @@ function aimInput(ri){
   const set=c=>{ AIMX[ri]=c; saveAimx(); render(); };
   const open=()=>{ close(); const q=norm(inp.value===cur?"":inp.value);
     const pool=CHAMPS.filter(c=>playable(c,ri)), a=ALIAS[q];
-    opts=q?[...new Set([...(a&&pool.includes(a)?[a]:[]),...pool.filter(c=>norm(c).startsWith(q)),...pool.filter(c=>norm(c).includes(q))])].slice(0,8)
+    const all=[...pool,...CHAMPS.filter(c=>!pool.includes(c))]; // vid sökning: alla champs, rollens vanliga först
+    opts=q?[...new Set([...(a?[a]:[]),...all.filter(c=>norm(c).startsWith(q)),...all.filter(c=>norm(c).includes(q))])].slice(0,8)
           :[...new Set([...(LASTRANK[ri]||[]),...(POOLS[ri]||[])])].filter(c=>pool.includes(c)).slice(0,8);
     hi=0; if(!opts.length) return;
     dd=document.createElement("ul"); dd.className="dd"; dd.setAttribute("role","listbox");
@@ -1058,7 +1059,8 @@ function aimEdit(cell,r,ri,getRank,taken){
   const set=c=>{ AIMX[ri]=c; saveAimx(); render(); };
   const open=()=>{ if(dd) dd.remove(); dd=null; const q=norm(inp.value), a=ALIAS[q];
     const ranked=getRank().map(o=>o.ch);
-    opts=q?[...new Set([...(a&&pool.includes(a)?[a]:[]),...pool.filter(c=>norm(c).startsWith(q)),...pool.filter(c=>norm(c).includes(q))])].slice(0,10)
+    const all=[...pool,...CHAMPS.filter(c=>!pool.includes(c))]; // vid sökning: alla champs, rollens vanliga först
+    opts=q?[...new Set([...(a?[a]:[]),...all.filter(c=>norm(c).startsWith(q)),...all.filter(c=>norm(c).includes(q))])].slice(0,10)
           :[...new Set([...ranked,...listed])];
     if(AIMX[ri]&&!q) opts=["__reset",...opts.filter(c=>c!==AIMX[ri])];
     hi=0; if(!opts.length) return;
@@ -1847,23 +1849,26 @@ function applyData(){
   document.getElementById("datasrc").textContent=`Data: patch ${DATA.patch||"?"}, uppdaterad ${(DATA.updated||"").replace("T"," ").replace("Z"," UTC")} – ${src}`;
 }
 
-// ---- spelarprofiler ----
-const PKEY="tc-profiles-v1";
-const DEF_POOLS=POOLS.map(a=>[...a]);
-// Lagets standardprofiler – det alla ser första gången de öppnar sidan
-const TEAM_DEFAULT={"profiles": [{"id": "thomas", "name": "Thomas", "pools": [["Sion", "Zaahen", "Ambessa", "Pantheon", "Maokai", "Dr. Mundo"], [], [], [], []]}, {"id": "elliot", "name": "Elliot", "pools": [[], ["Jarvan IV", "Elise", "Warwick", "Cho'Gath", "Kha'Zix", "Nocturne", "Vi"], [], [], []]}, {"id": "anders", "name": "Anders", "pools": [[], ["Sejuani", "Cho'Gath", "Udyr", "Nocturne", "Vi"], [], [], []]}, {"id": "anton", "name": "Anton", "pools": [[], [], ["Orianna", "Swain", "Sylas", "Ryze", "Syndra", "Akali", "Lissandra", "Yone", "Ziggs", "Naafiri", "Vex", "Taliyah", "Mel", "Aurora", "Xerath", "Galio", "Cassiopeia", "Viktor"], [], []]}, {"id": "carl", "name": "Carl Johan", "pools": [[], [], [], ["Ashe", "Caitlyn", "Corki", "Draven", "Ezreal", "Jhin", "Jinx", "Kai'Sa", "Kalista", "Kog'Maw", "Lucian", "Miss Fortune", "Nilah", "Samira", "Senna", "Sivir", "Smolder", "Tristana", "Twitch", "Varus", "Vayne", "Xayah", "Yunara", "Zeri"], []]}, {"id": "simon", "name": "Simon", "pools": [[], [], [], [], ["Bard", "Thresh", "Poppy", "Pyke", "Milio", "Lulu", "Rakan", "Karma", "Renata Glasc", "Soraka", "Nami", "Nautilus", "Seraphine"]]}], "lineup": ["thomas", "elliot", "anton", "carl", "simon"]};
-// Profil med alla champs i alla roller
-const allaProfile=()=>({id:"alla",name:"Alla champs",pools:[0,1,2,3,4].map(()=>[...CHAMPS])});
-function defaultProfiles(){ const d=JSON.parse(JSON.stringify(TEAM_DEFAULT)); const an=d.profiles.find(p=>p.id==="anton"); if(an) an.pools=[0,1,2,3,4].map(()=>[...CHAMPS]); d.profiles.push(allaProfile()); return d; }
-let PROF=(()=>{ try{ const d=JSON.parse(localStorage.getItem(PKEY)||"null"); if(d&&Array.isArray(d.profiles)&&d.profiles.length) return d; }catch(e){} return defaultProfiles(); })();
-try{ if(!localStorage.getItem("tc-alla-added")){ if(!PROF.profiles.some(p=>p.id==="alla")) PROF.profiles.push(allaProfile()); localStorage.setItem("tc-alla-added","1"); localStorage.setItem(PKEY,JSON.stringify(PROF)); } }catch(e){}
-// v2: Anton får alla champs i alla roller, Simon får Seraphine + Nautilus
-try{ if(!localStorage.getItem("tc-pools-v2")){ const an=PROF.profiles.find(p=>p.id==="anton"); if(an) an.pools=[0,1,2,3,4].map(()=>[...CHAMPS]);
-  const si=PROF.profiles.find(p=>p.id==="simon"); if(si) ["Nautilus","Seraphine"].forEach(c=>{ if(!si.pools[4].includes(c)) si.pools[4].push(c); });
-  localStorage.setItem("tc-pools-v2","1"); localStorage.setItem(PKEY,JSON.stringify(PROF)); } }catch(e){}
-let PSEL=PROF.profiles[0].id;
-const saveProf=()=>{ try{ localStorage.setItem(PKEY,JSON.stringify(PROF)) }catch(e){} window.TCSYNC&&TCSYNC("prof"); };
+// ---- spelarprofiler: sparas i Firebase (profiles/<uid>), var och en kan bara ändra sin egen ----
+const PKEY="tc-lineup-v2";
+const allaProfile=()=>({id:"alla",name:"Alla champs",pools:[0,1,2,3,4].map(()=>[...CHAMPS]),builtin:true});
+let MYUID=null, MYNAME=""; // sätts av sync.js när man loggar in med Google
+let PROF={profiles:[allaProfile()],lineup:(()=>{ try{ const l=JSON.parse(localStorage.getItem(PKEY)||"null"); if(Array.isArray(l)&&l.length===5) return l.map(String); }catch(e){} return Array(5).fill("alla"); })()};
+let PSEL="alla";
+const saveProf=()=>{ try{ localStorage.setItem(PKEY,JSON.stringify(PROF.lineup)) }catch(e){} window.TCSYNC&&TCSYNC("prof"); };
 const prof=id=>PROF.profiles.find(p=>p.id===id);
+const isMine=p=>!!(p&&MYUID&&p.id===MYUID);
+const cleanName=t=>String(t||"").replace(/[<>&"]/g,"").trim().slice(0,40);
+// Anropas av sync.js med lagets profiler från databasen
+function setProfiles(list){
+  list=list.filter(p=>p.id!=="alla").sort((a,b)=>a.name.localeCompare(b.name,"sv"));
+  PROF.profiles=[...list,allaProfile()];
+  if(!prof(PSEL)) PSEL=MYUID&&prof(MYUID)?MYUID:PROF.profiles[0].id;
+  applyProfiles(); renderPlayers(); render();
+}
+// Profiltext: {"name":"…","pools":[[top],[jgl],[mid],[adc],[sup]]} – "*" i en roll = alla champs
+function parseProfile(t){ const d=JSON.parse(t), src=d&&d.pools; if(!Array.isArray(src)||src.length!==5) throw 0;
+  return {name:cleanName(d.name)||"Namnlös",pools:src.map(r=>r==="*"?[...CHAMPS]:Array.isArray(r)?[...new Set(r.map(x=>findChamp(String(x))).filter(Boolean))]:[])}; }
 function applyProfiles(){
   POOLS=[0,1,2,3,4].map(ri=>{ const p=prof(PROF.lineup[ri]); return p?[...p.pools[ri]]:[]; });
   POOLSET=new Set(POOLS.flat());
@@ -1881,38 +1886,50 @@ function renderPlayers(){
   const pl=document.getElementById("plist"); pl.innerHTML="";
   PROF.profiles.forEach(p=>{ const b=document.createElement("button"); b.type="button"; b.className=p.id===PSEL?"on":"";
     const roles=R.filter((_,ri)=>p.pools[ri].length).join(", ")||"inga champs än";
-    b.innerHTML=`${p.name}<small>${roles}</small>`; b.addEventListener("click",()=>{PSEL=p.id; renderPlayers();}); pl.appendChild(b); });
-  const add=document.createElement("button"); add.type="button"; add.className="add"; add.textContent="+ Ny profil";
-  add.addEventListener("click",()=>{ const id="p"+Date.now().toString(36); PROF.profiles.push({id,name:"Ny spelare",pools:[[],[],[],[],[]]}); PSEL=id; saveProf(); renderPlayers(); setTimeout(()=>document.querySelector("#pedit .top input")?.select(),0); });
-  pl.appendChild(add);
+    b.innerHTML=`${p.name}${isMine(p)?'<em class="me">du</em>':""}<small>${roles}</small>`; b.addEventListener("click",()=>{PSEL=p.id; renderPlayers();}); pl.appendChild(b); });
+  const acc=document.createElement("div"); acc.className="pacc";
+  if(!MYUID){
+    acc.innerHTML=`<button type="button" class="add">🔑 Logga in med Google</button><small>för att skapa och ändra din egen profil</small>`;
+    acc.querySelector("button").addEventListener("click",()=>{ window.TCLOGIN?TCLOGIN():pMsg("Anslutningen laddar fortfarande…"); });
+  } else {
+    acc.innerHTML=`${prof(MYUID)?"":`<button type="button" class="add mk">+ Skapa min profil</button>`}<small>Inloggad som ${cleanName(MYNAME)||"Google-konto"} · <a href="#spelare" class="lo">Logga ut</a></small>`;
+    acc.querySelector(".mk")?.addEventListener("click",()=>{ PROF.profiles.unshift({id:MYUID,name:cleanName(MYNAME).split(" ")[0]||"Ny spelare",pools:[[],[],[],[],[]]}); PSEL=MYUID; saveProf(); applyProfiles(); renderPlayers(); setTimeout(()=>document.querySelector("#pedit .top input")?.select(),0); });
+    acc.querySelector(".lo").addEventListener("click",e=>{ e.preventDefault(); window.TCLOGOUT&&TCLOGOUT(); });
+  }
+  pl.appendChild(acc);
   const p=prof(PSEL)||PROF.profiles[0]; const ed=document.getElementById("pedit"); ed.innerHTML="";
   if(!p) return;
+  const own=isMine(p);
   const top=document.createElement("div"); top.className="top";
-  top.innerHTML=`<input type="text" aria-label="Namn" value="${p.name.replace(/"/g,"&quot;")}"><button type="button" class="del">Ta bort</button>`;
-  top.querySelector("input").addEventListener("change",e=>{ p.name=e.target.value.trim()||"Namnlös"; saveProf(); applyProfiles(); renderPlayers(); });
-  top.querySelector(".del").addEventListener("click",()=>{ if(PROF.profiles.length<=1) return; if(!confirm(`Ta bort ${p.name}?`)) return;
-    PROF.profiles=PROF.profiles.filter(x=>x!==p); PROF.lineup=PROF.lineup.map(id=>prof(id)?id:PROF.profiles[0].id); PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); });
+  if(own){
+    top.innerHTML=`<input type="text" aria-label="Namn" maxlength="40" value="${p.name}"><button type="button" class="del">Ta bort</button>`;
+    top.querySelector("input").addEventListener("change",e=>{ p.name=cleanName(e.target.value)||"Namnlös"; saveProf(); applyProfiles(); renderPlayers(); });
+    top.querySelector(".del").addEventListener("click",()=>{ if(!confirm(`Ta bort din profil ${p.name}? Den försvinner för hela laget.`)) return;
+      window.TCDELPROF&&TCDELPROF(); PROF.profiles=PROF.profiles.filter(x=>x!==p); PROF.lineup=PROF.lineup.map(id=>id===p.id?"alla":id); PSEL="alla"; saveProf(); applyProfiles(); renderPlayers(); render(); });
+  } else top.innerHTML=`<h3 class="pname">${p.name}</h3><span class="note">${p.builtin?"Inbyggd – alla champs i alla roller":`🔒 Bara ${p.name} kan ändra den här profilen`}</span>`;
   ed.appendChild(top);
   R.forEach((r,ri)=>{ const box=document.createElement("div"); box.className="prole";
-    const who=R.filter((_,k)=>PROF.lineup[k]===p.id);
-    box.innerHTML=`<h3><b>${r}</b> · ${p.pools[ri].length} champs${PROF.lineup[ri]===p.id?" · spelar denna roll nu":""}</h3><div class="chips"></div><div class="add"><input type="text" list="champlist" placeholder="Lägg till champ (Enter)" aria-label="Lägg till champ som ${r}"><button type="button">Lägg till</button></div>`;
+    box.innerHTML=`<h3><b>${r}</b> · ${p.pools[ri].length} champs${PROF.lineup[ri]===p.id?" · spelar denna roll nu":""}</h3><div class="chips"></div>${own?`<div class="add"><input type="text" list="champlist" placeholder="Lägg till champ (Enter)" aria-label="Lägg till champ som ${r}"><button type="button">Lägg till</button></div>`:""}`;
     const chips=box.querySelector(".chips");
-    p.pools[ri].forEach(c=>{ const ch=document.createElement("span"); ch.className="chip"; ch.innerHTML=`${c}<button type="button" aria-label="Ta bort ${c}">×</button>`;
-      ch.querySelector("button").addEventListener("click",()=>{ p.pools[ri]=p.pools[ri].filter(x=>x!==c); saveProf(); applyProfiles(); renderPlayers(); render(); });
+    p.pools[ri].forEach(c=>{ const ch=document.createElement("span"); ch.className="chip"; ch.innerHTML=own?`${c}<button type="button" aria-label="Ta bort ${c}">×</button>`:c;
+      if(own) ch.querySelector("button").addEventListener("click",()=>{ p.pools[ri]=p.pools[ri].filter(x=>x!==c); saveProf(); applyProfiles(); renderPlayers(); render(); });
       chips.appendChild(ch); });
-    const inp=box.querySelector("input"); const go=()=>{ const c=findChamp(inp.value); if(!c){inp.select(); return;} if(!p.pools[ri].includes(c)) p.pools[ri].push(c);
-      saveProf(); applyProfiles(); renderPlayers(); render(); setTimeout(()=>{ const ni=document.querySelectorAll("#pedit .prole input")[ri]; ni&&ni.focus(); },0); };
-    inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); go(); } });
-    box.querySelector(".add button").addEventListener("click",go);
+    if(own){ const inp=box.querySelector("input"); const go=()=>{ const c=findChamp(inp.value); if(!c){inp.select(); return;} if(!p.pools[ri].includes(c)) p.pools[ri].push(c);
+        saveProf(); applyProfiles(); renderPlayers(); render(); setTimeout(()=>{ const ni=document.querySelectorAll("#pedit .prole input")[ri]; ni&&ni.focus(); },0); };
+      inp.addEventListener("keydown",e=>{ if(e.key==="Enter"){ e.preventDefault(); go(); } });
+      box.querySelector(".add button").addEventListener("click",go); }
     ed.appendChild(box); });
 }
+
 document.getElementById("champlist").innerHTML=CHAMPS.map(c=>`<option value="${c.replace(/"/g,"&quot;")}">`).join("");
 const pMsg=t=>{ const m=document.getElementById("pMsg"); m.textContent=t; setTimeout(()=>{ if(m.textContent===t) m.textContent=""; },3000); };
-document.getElementById("pExport").addEventListener("click",()=>{ const t=JSON.stringify(PROF);
-  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>pMsg("Kopierat – skicka texten till laget")).catch(()=>prompt("Kopiera texten:",t)); });
-document.getElementById("pImport").addEventListener("click",()=>{ const t=prompt("Klistra in profiltext:"); if(!t) return;
-  try{ const d=JSON.parse(t); if(!Array.isArray(d.profiles)||!Array.isArray(d.lineup)) throw 0; PROF=d; PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); pMsg("Profiler inlästa"); }catch(e){ pMsg("Kunde inte läsa texten"); } });
-document.getElementById("pReset").addEventListener("click",()=>{ if(!confirm("Återställ alla profiler till standard?")) return; PROF=defaultProfiles(); PSEL=PROF.profiles[0].id; saveProf(); applyProfiles(); renderPlayers(); render(); });
+document.getElementById("pExport").addEventListener("click",()=>{ const p=prof(PSEL); if(!p) return;
+  const t=JSON.stringify({name:p.name,pools:p.pools.map(r=>r.length>=CHAMPS.length?"*":r)});
+  (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>pMsg(`Kopierat: ${p.name}`)).catch(()=>prompt("Kopiera texten:",t)); });
+document.getElementById("pImport").addEventListener("click",()=>{ if(!MYUID) return pMsg("Logga in med Google först");
+  const t=prompt("Klistra in din profilrad:"); if(!t) return;
+  try{ const d=parseProfile(t.trim()); let me=prof(MYUID); if(!me){ me={id:MYUID,name:d.name,pools:d.pools}; PROF.profiles.unshift(me); } else { me.name=d.name; me.pools=d.pools; }
+    PSEL=MYUID; saveProf(); applyProfiles(); renderPlayers(); render(); pMsg("Inläst i din profil"); }catch(e){ pMsg("Kunde inte läsa texten"); } });
 // flikar
 function showTab(){ const t=location.hash==="#spelare"?"spelare":location.hash==="#karta"?"karta":"draft";
   document.getElementById("tab-draft").hidden=t!=="draft"; document.getElementById("tab-spelare").hidden=t!=="spelare"; document.getElementById("tab-karta").hidden=t!=="karta";
